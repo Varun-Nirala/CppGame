@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-SET(PROJECT "TetrisGame")
+SET(PROJECT "Tetris")
 project( ${PROJECT} )
 
 SET(VERSION_MAJOR "1")
