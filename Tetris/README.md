@@ -3,7 +3,7 @@ Tetris in C++ using SFML
 
 Purpose
 -------
-Implement classing tetris game.
+Implement classic tetris game.
 
 Project & System Configuration
 ------------------------------
