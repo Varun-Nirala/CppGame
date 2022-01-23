@@ -10,6 +10,7 @@ using Actor = TetrisShape;
 class Command
 {
 public:
+	virtual ~Command() = default;
 	virtual void execute(Actor &actor) = 0;
 };
 

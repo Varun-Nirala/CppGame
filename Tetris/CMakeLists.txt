@@ -18,12 +18,12 @@ else()
 endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
-file(GLOB SOURCES "src/*.cpp" "src/*.h")
+file(GLOB SOURCES "src/*.cpp")
+
+add_executable( ${PROJECT} ${SOURCES} )
 
 set(SFML_STATIC_LIBRARIES TRUE)
-
 set(SFML_DIR "F:/Varun/Varun_Work/Libs/SFML-2.5.1/lib/cmake/SFML")
 
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
-add_executable( ${PROJECT} ${SOURCES} )
 target_link_libraries(${PROJECT} sfml-system sfml-window sfml-graphics sfml-network sfml-audio)
