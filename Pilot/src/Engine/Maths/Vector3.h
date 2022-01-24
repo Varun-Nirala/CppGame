@@ -11,8 +11,9 @@ namespace nsEngine { namespace nsMaths
 			Vector3(double x = 0, double y = 0, double z = 0);
 
 			Vector3(const Vector3 &);				// Copyable
-			Vector3(Vector3 &&);					// Moveable
-			Vector3 operator=(const Vector3 &);		// assignable
+			Vector3(Vector3 &&) noexcept;			// Moveable
+			Vector3& operator=(const Vector3 &);	// assignable
+			Vector3& operator=(Vector3&&) noexcept;	// Move assignable
 
 			// Arithmatic Operators
 			Vector3 operator+(const Vector3 &) const;

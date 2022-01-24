@@ -14,7 +14,7 @@ Vector3::Vector3(const Vector3 &vec)
 	, m_z(vec.m_z)
 {}
 
-Vector3::Vector3(Vector3 &&vec)
+Vector3::Vector3(Vector3 &&vec) noexcept
 	: m_x(vec.m_x)
 	, m_y(vec.m_y)
 	, m_z(vec.m_z)
@@ -22,15 +22,27 @@ Vector3::Vector3(Vector3 &&vec)
 	vec.m_x = vec.m_y = vec.m_z = 0;
 }
 
-Vector3 Vector3::operator=(const Vector3 &vec)
+Vector3& Vector3::operator=(const Vector3 &vec)
 {
-	if (this == &vec)
+	if (this != &vec)
 	{
-		return *this;
+		m_x = vec.m_x;
+		m_y = vec.m_y;
+		m_z = vec.m_z;
 	}
-	m_x = vec.m_x;
-	m_y = vec.m_y;
-	m_z = vec.m_z;
+	return *this;
+}
+
+Vector3& Vector3::operator=(Vector3&& vec) noexcept
+{
+	if (this != &vec)
+	{
+		m_x = vec.m_x;
+		m_y = vec.m_y;
+		m_z = vec.m_z;
+		vec.m_x = vec.m_y = vec.m_z = 0;
+	}
+	return *this;
 }
 
 Vector3 Vector3::operator+(const Vector3 &vec) const

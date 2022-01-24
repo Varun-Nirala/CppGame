@@ -1,5 +1,5 @@
 #include "Texture.h"
-#include <soil.h>
+#include <SOIL/SOIL.h>
 #include <iostream>
 
 using namespace nsGraphics;
