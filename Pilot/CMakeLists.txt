@@ -50,7 +50,7 @@ file(GLOB_RECURSE SOURCES "${SOURCE_DIR}/*.h" "${SOURCE_DIR}/*.hpp" "${SOURCE_DI
 
 add_executable( ${PROJECT} ${SOURCES} )
 
-set(GLFW_DIR "F:/Varun/Varun_Work/Libs/GLFW_3.3.6")
+set(GLFW_DIR "F:/Varun/Varun_Work/Libs/GLFW")
 set(SOIL_DIR "F:/Varun/Varun_Work/Libs/SOIL")
 set(WINDOWS_DIR "C:/Windows/System32")
 
