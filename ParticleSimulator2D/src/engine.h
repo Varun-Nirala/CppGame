@@ -7,6 +7,7 @@ class DisplayWindow;
 class Engine
 {
 public:
+	~Engine();
 	bool initDisplayWindow(const char* title, int width, int height, int& hintOpenGlMajorVersion, int& hintOpenGlMinorVersion);
 	void startLoop();
 

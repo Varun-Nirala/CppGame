@@ -1,6 +1,10 @@
 #include "engine.h"
 #include "displayWindow.h"
 
+Engine::~Engine()
+{
+}
+
 bool Engine::initDisplayWindow(const char* title, int width, int height, int& hintOpenGlMajorVersion, int& hintOpenGlMinorVersion)
 {
     m_pWindow = std::make_unique<DisplayWindow>(title, width, height, hintOpenGlMajorVersion, hintOpenGlMinorVersion);
