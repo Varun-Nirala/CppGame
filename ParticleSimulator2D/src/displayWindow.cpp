@@ -73,6 +73,26 @@ void DisplayWindow::onResize(int newWidth, int newHeight)
 	glViewport(0, 0, m_width, m_height);
 }
 
+void DisplayWindow::onKeyInput(int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE)
+	{
+		onClose();
+	}
+}
+
+void DisplayWindow::onMouseMove(double posX, double posY)
+{
+}
+
+void DisplayWindow::onMouseScroll(double offsetX, double offsetY)
+{
+}
+
+void DisplayWindow::onMouseButton(int button, int action, int mods)
+{
+}
+
 float DisplayWindow::getCurrentTimeInSec() const
 {
 	return (float)glfwGetTime();
@@ -115,6 +135,42 @@ void DisplayWindow::windowReSize_CB(GLFWwindow* pWindow, int width, int height)
 	}
 }
 
+void DisplayWindow::keyinput_CB(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
+{
+	DisplayWindow* pDisplayWindow = getDisplayWindow(pWindow);
+	if (pDisplayWindow)
+	{
+		pDisplayWindow->onKeyInput(key, scancode, action, mods);
+	}
+}
+
+void DisplayWindow::mouseMove_CB(GLFWwindow* pWindow, double posX, double posY)
+{
+	DisplayWindow* pDisplayWindow = getDisplayWindow(pWindow);
+	if (pDisplayWindow)
+	{
+		pDisplayWindow->onMouseMove(posX, posY);
+	}
+}
+
+void DisplayWindow::mouseScroll_CB(GLFWwindow* pWindow, double offsetX, double offsetY)
+{
+	DisplayWindow* pDisplayWindow = getDisplayWindow(pWindow);
+	if (pDisplayWindow)
+	{
+		pDisplayWindow->onMouseScroll(offsetX, offsetY);
+	}
+}
+
+void DisplayWindow::mouseButton_CB(GLFWwindow* pWindow, int button, int action, int mods)
+{
+	DisplayWindow* pDisplayWindow = getDisplayWindow(pWindow);
+	if (pDisplayWindow)
+	{
+		pDisplayWindow->onMouseButton(button, action, mods);
+	}
+}
+
 void DisplayWindow::registerCallbacks()
 {
 	// Register this pointer so that we can retrieve it in our static methods
@@ -123,6 +179,12 @@ void DisplayWindow::registerCallbacks()
 	glfwSetFramebufferSizeCallback(m_pWindow, windowReSize_CB);
 	glfwSetWindowRefreshCallback(m_pWindow, windowRefresh_CB);
 	glfwSetWindowCloseCallback(m_pWindow, windowClose_CB);
+
+	glfwSetKeyCallback(m_pWindow, keyinput_CB);
+
+	glfwSetCursorPosCallback(m_pWindow, mouseMove_CB);
+	glfwSetScrollCallback(m_pWindow, mouseScroll_CB);
+	glfwSetMouseButtonCallback(m_pWindow, mouseButton_CB);
 }
 
 void DisplayWindow::release()

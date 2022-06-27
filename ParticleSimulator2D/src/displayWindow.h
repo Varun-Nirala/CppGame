@@ -20,6 +20,10 @@ public:
 	void onClose();
 	void onRefresh();
 	void onResize(int newWidth, int newHeight);
+	void onKeyInput(int key, int scancode, int action, int mods);
+	void onMouseMove(double posX, double posY);
+	void onMouseScroll(double offsetX, double offsetY);
+	void onMouseButton(int button, int action, int mods);
 
 	float getCurrentTimeInSec() const;
 	float getCurrentTimeInMilliSec() const;
@@ -29,6 +33,10 @@ public:
 	static void windowClose_CB(GLFWwindow* pWindow);
 	static void windowRefresh_CB(GLFWwindow* pWindow);
 	static void windowReSize_CB(GLFWwindow* pWindow, int width, int height);
+	static void keyinput_CB(GLFWwindow* pWindow, int key, int scancode, int action, int mods);
+	static void mouseMove_CB(GLFWwindow* pWindow, double posX, double posY);
+	static void mouseScroll_CB(GLFWwindow* pWindow, double offsetX, double offsetY);
+	static void mouseButton_CB(GLFWwindow* pWindow, int button, int action, int mods);
 
 private:
 	void registerCallbacks();
