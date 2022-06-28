@@ -2,6 +2,11 @@
 #include "displayWindow.h"
 #include "Common/logger.h"
 
+DisplayWindow::~DisplayWindow()
+{
+	release();
+}
+
 DisplayWindow::DisplayWindow(const char* title, int width, int height, int &hintOpenGlMajorVersion, int &hintOpenGlMinorVersion)
     : m_width(width)
     , m_height(height)
@@ -48,6 +53,19 @@ DisplayWindow::DisplayWindow(const char* title, int width, int height, int &hint
 
 	glGetIntegerv(GL_MAJOR_VERSION, &hintOpenGlMajorVersion);
 	glGetIntegerv(GL_MINOR_VERSION, &hintOpenGlMinorVersion);
+
+	registerCallbacks();
+}
+
+void DisplayWindow::preRender()
+{
+	;
+}
+
+void DisplayWindow::postRender()
+{
+	glfwSwapBuffers(m_pWindow);
+	glfwPollEvents();
 }
 
 float DisplayWindow::aspectRatio() const
@@ -75,6 +93,10 @@ void DisplayWindow::onResize(int newWidth, int newHeight)
 
 void DisplayWindow::onKeyInput(int key, int scancode, int action, int mods)
 {
+	for (auto& cb : m_keyinputCallbacks)
+	{
+		cb(key, scancode, action, mods);
+	}
 	if (key == GLFW_KEY_ESCAPE)
 	{
 		onClose();
@@ -83,14 +105,26 @@ void DisplayWindow::onKeyInput(int key, int scancode, int action, int mods)
 
 void DisplayWindow::onMouseMove(double posX, double posY)
 {
+	for (auto& cb : m_mousemoveCallback)
+	{
+		cb(posX, posY);
+	}
 }
 
 void DisplayWindow::onMouseScroll(double offsetX, double offsetY)
 {
+	for (auto& cb : m_mousescrollCallback)
+	{
+		cb(offsetX, offsetY);
+	}
 }
 
 void DisplayWindow::onMouseButton(int button, int action, int mods)
 {
+	for (auto& cb : m_mousebuttonCallback)
+	{
+		cb(button, action, mods);
+	}
 }
 
 float DisplayWindow::getCurrentTimeInSec() const
