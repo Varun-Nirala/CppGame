@@ -1,6 +1,9 @@
 #include <glad/glad.h>
 #include "displayWindow.h"
 #include "Common/logger.h"
+#include "Common/debugOpenGL.h"
+
+#define DEBUG_OPENGL
 
 DisplayWindow::~DisplayWindow()
 {
@@ -55,6 +58,8 @@ DisplayWindow::DisplayWindow(const char* title, int width, int height, int &hint
 	glGetIntegerv(GL_MINOR_VERSION, &hintOpenGlMinorVersion);
 
 	registerCallbacks();
+
+	glViewport(0, 0, m_width, m_height);
 }
 
 void DisplayWindow::preRender()

@@ -5,6 +5,7 @@
 #include <vector>
 #include "particle.h"
 #include "grid.h"
+#include "Common/constants.h"
 
 struct VertexData
 {
@@ -28,8 +29,6 @@ public:
 
 	void setDrawInWireFrameMode(bool val);
 
-	void bindBuffers();
-	void unbindBuffers();
 	void update(float elapsedDeltaTimeInSec);
 	void render();
 
@@ -37,18 +36,30 @@ private:
 	void setProjectionUniform();
 	void setModelUnifrom();
 	void setColorUnifrom();
+
+	void bindBuffers();
+	void unbindBuffers();
+
+	void setVertexData();
+	void prepareShaders();
+	void prepareBuffers();
+
 	void release();
 
 private:
-	GLuint			m_windowWidth{};
-	GLuint			m_windowHeight{};
-	GLuint			m_shaderProgram{};
-	GLuint			m_vao{};
-	GLuint			m_vbo{};
-	GLuint			m_ebo{};
-	VertexData		m_VertexData;
-	Grid			m_grid;
+	GLuint					m_windowWidth{};
+	GLuint					m_windowHeight{};
+	GLuint					m_shaderProgram{};
+	GLuint					m_vao{};
+	GLuint					m_vbo{};
+	GLuint					m_ebo{};
+	VertexData				m_vertexData;
+	Grid					m_grid;
 	
-	glm::vec4		m_particleColor{};
-	bool			m_bDrawInWireFrame{ false };
+	Particle				m_particle;
+
+	glm::vec4				m_particleColor{ kCOLOR_SANDY_BROWN, 1.0f };
+	bool					m_bDrawInWireFrame{ false };
+
+	const Transformations	m_defaultTransformations;
 };
