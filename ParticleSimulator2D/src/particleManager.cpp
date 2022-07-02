@@ -6,6 +6,9 @@
 #include <numeric>
 
 
+const glm::vec2 PARTICLE_SIZE = { 2.0f, 2.0f };
+const glm::vec2 PARTICLE_SCALE = { 1.0f, 1.0f };
+
 GLuint VertexData::valuePerVertex() const
 {
 	return std::accumulate(attribVector.begin(), attribVector.end(), 0);
@@ -26,26 +29,43 @@ ParticleManager::~ParticleManager()
 	release();
 }
 
-ParticleManager::ParticleManager(int windowWidth, int windowHeight, glm::vec2 gridStartPos)
-	: m_grid(glm::vec2{ 2.0f, 2.0f }, gridStartPos, windowWidth, windowHeight)
+ParticleManager::ParticleManager(PARTICLE_TYPE type, int windowWidth, int windowHeight, glm::vec2 gridStartPos)
+	: m_grid(PARTICLE_SIZE, PARTICLE_SCALE, gridStartPos, windowWidth, windowHeight)
+	, m_defaultParticle(type)
 	, m_windowWidth(windowWidth)
 	, m_windowHeight(windowHeight)
 	, m_defaultTransformations(
-		glm::vec2{ 2.0f, 2.0f },
-		glm::vec2{ ((m_windowWidth / 2.0f) - 2.0f / 2.0f), ((m_windowHeight / 2.0f) - 2.0f / 2.0f) },
-		glm::vec2{ 50.0f, 50.0f }
+		PARTICLE_SIZE,
+		PARTICLE_SCALE,
+		glm::vec2{ ((m_windowWidth / 2.0f) - (PARTICLE_SIZE.x * PARTICLE_SCALE.x)),	((m_windowHeight / 2.0f) - (PARTICLE_SIZE.y * PARTICLE_SCALE.y)) }
 	)
 {
 	prepareShaders();
 	setVertexData();
 	prepareBuffers();
-	
+
+	m_defaultParticle.transformations().size = m_defaultTransformations.size;
+	m_defaultParticle.transformations().scale = m_defaultTransformations.scale;
+	m_defaultParticle.transformations().position = m_defaultTransformations.position;
+
+	switch (m_defaultParticle.type())
+	{
+		case PARTICLE_TYPE::SAND:
+			m_particleColor = glm::vec4{ kCOLOR_SANDY_BROWN, 1.0f };
+			break;
+
+		case PARTICLE_TYPE::WATER:
+			m_particleColor = glm::vec4{ kCOLOR_AQUA, 1.0f };
+			break;
+
+		case PARTICLE_TYPE::FIRE:
+			m_particleColor = glm::vec4{ kCOLOR_RED, 1.0f };
+			break;
+	}
+
 	bindBuffers();
 	setProjectionUniform();
-
-	m_particle.transformations().size = m_defaultTransformations.size;
-	m_particle.transformations().scale = m_defaultTransformations.scale;
-	m_particle.transformations().position = m_defaultTransformations.position;
+	setColorUnifrom();
 }
 
 void ParticleManager::setDrawInWireFrameMode(bool val)
@@ -56,18 +76,38 @@ void ParticleManager::setDrawInWireFrameMode(bool val)
 
 void ParticleManager::update(float elapsedDeltaTimeInSec)
 {
-	(void)elapsedDeltaTimeInSec;
+	Particle *newParticle = m_defaultParticle.clone();
+	newParticle->transformations().position = m_grid[0][m_grid.cols() / 2].position;
+
+	Particle *p = m_grid[0][m_grid.cols() / 2].particle;
+	p = newParticle;
+	m_grid[0][m_grid.cols() / 2].particle = newParticle;
+	if (m_defaultParticle.type() == PARTICLE_TYPE::SAND)
+	{
+		updateSandParticle(elapsedDeltaTimeInSec);
+	}
+	else if (m_defaultParticle.type() == PARTICLE_TYPE::WATER)
+	{
+		updateWaterParticle(elapsedDeltaTimeInSec);
+	}
 }
 
 void ParticleManager::render()
 {
-	bindBuffers();
-
-	setProjectionUniform();
-	setModelUnifrom();
-	setColorUnifrom();
-
-	glDrawElements(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0);
+	for (size_t i = 0, rows = m_grid.rows(); i < rows; ++i)
+	{
+		for (size_t j = 0, cols = m_grid.cols(); j < cols; ++j)
+		{
+			if (!m_grid.isEmpty(i, j))
+			{
+				//bindBuffers();
+				//setProjectionUniform();
+				//setColorUnifrom();
+				setModelUnifrom(m_grid[i][j].particle);
+				glDrawElements(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0);
+			}
+		}
+	}
 }
 
 void ParticleManager::setProjectionUniform()
@@ -77,21 +117,21 @@ void ParticleManager::setProjectionUniform()
 	ShaderProgram::setUniform_fm(m_shaderProgram, "projection", projection);
 }
 
-void ParticleManager::setModelUnifrom()
+void ParticleManager::setModelUnifrom(Particle *p)
 {
 	glm::mat4 model = glm::mat4(1.0f);
 
 	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
 
 	// 1st translate
-	model = glm::translate(model, glm::vec3{ m_particle.transformations().position, 0.0f });											// position
+	model = glm::translate(model, glm::vec3{ p->transformations().position, 0.0f });											// position
 
 	// 2nd rotate
-	model = glm::translate(model, glm::vec3{ 0.5f * m_particle.transformations().size, 0.0f});											// move origin of rotation to center of quad
-	model = glm::rotate(model, glm::radians(m_particle.transformations().rotationInDeg), m_particle.transformations().rotationVec);		// then rotate
+	model = glm::translate(model, glm::vec3{ 0.5f * p->transformations().size, 0.0f});											// move origin of rotation to center of quad
+	model = glm::rotate(model, glm::radians(p->transformations().rotationInDeg), p->transformations().rotationVec);		// then rotate
 	// 3rd scale
-	model = glm::scale(model, glm::vec3{ m_particle.transformations().size * m_particle.transformations().scale, 0.0f });				// size * scale
-	model = glm::translate(model, glm::vec3{ -0.5f * m_particle.transformations().size, 0.0f});											// move origin back
+	model = glm::scale(model, glm::vec3{ p->transformations().size * p->transformations().scale, 0.0f });				// size * scale
+	model = glm::translate(model, glm::vec3{ -0.5f * p->transformations().size, 0.0f});											// move origin back
 	ShaderProgram::setUniform_fm(m_shaderProgram, "model", model);
 }
 
@@ -197,6 +237,73 @@ void ParticleManager::prepareBuffers()
 	}
 }
 
+void ParticleManager::updateSandParticle(float elapsedDeltaTimeInSec)
+{
+	(void)elapsedDeltaTimeInSec;
+	for (size_t i = m_grid.rows(); i-- > 0;)
+	{
+		for (size_t j = 0, cols = m_grid.cols() - 1; j < cols; ++j)
+		{
+			if (!m_grid.isEmpty(i, j) && m_grid[i][j].particle->canUpdate())
+			{
+				if (m_grid.isEmpty(i, j, Direction::BELOW))
+				{
+					m_grid.move(i, j, Direction::BELOW);
+				}
+				else if (m_grid.isEmpty(i, j, Direction::BELOW_LEFT))
+				{
+					m_grid.move(i, j, Direction::BELOW_LEFT);
+				}
+				else if (m_grid.isEmpty(i, j, Direction::BELOW_RIGHT))
+				{
+					m_grid.move(i, j, Direction::BELOW_RIGHT);
+				}
+				else
+				{
+					m_grid[i][j].particle->setCanUpdate(false);
+				}
+			}
+		}
+	}
+}
+
+void ParticleManager::updateWaterParticle(float elapsedDeltaTimeInSec)
+{
+	(void)elapsedDeltaTimeInSec;
+	for (size_t i = m_grid.rows(); i-- > 0;)
+	{
+		for (size_t j = 0, cols = m_grid.cols() - 1; j < cols; ++j)
+		{
+			if (!m_grid.isEmpty(i, j) && m_grid[i][j].particle->canUpdate())
+			{
+				if (m_grid.isEmpty(i, j, Direction::BELOW))
+				{
+					m_grid.move(i, j, Direction::BELOW);
+				}
+				else if (m_grid.isEmpty(i, j, Direction::BELOW_LEFT))
+				{
+					m_grid.move(i, j, Direction::BELOW_LEFT);
+				}
+				else if (m_grid.isEmpty(i, j, Direction::BELOW_RIGHT))
+				{
+					m_grid.move(i, j, Direction::BELOW_RIGHT);
+				}
+				else if (m_grid.isEmpty(i, j, Direction::LEFT))
+				{
+					m_grid.move(i, j, Direction::LEFT);
+				}
+				else if (m_grid.isEmpty(i, j, Direction::RIGHT))
+				{
+					m_grid.move(i, j, Direction::RIGHT);
+				}
+				else
+				{
+					m_grid[i][j].particle->setCanUpdate(false);
+				}
+			}
+		}
+	}
+}
 
 void ParticleManager::release()
 {

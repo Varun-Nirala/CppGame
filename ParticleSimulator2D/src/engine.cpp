@@ -10,7 +10,7 @@ bool Engine::init(const char* title, int width, int height, int& hintOpenGlMajor
 {
     m_enabledBits = GL_COLOR_BUFFER_BIT;
     m_pWindow = std::make_unique<DisplayWindow>(title, width, height, hintOpenGlMajorVersion, hintOpenGlMinorVersion);
-    m_particleManager = std::make_unique<ParticleManager>(width, height, glm::vec2{ 0.0f, 0.0f });
+    m_particleManager = std::make_unique<ParticleManager>(PARTICLE_TYPE::WATER, width, height, glm::vec2{ 0.0f, 0.0f });
     return m_pWindow != nullptr;
 }
 

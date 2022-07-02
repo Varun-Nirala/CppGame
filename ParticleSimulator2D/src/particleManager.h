@@ -25,7 +25,7 @@ class ParticleManager
 {
 public:
 	~ParticleManager();
-	ParticleManager(int windowWidth, int windowHeight, glm::vec2 gridStartPos = { 0.0f, 0.0f });
+	ParticleManager(PARTICLE_TYPE type, int windowWidth, int windowHeight, glm::vec2 gridStartPos);
 
 	void setDrawInWireFrameMode(bool val);
 
@@ -34,7 +34,7 @@ public:
 
 private:
 	void setProjectionUniform();
-	void setModelUnifrom();
+	void setModelUnifrom(Particle* p);
 	void setColorUnifrom();
 
 	void bindBuffers();
@@ -43,6 +43,9 @@ private:
 	void setVertexData();
 	void prepareShaders();
 	void prepareBuffers();
+
+	void updateSandParticle(float elapsedDeltaTimeInSec);
+	void updateWaterParticle(float elapsedDeltaTimeInSec);
 
 	void release();
 
@@ -56,9 +59,9 @@ private:
 	VertexData				m_vertexData;
 	Grid					m_grid;
 	
-	Particle				m_particle;
+	Particle				m_defaultParticle{ PARTICLE_TYPE::SAND };
+	glm::vec4				m_particleColor;
 
-	glm::vec4				m_particleColor{ kCOLOR_SANDY_BROWN, 1.0f };
 	bool					m_bDrawInWireFrame{ false };
 
 	const Transformations	m_defaultTransformations;
