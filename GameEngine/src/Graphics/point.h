@@ -21,7 +21,6 @@ protected:
 
 private:
 	glm::vec3		m_point;
-	glm::vec3		m_color{1.0f, 0.0f, 0.0f};
 };
 
 Point::Point(GLuint shaderID, bool bOwnIt, glm::vec2 point)

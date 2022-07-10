@@ -17,6 +17,9 @@ public:
 	virtual void render() = 0;
 	virtual void release();
 
+	void setColor(glm::vec3 color) { m_color = glm::vec4(color, 1.0f); }
+	void setColor(glm::vec4 color) { m_color = color; }
+
 	void setShader(GLuint id, bool bOwnIt) { m_shader.first = id; m_shader.second = bOwnIt; }
 	void setVAO(GLuint id, bool bOwnIt) { m_vao.first = id; m_vao.second = bOwnIt; }
 	void setVBO(GLuint id, bool bOwnIt) { m_vbo.first = id; m_vbo.second = bOwnIt; }
@@ -42,6 +45,7 @@ protected:
 	std::pair<GLuint, bool>			m_shader;
 	std::pair<GLuint, bool>			m_vao;
 	std::pair<GLuint, bool>			m_vbo;
+	glm::vec4						m_color{ 1.0f, 0.0f, 0.0f, 1.0f };
 };
 
 inline void Drawable::release()
