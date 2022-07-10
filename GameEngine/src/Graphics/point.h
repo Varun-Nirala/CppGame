@@ -1,0 +1,97 @@
+#pragma once
+
+#include "drawable.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+class Point : public Drawable
+{
+public:
+	Point(GLuint shaderID, bool bOwnIt, glm::vec2 point);
+	Point(GLuint shaderID, bool bOwnIt, glm::vec3 point);
+	Point(GLuint shaderID, bool bOwnIt, GLfloat x, GLfloat y, GLfloat z = 0.0f);
+
+	void init() override;
+	void update(float elapsedTimeInMs) override;
+	void render() override;
+	void release() override;
+
+protected:
+	void draw() override;
+
+private:
+	glm::vec3		m_point;
+	glm::vec3		m_color{1.0f, 0.0f, 0.0f};
+};
+
+Point::Point(GLuint shaderID, bool bOwnIt, glm::vec2 point)
+	: Drawable(shaderID, bOwnIt)
+	, m_point(point, 0.0f)
+{}
+
+Point::Point(GLuint shaderID, bool bOwnIt, glm::vec3 point)
+	: Drawable(shaderID, bOwnIt)
+	, m_point(point)
+{}
+
+Point::Point(GLuint shaderID, bool bOwnIt, GLfloat x, GLfloat y, GLfloat z)
+	: Drawable(shaderID, bOwnIt)
+	, m_point(x, y, z)
+{}
+
+inline void Point::init()
+{
+	setVAO(Drawable::createVAO(), true);
+	setVBO(Drawable::createVBO(), true);
+
+	activateVAO();
+	activateVBO();
+
+	glBufferData(
+		GL_ARRAY_BUFFER,				// target
+		sizeof(m_point),				// size
+		glm::value_ptr(m_point),		// data
+		GL_STATIC_DRAW);				// usage
+
+	glVertexAttribPointer(
+		0,								// attrib location (as given in shader)
+		3,								// value per vertex
+		GL_FLOAT,						// data type
+		GL_FALSE,						// should normalize?
+		0,								// stride
+		(void*)0);						// offset
+
+	glEnableVertexAttribArray(0);		// Enable the above attribute
+
+	deactivateVBO();
+	deactivateVAO();
+}
+
+inline void Point::update(float elapsedTimeInMs)
+{
+	(void)elapsedTimeInMs;
+}
+
+inline void Point::render()
+{
+	activateShader();
+	activateVAO();
+	activateVBO();
+
+	draw();
+	
+	deactivateVBO();
+	deactivateVAO();
+	deactivateShader();
+}
+
+inline void Point::release()
+{
+	Drawable::release();
+}
+
+inline void Point::draw()
+{
+	ShaderProgram::setUniform_fv(m_shader.first, "color", m_color);
+	glDrawArrays(GL_POINTS, 0, 1);
+}
