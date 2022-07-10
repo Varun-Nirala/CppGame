@@ -26,6 +26,8 @@ public:
 	size_t rows() const { return m_grid.size(); }
 	size_t cols() const { return m_grid[0].size(); }
 
+	size_t size() const { return rows() * cols(); }
+
 	void move(size_t srcR, size_t srcC, Direction dir);
 
 	const std::vector<Block>& operator[](size_t index) const;
