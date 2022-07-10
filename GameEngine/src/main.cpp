@@ -7,6 +7,8 @@
 
 #include "Graphics/point.h"
 #include "Graphics/points.h"
+#include "Graphics/line.h"
+#include "Graphics/lines.h"
 
 // opengl screen
 // -1,1        1,1
@@ -39,21 +41,34 @@ int main()
 	pointShader.attachShader(R"(.\resources\Shaders\point.frag)", SHADER_TYPE::FRAG, pointShaderID);
 	pointShader.linkShader(pointShaderID);
 
-	//Point p(pointShaderID, true,  glm::vec2{ 0.5f, 0.5f });
-	Points p(pointShaderID, true);
+	Point point(pointShaderID, true,  glm::vec2{ -0.5f, -0.5f });
+	point.init();
+	e.addDrawable(&point);
 
+	Points points(pointShaderID, true);
 	float inc = 0.001f;
 	glm::vec3 start(0.0f);
 	for (size_t i = 0; i < 300; ++i)
 	{
-		p.addPoint(start);
+		points.addPoint(start);
 		start.y += inc;
-
 	}
+	points.init();
+	e.addDrawable(&points);
 
-	p.init();
+	Line line(pointShaderID, true, glm::vec2(0.5f, 0.0f), glm::vec2(0.5f, 0.5f));
+	line.init();
 
-	e.addDrawable(&p);
+	e.addDrawable(&line);
+
+	Lines lines(pointShaderID, true);
+	lines.addine(glm::vec2(-1.0f, -1.0f), glm::vec2(1.0f, -1.0f));
+	lines.addine(glm::vec2(1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
+
+	lines.setMakeLoop(true);
+	lines.init();
+
+	e.addDrawable(&lines);
 
 	e.startLoop();
 	return 0;
