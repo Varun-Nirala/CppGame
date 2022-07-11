@@ -13,6 +13,8 @@ public:
 	Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centre);
 	Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z = 0.0f);
 
+	void setDrawFilled(bool val) { m_bFilled = val; }
+
 	void init() override;
 	void update(float elapsedTimeInMs) override;
 	void render() override;
@@ -25,6 +27,7 @@ private:
 	glm::vec3		m_centre;
 	GLfloat			m_radius{};
 	Points			m_points;
+	bool			m_bFilled{ false };
 };
 
 Circle::Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centre)
@@ -54,13 +57,25 @@ inline void Circle::init()
 	// r2 = x2 + y2
 	// x = rcos0
 	// y = rsin0
-	glm::vec3 p = m_centre;
-	p.x += m_radius;
-	for (GLfloat i = 0; i < 360; i += 0.1f)
+	GLfloat radius = m_radius;
+	while (radius >= 0.0f)
 	{
-		p.x = m_centre.x + m_radius * (GLfloat)std::cos(glm::radians(i));
-		p.y = m_centre.y + m_radius * (GLfloat)std::sin(glm::radians(i));
-		m_points.addPoint(p);
+		glm::vec3 p = m_centre;
+		p.x += radius;
+		for (GLfloat i = 0; i < 360; i += 0.1f)
+		{
+			p.x = m_centre.x + radius * (GLfloat)std::cos(glm::radians(i));
+			p.y = m_centre.y + radius * (GLfloat)std::sin(glm::radians(i));
+			m_points.addPoint(p);
+		}
+		if (m_bFilled)
+		{
+			radius -= 0.004f;
+		}
+		else
+		{
+			break;
+		}
 	}
 
 	m_points.init();

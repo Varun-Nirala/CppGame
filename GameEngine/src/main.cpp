@@ -38,7 +38,7 @@ void drawLine(Engine& e, ResourceManager& rm);
 void drawLines(Engine& e, ResourceManager& rm);
 void drawTriangle(Engine& e, ResourceManager& rm);
 void drawRectangle(Engine& e, ResourceManager& rm);
-void drawCircle(Engine& e, ResourceManager& rm);
+void drawCircle(Engine& e, ResourceManager& rm, bool bFilled);
 
 
 int main()
@@ -70,7 +70,9 @@ int main()
 
 	drawRectangle(e, rm);
 
-	drawCircle(e, rm);
+	drawCircle(e, rm, false);		// draw circle
+
+	drawCircle(e, rm, true);		// draw filled circle
 
 	e.startLoop();
 	return 0;
@@ -140,11 +142,11 @@ void drawRectangle(Engine& e, ResourceManager& rm)
 	e.addDrawable(rect);
 }
 
-void drawCircle(Engine& e, ResourceManager& rm)
+void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 {
 	Circle *cir = new Circle(rm.shader("Point_Shader"), false, 0.4f, glm::vec3(0.0f));
+	cir->setDrawFilled(bFilled);
 	cir->init();
-
 	e.addDrawable(cir);
 
 }
