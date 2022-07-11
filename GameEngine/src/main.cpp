@@ -5,6 +5,8 @@
 #include "shaderProgram.h"
 #include "engine.h"
 
+#include "resourceManager.h"
+
 #include "Graphics/point.h"
 #include "Graphics/points.h"
 #include "Graphics/line.h"
@@ -27,49 +29,74 @@
 // .frag -> Fragment shader
 // .comp -> Compute shader
 
+void drawPoint(Engine &e, ResourceManager& rm);
+void drawPoints(Engine& e, ResourceManager& rm);
+void drawLine(Engine& e, ResourceManager& rm);
+void drawLines(Engine& e, ResourceManager& rm);
+
 int main()
 {
+	ResourceManager rm;
+
 	Engine e;
 	int major = 4;
 	int minor = 6;
 
 	e.init("Hello", 800, 600, major, minor);
 
-	ShaderProgram pointShader;
-	GLuint pointShaderID = pointShader.createShader();
-	pointShader.attachShader(R"(.\resources\Shaders\point.vert)", SHADER_TYPE::VERT, pointShaderID);
-	pointShader.attachShader(R"(.\resources\Shaders\point.frag)", SHADER_TYPE::FRAG, pointShaderID);
-	pointShader.linkShader(pointShaderID);
+	std::vector<std::pair<std::string, SHADER_TYPE>> shaders;
+	shaders.push_back(std::make_pair(R"(.\resources\Shaders\point.vert)", SHADER_TYPE::VERT));
+	shaders.push_back(std::make_pair(R"(.\resources\Shaders\point.frag)", SHADER_TYPE::FRAG));
+	rm.addShader("Point_Shader", shaders);
 
-	Point point(pointShaderID, true,  glm::vec2{ -0.5f, -0.5f });
-	point.init();
-	e.addDrawable(&point);
+	drawPoint(e, rm);
 
-	Points points(pointShaderID, true);
+	drawPoints(e, rm);
+
+	drawLine(e, rm);
+	
+	drawLines(e, rm);
+
+	e.startLoop();
+	return 0;
+}
+
+void drawPoint(Engine& e, ResourceManager& rm)
+{
+	Point *point = new Point(rm.shader("Point_Shader"), true, glm::vec2{ -0.5f, -0.5f });
+	point->init();
+	e.addDrawable(point);
+}
+
+void drawPoints(Engine& e, ResourceManager& rm)
+{
+	Points *points = new Points(rm.shader("Point_Shader"), false);
 	float inc = 0.001f;
 	glm::vec3 start(0.0f);
 	for (size_t i = 0; i < 300; ++i)
 	{
-		points.addPoint(start);
+		points->addPoint(start);
 		start.y += inc;
 	}
-	points.init();
-	e.addDrawable(&points);
+	points->init();
+	e.addDrawable(points);
+}
 
-	Line line(pointShaderID, true, glm::vec2(0.5f, 0.0f), glm::vec2(0.5f, 0.5f));
-	line.init();
+void drawLine(Engine& e, ResourceManager& rm)
+{
+	Line *line = new Line(rm.shader("Point_Shader"), false, glm::vec2(0.5f, 0.0f), glm::vec2(0.5f, 0.5f));
+	line->init();
+	e.addDrawable(line);
+}
 
-	e.addDrawable(&line);
+void drawLines(Engine& e, ResourceManager& rm)
+{
+	Lines *lines = new Lines(rm.shader("Point_Shader"), false);
+	lines->addine(glm::vec2(-1.0f, -1.0f), glm::vec2(1.0f, -1.0f));
+	lines->addine(glm::vec2(1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
 
-	Lines lines(pointShaderID, true);
-	lines.addine(glm::vec2(-1.0f, -1.0f), glm::vec2(1.0f, -1.0f));
-	lines.addine(glm::vec2(1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
+	lines->setMakeLoop(true);
+	lines->init();
 
-	lines.setMakeLoop(true);
-	lines.init();
-
-	e.addDrawable(&lines);
-
-	e.startLoop();
-	return 0;
+	e.addDrawable(lines);
 }

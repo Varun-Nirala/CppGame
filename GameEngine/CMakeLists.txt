@@ -24,12 +24,14 @@ set(COMMON_LIBS_DIR "CommonLibs")
 set(GLAD_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/GLAD)
 set(GLFW_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/GLFW)
 set(GLM_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/GLM/glm)
+set(STB_IMG_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/STB_IMG)
 
 set(WINDOWS_DIR "C:/Windows/System32")
 
 include_directories(${GLAD_DIR}/include)
 include_directories(${GLFW_DIR}/include)
 include_directories(${GLM_DIR})
+include_directories(${STB_IMG_DIR})
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
@@ -68,7 +70,8 @@ source_group("Input" FILES ${INPUT})
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS  "${SOURCE_DIR}/*.h" "${SOURCE_DIR}/*.hpp" "${SOURCE_DIR}/*.cc" "${SOURCE_DIR}/*.cpp")
 
 set(GLAD_SRC ${GLAD_DIR}/src/glad.c)
-add_executable( ${PROJECT} ${SOURCES} ${GLAD_SRC})
+set(STB_SRC ${STB_IMG_DIR}/stb_image.cpp)
+add_executable( ${PROJECT} ${SOURCES} ${GLAD_SRC} ${STB_SRC})
 
 target_link_libraries(${PROJECT} opengl32) # glad stb_image)
 target_link_libraries(${PROJECT} ${GLFW_LIB})
