@@ -107,19 +107,19 @@ inline void Triangle::draw()
 inline void Triangle::setUniformModel()
 {
 	glm::mat4 model = glm::identity<glm::mat4>();
-	/*
+
 	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
 
 	// 1st translate
-	model = glm::translate(model, m_vertices[0]);
+	//model = glm::translate(model, m_vertices[0]);
 
 	// 2nd rotate
-	model = glm::translate(model, glm::vec3{ 0.5f * glm::length(m_vertices[1] - m_vertices[0]) });	// move origin of rotation to center of quad
-	model = glm::rotate(model, glm::radians(45.0f), glm::vec3{0.0f, 0.0f, 1.0f});					// then rotate
-	model = glm::translate(model, glm::vec3{ -0.5f * glm::length(m_vertices[1] - m_vertices[0]) });	// move origin back
+	//model = glm::translate(model, glm::vec3{ 0.5f * glm::length(m_vertices[1] - m_vertices[0]) });	// move origin of rotation to center of quad
+	//model = glm::rotate(model, glm::radians(45.0f), glm::vec3{0.0f, 0.0f, 1.0f});					// then rotate
+	//model = glm::translate(model, glm::vec3{ -0.5f * glm::length(m_vertices[1] - m_vertices[0]) });	// move origin back
 
 	// 3rd scale
-	model = glm::scale(model, (m_vertices[1] - m_vertices[0]) * 1.0f);*/
+	//model = glm::scale(model, (m_vertices[1] - m_vertices[0]) * 1.0f);
 
 	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
 }
