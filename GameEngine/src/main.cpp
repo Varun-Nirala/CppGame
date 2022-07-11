@@ -7,6 +7,8 @@
 
 #include "resourceManager.h"
 
+#include "Common/constants.h"
+
 #include "Graphics/point.h"
 #include "Graphics/points.h"
 #include "Graphics/line.h"
@@ -32,7 +34,7 @@
 // .frag -> Fragment shader
 // .comp -> Compute shader
 
-void drawPoint(Engine &e, ResourceManager& rm);
+void drawPoint(Engine& e, ResourceManager& rm);
 void drawPoints(Engine& e, ResourceManager& rm);
 void drawLine(Engine& e, ResourceManager& rm);
 void drawLines(Engine& e, ResourceManager& rm);
@@ -46,10 +48,10 @@ int main()
 	ResourceManager rm;
 
 	Engine e;
-	int major = 4;
-	int minor = 6;
+	int major = OPENGL_MAJOR_VERSION;
+	int minor = OPENGL_MINOR_VERSION;
 
-	e.init("Hello", 800, 600, major, minor);
+	e.init(TITLE, WIDTH, HEIGHT, major, minor);
 
 	glEnable(GL_LINE_SMOOTH);
 
@@ -57,6 +59,10 @@ int main()
 	shaders.push_back(std::make_pair(R"(.\resources\Shaders\point.vert)", SHADER_TYPE::VERT));
 	shaders.push_back(std::make_pair(R"(.\resources\Shaders\point.frag)", SHADER_TYPE::FRAG));
 	rm.addShader("Point_Shader", shaders);
+
+	shaders[0] = std::make_pair(R"(.\resources\Shaders\pointWithMVP.vert)", SHADER_TYPE::VERT);
+	shaders[1] = std::make_pair(R"(.\resources\Shaders\pointWithMVP.frag)", SHADER_TYPE::FRAG);
+	rm.addShader("PointWithMVP_Shader", shaders);
 
 	drawPoint(e, rm);
 
@@ -80,14 +86,14 @@ int main()
 
 void drawPoint(Engine& e, ResourceManager& rm)
 {
-	Point *point = new Point(rm.shader("Point_Shader"), true, glm::vec2{ -0.5f, -0.5f });
+	Point *point = new Point(rm.shader("PointWithMVP_Shader"), true, glm::vec2{ -0.5f, -0.5f });
 	point->init();
 	e.addDrawable(point);
 }
 
 void drawPoints(Engine& e, ResourceManager& rm)
 {
-	Points *points = new Points(rm.shader("Point_Shader"), false);
+	Points *points = new Points(rm.shader("PointWithMVP_Shader"), false);
 	float inc = 0.001f;
 	glm::vec3 start(0.0f);
 	for (size_t i = 0; i < 300; ++i)
@@ -101,14 +107,14 @@ void drawPoints(Engine& e, ResourceManager& rm)
 
 void drawLine(Engine& e, ResourceManager& rm)
 {
-	Line *line = new Line(rm.shader("Point_Shader"), false, glm::vec2(0.5f, 0.0f), glm::vec2(0.5f, 0.5f));
+	Line *line = new Line(rm.shader("PointWithMVP_Shader"), false, glm::vec2(0.5f, 0.0f), glm::vec2(0.5f, 0.5f));
 	line->init();
 	e.addDrawable(line);
 }
 
 void drawLines(Engine& e, ResourceManager& rm)
 {
-	Lines *lines = new Lines(rm.shader("Point_Shader"), false);
+	Lines *lines = new Lines(rm.shader("PointWithMVP_Shader"), false);
 	lines->addine(glm::vec2(-1.0f, -1.0f), glm::vec2(1.0f, -1.0f));
 	lines->addine(glm::vec2(1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
 
@@ -120,7 +126,7 @@ void drawLines(Engine& e, ResourceManager& rm)
 
 void drawTriangle(Engine& e, ResourceManager& rm)
 {
-	Triangle* tri = new Triangle(rm.shader("Point_Shader"), false);
+	Triangle* tri = new Triangle(rm.shader("PointWithMVP_Shader"), false);
 	tri->setTriangle({ 
 		glm::vec2{-0.5f, 0.9f},
 		glm::vec2{-0.9f, 0.5f},
@@ -134,7 +140,7 @@ void drawTriangle(Engine& e, ResourceManager& rm)
 
 void drawRectangle(Engine& e, ResourceManager& rm)
 {
-	Rectangle* rect = new Rectangle(rm.shader("Point_Shader"), false);
+	Rectangle* rect = new Rectangle(rm.shader("PointWithMVP_Shader"), false);
 
 	rect->setRectangle(0.2f, 0.2f, 0.4f, 0.4f);
 	rect->init();
@@ -144,7 +150,7 @@ void drawRectangle(Engine& e, ResourceManager& rm)
 
 void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 {
-	Circle *cir = new Circle(rm.shader("Point_Shader"), false, 0.4f, glm::vec3(0.0f));
+	Circle *cir = new Circle(rm.shader("PointWithMVP_Shader"), false, 0.4f, glm::vec3(0.0f));
 	cir->setDrawFilled(bFilled);
 	cir->init();
 	e.addDrawable(cir);

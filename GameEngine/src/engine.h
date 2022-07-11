@@ -6,6 +6,9 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
+#include "Input/Ikeyboard.h"
+#include "Input/Imouse.h"
+
 class DisplayWindow;
 class Drawable;
 
@@ -21,10 +24,10 @@ public:
 
 	void startLoop();
 
-	void onKeyInput(int key, int scancode, int action, int mods);
-	void onMouseMove(double posX, double posY);
-	void onMouseScroll(double offsetX, double offsetY);
-	void onMouseButton(int button, int action, int mods);
+	void onKeyInput(const KeyButton& keybutton);
+	void onMouseMove(GLdouble posX, GLdouble posY, GLdouble offsetX, GLdouble offsetY);
+	void onMouseScroll(GLdouble offsetX, GLdouble offsetY);
+	void onMouseButton(const MouseButton& mousebutton);
 
 	void enableDepthTest();
 	void enableStencilTest();

@@ -3,6 +3,10 @@
 #include <utility>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Common/constants.h"
+#include "shaderProgram.h"
 
 class Drawable
 {
@@ -12,11 +16,6 @@ public:
 		m_shader.first = shaderID;
 		m_shader.second = bOwnIt;
 	}
-
-	virtual void init() = 0;
-	virtual void update(float elapsedTimeInMs) = 0;
-	virtual void render() = 0;
-	virtual void release();
 
 	void setPixelSize(GLfloat size) { m_pixelSize = size; }
 	void setLineWidth(GLfloat width) { m_lineWidth = width; }
@@ -31,9 +30,6 @@ public:
 	void setVAO(GLuint id, bool bOwnIt) { m_vao.first = id; m_vao.second = bOwnIt; }
 	void setVBO(GLuint id, bool bOwnIt) { m_vbo.first = id; m_vbo.second = bOwnIt; }
 
-	virtual void activateAll();
-	virtual void deactivateAll();
-
 	void activateShader() { glUseProgram(m_shader.first); }
 	void activateVAO() { glBindVertexArray(m_vao.first); }
 	void activateVBO() { glBindBuffer(GL_ARRAY_BUFFER, m_vbo.first); }
@@ -41,6 +37,20 @@ public:
 	void deactivateShader() { glUseProgram(0); }
 	void deactivateVAO() { glBindVertexArray(0); }
 	void deactivateVBO() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+
+	virtual void init() = 0;
+	virtual void update(float elapsedTimeInMs) = 0;
+	virtual void render() = 0;
+
+	virtual void release();
+
+	virtual void activateAll();
+	virtual void deactivateAll();
+
+	virtual void setUniformProjection();
+	virtual void setUniformView();
+	virtual void setUniformModel() = 0;
+	virtual void setUniformColor();
 
 	static GLuint createVAO();
 	static GLuint createVBO();
@@ -88,6 +98,50 @@ inline void Drawable::deactivateAll()
 	deactivateVBO();
 	deactivateVAO();
 	deactivateShader();
+}
+
+inline void Drawable::setUniformProjection()
+{
+	glm::mat4 projection = glm::identity<glm::mat4>();
+	
+	//projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, CAM_NEAR, CAM_FAR);
+	
+	ShaderProgram::setUniform_fm(m_shader.first, "projection", projection);
+}
+
+inline void Drawable::setUniformModel()
+{
+	glm::mat4 model = glm::identity<glm::mat4>();
+
+	/*
+	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
+
+	// 1st translate
+	model = glm::translate(model, position);
+
+	// 2nd rotate
+	model = glm::translate(model, glm::vec3{ 0.5f * size });				// move origin of rotation to center of quad
+	model = glm::rotate(model, glm::radians(rotationInDeg), rotationVec);	// then rotate
+	model = glm::translate(model, glm::vec3{ -0.5f * size });				// move origin back
+
+	// 3rd scale
+	model = glm::scale(model, size * scale);*/
+
+	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
+}
+
+inline void Drawable::setUniformView()
+{
+	glm::mat4 view = glm::identity<glm::mat4>();
+
+	//view = glm::lookAt(VIEW_POSITION, VIEW_POSITION + VIEW_FRONT, VIEW_UP);
+	
+	ShaderProgram::setUniform_fm(m_shader.first, "view", view);
+}
+
+inline void Drawable::setUniformColor()
+{
+	ShaderProgram::setUniform_fv(m_shader.first, "color", m_color);
 }
 
 inline GLuint Drawable::createVAO()

@@ -16,6 +16,18 @@ bool Engine::init(const char* title, int width, int height, int& hintOpenGlMajor
         m_drawables[i]->init();
     }
 
+    if (m_pWindow->inputManager().keyboardInitialized())
+    {
+        m_pWindow->inputManager().keyboard()->registerOnKeyInputCB(std::bind(&Engine::onKeyInput, this, std::placeholders::_1));
+    }
+
+    if (m_pWindow->inputManager().mouseInitialized())
+    {
+        m_pWindow->inputManager().mouse()->registerOnMouseMoveCB(std::bind(&Engine::onMouseMove, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+        m_pWindow->inputManager().mouse()->registerOnMouseButtonCB(std::bind(&Engine::onMouseButton, this, std::placeholders::_1));
+        m_pWindow->inputManager().mouse()->registerOnWheelScrollCB(std::bind(&Engine::onMouseScroll, this, std::placeholders::_1, std::placeholders::_2));
+    }
+
     return m_pWindow != nullptr;
 }
 
@@ -29,31 +41,53 @@ void Engine::startLoop()
     gameLoop();
 }
 
-void Engine::onKeyInput(int key, int scancode, int action, int mods)
+void Engine::onKeyInput(const KeyButton& keybutton)
 {
-    (void)key;
-    (void)scancode;
-    (void)action;
-    (void)mods;
+    if (keybutton.action.down && keybutton.keycode == KEY_ESCAPE)
+    {
+        m_pWindow->onClose();
+        return;
+    }
 }
 
-void Engine::onMouseMove(double posX, double posY)
+void Engine::onMouseMove(GLdouble posX, GLdouble posY, GLdouble offsetX, GLdouble offsetY)
 {
     (void)posX;
     (void)posY;
+    (void)offsetX;
+    (void)offsetY;
 }
 
-void Engine::onMouseScroll(double offsetX, double offsetY)
+void Engine::onMouseScroll(GLdouble offsetX, GLdouble offsetY)
 {
     (void)offsetX;
     (void)offsetY;
 }
 
-void Engine::onMouseButton(int button, int action, int mods)
+void Engine::onMouseButton(const MouseButton& mousebutton)
 {
-    (void)button;
-    (void)action;
-    (void)mods;
+    if (mousebutton.button.left)
+    {
+        if (mousebutton.action.down)
+        {
+            ;
+        }
+        else
+        {
+            ;
+        }
+    }
+    else if (mousebutton.button.right)
+    {
+        if (mousebutton.action.down)
+        {
+            ;
+        }
+        else
+        {
+            ;
+        }
+    }
 }
 
 void Engine::enableDepthTest()

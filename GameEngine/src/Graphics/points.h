@@ -20,6 +20,8 @@ public:
 	void render() override;
 	void release() override;
 
+	void setUniformModel() override;
+
 protected:
 	void draw() override;
 
@@ -95,6 +97,30 @@ inline void Points::draw()
 	glPointSize(m_pixelSize);
 	glLineWidth(m_lineWidth);
 
-	ShaderProgram::setUniform_fv(m_shader.first, "color", m_color);
+	setUniformProjection();
+	setUniformView();
+	setUniformModel();
+	setUniformColor();
+
 	glDrawArrays(GL_POINTS, 0, (GLsizei)m_points.size());
+}
+
+inline void Points::setUniformModel()
+{
+	glm::mat4 model = glm::identity<glm::mat4>();
+
+	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
+
+	// 1st translate
+	//model = glm::translate(model, m_points[0]);
+
+	// 2nd rotate
+	//model = glm::translate(model, glm::vec3{ 0.5f * size });				// move origin of rotation to center of quad
+	//model = glm::rotate(model, glm::radians(rotationInDeg), rotationVec);	// then rotate
+	//model = glm::translate(model, glm::vec3{ -0.5f * size });				// move origin back
+
+	// 3rd scale
+	//model = glm::scale(model, size * scale);
+
+	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
 }

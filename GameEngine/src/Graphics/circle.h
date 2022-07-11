@@ -20,6 +20,8 @@ public:
 	void render() override;
 	void release() override;
 
+	void setUniformModel() override;
+
 protected:
 	void draw() override;
 
@@ -99,4 +101,9 @@ inline void Circle::release()
 inline void Circle::draw()
 {
 	;
+}
+
+inline void Circle::setUniformModel()
+{
+	m_points.setUniformModel();
 }

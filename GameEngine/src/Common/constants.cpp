@@ -1,14 +1,21 @@
 #include "Common/constants.h"
 
-const char *TITLE				= "Particle Simulator";
-const int WIDTH					= 800;
-const int HEIGHT				= 600;
-const int OPENGL_MAJOR_VERSION	= 4;
-const int OPENGL_MINOR_VERSION	= 6;
+const char *TITLE						= "Engine";
+const int WIDTH							= 800;
+const int HEIGHT						= 600;
+const int OPENGL_MAJOR_VERSION			= 4;
+const int OPENGL_MINOR_VERSION			= 6;
 
-const glm::vec2 kGRAVITY		= { 0.0f, 9.807f};
+extern const float CAM_NEAR				= -1.0f;
+extern const float CAM_FAR				= 1.0f;
 
-const float kKMH_TO_MS			= 1000.0f / (60 * 60);
+extern const glm::vec3 VIEW_POSITION	= glm::vec3{ 0.0f, 0.0f, 3.0f };
+extern const glm::vec3 VIEW_FRONT		= glm::vec3{ 0.0f, 0.0f, -1.0f };
+extern const glm::vec3 VIEW_UP			= glm::vec3{ 0.0f, 1.0f, 0.0f };
+
+const glm::vec2 kGRAVITY				= { 0.0f, 9.807f};
+
+const float kKMH_TO_MS					= 1000.0f / (60 * 60);
 
 
 const glm::vec3 kCOLOR_MAROON                               { 0.50, 0.00, 0.00 };
