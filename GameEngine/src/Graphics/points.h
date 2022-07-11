@@ -76,15 +76,11 @@ inline void Points::update(float elapsedTimeInMs)
 
 inline void Points::render()
 {
-	activateShader();
-	activateVAO();
-	activateVBO();
+	activateAll();
 
 	draw();
 
-	deactivateVBO();
-	deactivateVAO();
-	deactivateShader();
+	deactivateAll();
 }
 
 inline void Points::release()

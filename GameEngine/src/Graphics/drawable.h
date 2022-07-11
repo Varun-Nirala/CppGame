@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 class Drawable
 {
@@ -37,7 +38,7 @@ public:
 
 	static GLuint createVAO();
 	static GLuint createVBO();
-
+	static GLuint createEBO();
 protected:
 	virtual void draw() = 0;
 
@@ -89,6 +90,13 @@ inline GLuint Drawable::createVAO()
 }
 
 inline GLuint Drawable::createVBO()
+{
+	GLuint id{};
+	glGenBuffers(1, &id);
+	return id;
+}
+
+inline GLuint Drawable::createEBO()
 {
 	GLuint id{};
 	glGenBuffers(1, &id);

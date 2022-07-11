@@ -11,6 +11,8 @@
 #include "Graphics/points.h"
 #include "Graphics/line.h"
 #include "Graphics/lines.h"
+#include "Graphics/triangle.h"
+#include "Graphics/rectangle.h"
 
 // opengl screen
 // -1,1        1,1
@@ -33,6 +35,9 @@ void drawPoint(Engine &e, ResourceManager& rm);
 void drawPoints(Engine& e, ResourceManager& rm);
 void drawLine(Engine& e, ResourceManager& rm);
 void drawLines(Engine& e, ResourceManager& rm);
+void drawTriangle(Engine& e, ResourceManager& rm);
+void drawRectangle(Engine& e, ResourceManager& rm);
+
 
 int main()
 {
@@ -56,6 +61,10 @@ int main()
 	drawLine(e, rm);
 	
 	drawLines(e, rm);
+
+	drawTriangle(e, rm);
+
+	drawRectangle(e, rm);
 
 	e.startLoop();
 	return 0;
@@ -99,4 +108,28 @@ void drawLines(Engine& e, ResourceManager& rm)
 	lines->init();
 
 	e.addDrawable(lines);
+}
+
+void drawTriangle(Engine& e, ResourceManager& rm)
+{
+	Triangle* tri = new Triangle(rm.shader("Point_Shader"), false);
+	tri->setTriangle({ 
+		glm::vec2{-0.5f, 0.9f},
+		glm::vec2{-0.9f, 0.5f},
+		glm::vec2{-0.1f, 0.5f}
+		});
+
+	tri->init();
+
+	e.addDrawable(tri);
+}
+
+void drawRectangle(Engine& e, ResourceManager& rm)
+{
+	Rectangle* rect = new Rectangle(rm.shader("Point_Shader"), false);
+
+	rect->setRectangle(0.2f, 0.2f, 0.4f, 0.4f);
+	rect->init();
+
+	e.addDrawable(rect);
 }

@@ -92,15 +92,11 @@ inline void Line::update(float elapsedTimeInMs)
 
 inline void Line::render()
 {
-	activateShader();
-	activateVAO();
-	activateVBO();
+	activateAll();
 
 	draw();
 
-	deactivateVBO();
-	deactivateVAO();
-	deactivateShader();
+	deactivateAll();
 }
 
 inline void Line::release()
