@@ -64,7 +64,7 @@ inline void Circle::init()
 	{
 		glm::vec3 p = m_centre;
 		p.x += radius;
-		for (GLfloat i = 0; i < 360; i += 0.1f)
+		for (GLfloat i = 0; i < 360; i += 1.0f)
 		{
 			p.x = m_centre.x + radius * (GLfloat)std::cos(glm::radians(i));
 			p.y = m_centre.y + radius * (GLfloat)std::sin(glm::radians(i));

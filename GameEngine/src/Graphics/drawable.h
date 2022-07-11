@@ -104,7 +104,7 @@ inline void Drawable::setUniformProjection()
 {
 	glm::mat4 projection = glm::identity<glm::mat4>();
 	
-	//projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, CAM_NEAR, CAM_FAR);
+	projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, CAM_NEAR, CAM_FAR);
 	
 	ShaderProgram::setUniform_fm(m_shader.first, "projection", projection);
 }

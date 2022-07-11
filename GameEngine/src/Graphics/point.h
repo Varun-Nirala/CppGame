@@ -45,7 +45,7 @@ Point::Point(GLuint shaderID, bool bOwnIt, GLfloat x, GLfloat y, GLfloat z)
 	: Drawable(shaderID, bOwnIt)
 	, m_point(x, y, z)
 {
-	setPixelSize(2);
+	setPixelSize(5);
 }
 
 inline void Point::init()
