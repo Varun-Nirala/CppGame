@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glad/glad.h>
+
 #include "drawable.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -26,17 +28,23 @@ private:
 Point::Point(GLuint shaderID, bool bOwnIt, glm::vec2 point)
 	: Drawable(shaderID, bOwnIt)
 	, m_point(point, 0.0f)
-{}
+{
+	setPixelSize(2);
+}
 
 Point::Point(GLuint shaderID, bool bOwnIt, glm::vec3 point)
 	: Drawable(shaderID, bOwnIt)
 	, m_point(point)
-{}
+{
+	setPixelSize(2);
+}
 
 Point::Point(GLuint shaderID, bool bOwnIt, GLfloat x, GLfloat y, GLfloat z)
 	: Drawable(shaderID, bOwnIt)
 	, m_point(x, y, z)
-{}
+{
+	setPixelSize(2);
+}
 
 inline void Point::init()
 {
@@ -87,6 +95,9 @@ inline void Point::release()
 
 inline void Point::draw()
 {
+	glPointSize(m_pixelSize);
+	glLineWidth(m_lineWidth);
+
 	ShaderProgram::setUniform_fv(m_shader.first, "color", m_color);
 	glDrawArrays(GL_POINTS, 0, 1);
 }

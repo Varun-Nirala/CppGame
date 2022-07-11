@@ -30,12 +30,14 @@ Line::Line(GLuint shaderID, bool bOwnIt, glm::vec2 p1, glm::vec2 p2)
 	: Drawable(shaderID, bOwnIt)
 {
 	setLine(p1, p2);
+	setLineWidth(2);
 }
 
 Line::Line(GLuint shaderID, bool bOwnIt, glm::vec3 p1, glm::vec3 p2)
 	: Drawable(shaderID, bOwnIt)
 {
 	setLine(p1, p2);
+	setLineWidth(2);
 }
 
 Line::Line(GLuint shaderID, bool bOwnIt, GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
@@ -43,6 +45,7 @@ Line::Line(GLuint shaderID, bool bOwnIt, GLfloat x1, GLfloat y1, GLfloat z1, GLf
 {
 	m_p[0] = glm::vec3(x1, y1, z1);
 	m_p[1] = glm::vec3(x2, y2, z2);
+	setLineWidth(2);
 }
 
 inline void Line::setLine(const glm::vec3& p1, const glm::vec3& p2)
@@ -106,6 +109,8 @@ inline void Line::release()
 
 inline void Line::draw()
 {
+	glPointSize(m_pixelSize);
+	glLineWidth(m_lineWidth);
 	ShaderProgram::setUniform_fv(m_shader.first, "color", m_color);
 	glDrawArrays(GL_LINES, 0, 2);
 }

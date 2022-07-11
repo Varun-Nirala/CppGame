@@ -18,6 +18,12 @@ public:
 	virtual void render() = 0;
 	virtual void release();
 
+	void setPixelSize(GLfloat size) { m_pixelSize = size; }
+	void setLineWidth(GLfloat width) { m_lineWidth = width; }
+
+	GLfloat getPixelSize() const { return m_pixelSize; }
+	GLfloat getLineWidth() const { return m_lineWidth; }
+
 	void setColor(glm::vec3 color) { m_color = glm::vec4(color, 1.0f); }
 	void setColor(glm::vec4 color) { m_color = color; }
 
@@ -47,6 +53,8 @@ protected:
 	std::pair<GLuint, bool>			m_vao;
 	std::pair<GLuint, bool>			m_vbo;
 	glm::vec4						m_color{ 1.0f, 0.0f, 0.0f, 1.0f };
+	GLfloat							m_pixelSize{ 1 };
+	GLfloat							m_lineWidth{ 1 };
 };
 
 inline void Drawable::release()

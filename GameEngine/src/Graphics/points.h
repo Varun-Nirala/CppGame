@@ -29,7 +29,9 @@ private:
 
 Points::Points(GLuint shaderID, bool bOwnIt)
 	: Drawable(shaderID, bOwnIt)
-{}
+{
+	setPixelSize(2);
+}
 
 inline void Points::setPoints(const std::vector<glm::vec3>& points)
 {
@@ -90,6 +92,9 @@ inline void Points::release()
 
 inline void Points::draw()
 {
+	glPointSize(m_pixelSize);
+	glLineWidth(m_lineWidth);
+
 	ShaderProgram::setUniform_fv(m_shader.first, "color", m_color);
 	glDrawArrays(GL_POINTS, 0, (GLsizei)m_points.size());
 }

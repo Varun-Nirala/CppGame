@@ -28,7 +28,8 @@ private:
 
 Triangle::Triangle(GLuint shaderID, bool bOwnIt)
 	: Drawable(shaderID, bOwnIt)
-{}
+{
+}
 
 inline void Triangle::setTriangle(const std::vector<glm::vec2>& vec)
 {

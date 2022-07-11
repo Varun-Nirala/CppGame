@@ -13,6 +13,7 @@
 #include "Graphics/lines.h"
 #include "Graphics/triangle.h"
 #include "Graphics/rectangle.h"
+#include "Graphics/circle.h"
 
 // opengl screen
 // -1,1        1,1
@@ -37,6 +38,7 @@ void drawLine(Engine& e, ResourceManager& rm);
 void drawLines(Engine& e, ResourceManager& rm);
 void drawTriangle(Engine& e, ResourceManager& rm);
 void drawRectangle(Engine& e, ResourceManager& rm);
+void drawCircle(Engine& e, ResourceManager& rm);
 
 
 int main()
@@ -48,6 +50,8 @@ int main()
 	int minor = 6;
 
 	e.init("Hello", 800, 600, major, minor);
+
+	glEnable(GL_LINE_SMOOTH);
 
 	std::vector<std::pair<std::string, SHADER_TYPE>> shaders;
 	shaders.push_back(std::make_pair(R"(.\resources\Shaders\point.vert)", SHADER_TYPE::VERT));
@@ -65,6 +69,8 @@ int main()
 	drawTriangle(e, rm);
 
 	drawRectangle(e, rm);
+
+	drawCircle(e, rm);
 
 	e.startLoop();
 	return 0;
@@ -132,4 +138,13 @@ void drawRectangle(Engine& e, ResourceManager& rm)
 	rect->init();
 
 	e.addDrawable(rect);
+}
+
+void drawCircle(Engine& e, ResourceManager& rm)
+{
+	Circle *cir = new Circle(rm.shader("Point_Shader"), false, 0.4f, glm::vec3(0.0f));
+	cir->init();
+
+	e.addDrawable(cir);
+
 }

@@ -35,6 +35,7 @@ private:
 Lines::Lines(GLuint shaderID, bool bOwnIt)
 	: Drawable(shaderID, bOwnIt)
 {
+	setLineWidth(2);
 }
 
 inline void Lines::setLines(const std::vector<glm::vec2>& lines)
@@ -118,8 +119,10 @@ inline void Lines::release()
 
 inline void Lines::draw()
 {
-	ShaderProgram::setUniform_fv(m_shader.first, "color", m_color);
+	glPointSize(m_pixelSize);
+	glLineWidth(m_lineWidth);
 
+	ShaderProgram::setUniform_fv(m_shader.first, "color", m_color);
 	if (m_bMakeLoop)
 	{
 		glDrawArrays(GL_LINE_LOOP, 0, (GLsizei)m_lines.size());
