@@ -20,10 +20,30 @@ endif()
 include_directories(${CMAKE_SOURCE_DIR}/src)
 file(GLOB SOURCES "src/*.cpp")
 
-add_executable( ${PROJECT} ${SOURCES} )
-
 set(SFML_STATIC_LIBRARIES TRUE)
-set(SFML_DIR "F:/Varun/Varun_Work/Libs/SFML-2.5.1/lib/cmake/SFML")
+set(SFML_DIR "${CMAKE_SOURCE_DIR}/../CommonLibs/SFML")
 
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
-target_link_libraries(${PROJECT} sfml-system sfml-window sfml-graphics sfml-network sfml-audio)
+# Support both 32 and 64 bit builds
+if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x64/sfml-system.lib")
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x64/sfml-window.lib")
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x64/sfml-graphics.lib")
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x64/sfml-network.lib")
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x64/sfml-audio.lib")
+	set(MY_PATH "PATH=%PATH%" "${SFML_DIR}/lib/x64")
+else ()
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x86/sfml-system.lib")
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x86/sfml-window.lib")
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x86/sfml-graphics.lib")
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x86/sfml-network.lib")
+	list(APPEND SFML_LIB "${SFML_DIR}/lib/x86/sfml-audio.lib")
+	set(MY_PATH "PATH=%PATH%" "${SFML_DIR}/lib/x86")
+endif ()
+
+include_directories(${SFML_DIR}/include)
+
+add_executable(${PROJECT} ${SOURCES})
+
+target_link_libraries(${PROJECT} ${SFML_LIB})
+
+set_target_properties(${PROJECT} PROPERTIES VS_DEBUGGER_ENVIRONMENT "${MY_PATH}")
