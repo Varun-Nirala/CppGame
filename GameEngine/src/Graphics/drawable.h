@@ -133,8 +133,8 @@ inline void Drawable::setUniformView()
 {
 	glm::mat4 view = glm::identity<glm::mat4>();
 
-	//view = glm::lookAt(VIEW_POSITION, VIEW_POSITION + VIEW_FRONT, VIEW_UP);
-	
+	view = glm::lookAt(VIEW_POSITION, VIEW_POSITION + VIEW_FRONT, VIEW_UP);
+
 	ShaderProgram::setUniform_fm(m_shader.first, "view", view);
 }
 

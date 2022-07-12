@@ -115,7 +115,7 @@ inline void Triangle::setUniformModel()
 
 	// 2nd rotate
 	//model = glm::translate(model, glm::vec3{ 0.5f * glm::length(m_vertices[1] - m_vertices[0]) });	// move origin of rotation to center of quad
-	//model = glm::rotate(model, glm::radians(45.0f), glm::vec3{0.0f, 0.0f, 1.0f});					// then rotate
+	//model = glm::rotate(model, glm::radians(angle), glm::vec3{0.0f, 0.0f, 1.0f});					// then rotate
 	//model = glm::translate(model, glm::vec3{ -0.5f * glm::length(m_vertices[1] - m_vertices[0]) });	// move origin back
 
 	// 3rd scale

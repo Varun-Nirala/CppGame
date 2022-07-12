@@ -78,7 +78,7 @@ int main()
 
 	drawCircle(e, rm, false);		// draw circle
 
-	//drawCircle(e, rm, true);		// draw filled circle
+	drawCircle(e, rm, true);		// draw filled circle
 
 	e.startLoop();
 	return 0;
