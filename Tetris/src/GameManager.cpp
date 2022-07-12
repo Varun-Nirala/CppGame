@@ -7,7 +7,7 @@ namespace nsTetris
 {
 GameManager::GameManager(int numOfHorizontalBlock, int numOfVerticalBlock, const char* name)
     :m_window(sf::VideoMode((numOfHorizontalBlock + 2) * nsTetris::TetrisBlock::getSize(), (numOfVerticalBlock + 2) * nsTetris::TetrisBlock::getSize()),
-                name, sf::Style::Titlebar)
+                name, sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize)
     ,m_isPaused(false)
 {
     m_game.initialize(m_window, numOfHorizontalBlock, numOfVerticalBlock);

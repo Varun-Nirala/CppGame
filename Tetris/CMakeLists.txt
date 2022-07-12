@@ -18,7 +18,7 @@ else()
 endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "src/*.h")
 
 set(SFML_STATIC_LIBRARIES TRUE)
 set(SFML_DIR "${CMAKE_SOURCE_DIR}/../CommonLibs/SFML")
