@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "points.h"
 #include "lines.h"
+#include "triangle.h"
 
 class Circle : public Drawable
 {
@@ -25,34 +25,38 @@ public:
 
 protected:
 	void draw() override;
-
+	void allocateTriangle(GLuint shaderID, bool bOwnIt);
 private:
-	glm::vec3		m_centre;
-	GLfloat			m_radius{};
-	Lines			m_lines;
-	bool			m_bFilled{ false };
+	glm::vec3				m_centre;
+	GLfloat					m_radius{};
+	std::vector<Triangle*>	m_triangles;
+	GLuint					m_triangleCount{ 45 };
+	bool					m_bFilled{ false };
 };
 
 Circle::Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centre)
 	: Drawable(shaderID, bOwnIt)
 	, m_radius(radius)
 	, m_centre(centre, 0.0f)
-	, m_lines(shaderID, bOwnIt)
-{}
+{
+	allocateTriangle(shaderID, false);
+}
 
 Circle::Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centre)
 	: Drawable(shaderID, bOwnIt)
 	, m_radius(radius)
 	, m_centre(centre)
-	, m_lines(shaderID, bOwnIt)
-{}
+{
+	allocateTriangle(shaderID, false);
+}
 
 Circle::Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z)
 	: Drawable(shaderID, bOwnIt)
 	, m_radius(radius)
 	, m_centre(x, y, z)
-	, m_lines(shaderID, bOwnIt)
-{}
+{
+	allocateTriangle(shaderID, false);
+}
 
 inline void Circle::init()
 {
@@ -64,7 +68,10 @@ inline void Circle::init()
 	p1.x += m_radius;
 
 	glm::vec3 p2 = p1;
-	GLfloat offset = 5.0f;
+	GLfloat offset = 360.0f / m_triangleCount;
+
+	std::vector<glm::vec3> vec(3);
+	GLuint id = 0;
 	for (GLfloat i = 0; i < 360.0f; i += offset)
 	{
 		p1.x = m_centre.x + m_radius * (GLfloat)std::cos(glm::radians(i));
@@ -72,37 +79,40 @@ inline void Circle::init()
 
 		p2.x = m_centre.x + m_radius * (GLfloat)std::cos(glm::radians(i + offset));
 		p2.y = m_centre.y + m_radius * (GLfloat)std::sin(glm::radians(i + offset));
-		m_lines.addine(p1, p2);
 
-		if (m_bFilled && i <= 180.0f)
-		{
-			for (GLfloat j = i, k = 0; k <= offset; j++, k++)
-			{
-				p1.x = m_centre.x + m_radius * (GLfloat)std::cos(glm::radians(j));
-				p1.y = m_centre.y + m_radius * (GLfloat)std::sin(glm::radians(j));
+		vec[0] = p1;
+		vec[1] = p2;
+		vec[2] = m_centre;
 
-				p2.x = m_centre.x + m_radius * (GLfloat)std::cos(glm::radians(180 + j));
-				p2.y = m_centre.y + m_radius * (GLfloat)std::sin(glm::radians(180 + j));
-				m_lines.addine(p1, p2);
-			}
-		}
+		m_triangles[id]->setTriangle(vec);
+		m_triangles[id++]->init();
 	}
-	m_lines.init();
 }
 
 inline void Circle::update(float elapsedTimeInMs)
 {
-	m_lines.update(elapsedTimeInMs);
+	for (GLuint i = 0; i < m_triangleCount; ++i)
+	{
+		m_triangles[i]->update(elapsedTimeInMs);
+	}
 }
 
 inline void Circle::render()
 {
-	m_lines.render();
+	for (GLuint i = 0; i < m_triangleCount; ++i)
+	{
+		m_triangles[i]->render();
+	}
 }
 
 inline void Circle::release()
 {
 	Drawable::release();
+	for (GLuint i = 0; i < m_triangleCount; ++i)
+	{
+		delete m_triangles[i];
+	}
+	m_triangles.clear();
 }
 
 inline void Circle::draw()
@@ -110,7 +120,19 @@ inline void Circle::draw()
 	;
 }
 
+inline void Circle::allocateTriangle(GLuint shaderID, bool bOwnIt)
+{
+	m_triangles.resize(m_triangleCount);
+	for (GLuint i = 0; i < m_triangleCount; ++i)
+	{
+		m_triangles[i] = new Triangle(shaderID, bOwnIt);
+	}
+}
+
 inline void Circle::setUniformModel()
 {
-	m_lines.setUniformModel();
+	for (GLuint i = 0; i < m_triangleCount; ++i)
+	{
+		m_triangles[i]->setUniformModel();
+	}
 }
