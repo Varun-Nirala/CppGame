@@ -76,38 +76,19 @@ void ParticleManager::setDrawInWireFrameMode(bool val)
 
 void ParticleManager::update(float elapsedDeltaTimeInSec)
 {
-	if (m_instancePosition.size() < m_grid.size())
-	{
-		Particle *pNewParticle = m_defaultParticle.clone();
-		pNewParticle->transformations().position = m_grid[0][m_grid.cols() / 2].position;
+	Particle *newParticle = m_defaultParticle.clone();
+	newParticle->transformations().position = m_grid[0][m_grid.cols() / 2].position;
 
-		m_grid[0][m_grid.cols() / 2].particle = pNewParticle;
+	Particle *p = m_grid[0][m_grid.cols() / 2].particle;
+	p = newParticle;
+	m_grid[0][m_grid.cols() / 2].particle = newParticle;
+	if (m_defaultParticle.type() == PARTICLE_TYPE::SAND)
+	{
+		updateSandParticle(elapsedDeltaTimeInSec);
 	}
-
-	switch (m_defaultParticle.type())
+	else if (m_defaultParticle.type() == PARTICLE_TYPE::WATER)
 	{
-		case PARTICLE_TYPE::SAND:
-			updateSandParticle(elapsedDeltaTimeInSec);
-			break;
-
-		case PARTICLE_TYPE::WATER:
-			updateWaterParticle(elapsedDeltaTimeInSec);
-			break;
-
-		case PARTICLE_TYPE::FIRE:
-			updateFireParticle(elapsedDeltaTimeInSec);
-			break;
-	}
-
-	for (size_t i = 0, rows = m_grid.rows(); i < rows; ++i)
-	{
-		for (size_t j = 0, cols = m_grid.cols(); j < cols; ++j)
-		{
-			if (m_grid[i][j].particle)
-			{
-				m_instancePosition.push_back(m_grid[i][j].position);
-			}
-		}
+		updateWaterParticle(elapsedDeltaTimeInSec);
 	}
 }
 
@@ -123,15 +104,7 @@ void ParticleManager::render()
 				//setProjectionUniform();
 				//setColorUnifrom();
 				setModelUnifrom(m_grid[i][j].particle);
-				//glDrawElements(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0);
-				try
-				{
-					glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0, (GLsizei)m_instancePosition.size());
-				}
-				catch (std::exception& e)
-				{
-					ns_Util::Logger::LOG_ERROR("Exception : ", e.what(), '\n');
-				}
+				glDrawElements(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0);
 			}
 		}
 	}
@@ -151,14 +124,14 @@ void ParticleManager::setModelUnifrom(Particle *p)
 	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
 
 	// 1st translate
-	model = glm::translate(model, glm::vec3{ p->transformations().position, 0.0f });									// position
+	model = glm::translate(model, glm::vec3{ p->transformations().position, 0.0f });											// position
 
 	// 2nd rotate
-	model = glm::translate(model, glm::vec3{ 0.5f * p->transformations().size, 0.0f});									// move origin of rotation to center of quad
+	model = glm::translate(model, glm::vec3{ 0.5f * p->transformations().size, 0.0f});											// move origin of rotation to center of quad
 	model = glm::rotate(model, glm::radians(p->transformations().rotationInDeg), p->transformations().rotationVec);		// then rotate
 	// 3rd scale
 	model = glm::scale(model, glm::vec3{ p->transformations().size * p->transformations().scale, 0.0f });				// size * scale
-	model = glm::translate(model, glm::vec3{ -0.5f * p->transformations().size, 0.0f});									// move origin back
+	model = glm::translate(model, glm::vec3{ -0.5f * p->transformations().size, 0.0f});											// move origin back
 	ShaderProgram::setUniform_fm(m_shaderProgram, "model", model);
 }
 
@@ -172,10 +145,12 @@ void ParticleManager::bindBuffers()
 	ShaderProgram::activate(m_shaderProgram);
 	glBindVertexArray(m_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 }
 
 void ParticleManager::unbindBuffers()
 {
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	ShaderProgram::deactivate();
@@ -201,13 +176,13 @@ void ParticleManager::setVertexData()
 void ParticleManager::prepareShaders()
 {
 	m_shaderProgram = ShaderProgram::createShader();
-	if (!ShaderProgram::attachShader(R"(./resources/Shaders/shader_1.vert)", SHADER_TYPE::VERT, m_shaderProgram))
+	if (!ShaderProgram::attachShader(R"(./resources/Shaders/shader_0.vert)", SHADER_TYPE::VERT, m_shaderProgram))
 	{
 		ns_Util::Logger::LOG_ERROR("Vertex Shader compilation failed.");
 		return;
 	}
 
-	if (!ShaderProgram::attachShader(R"(./resources/Shaders/shader_1.frag)", SHADER_TYPE::FRAG, m_shaderProgram))
+	if (!ShaderProgram::attachShader(R"(./resources/Shaders/shader_0.frag)", SHADER_TYPE::FRAG, m_shaderProgram))
 	{
 		ns_Util::Logger::LOG_ERROR("Fragment Shader compilation failed.");
 		return;
@@ -224,9 +199,8 @@ void ParticleManager::prepareBuffers()
 {
 	// Create buffers
 	glGenVertexArrays(1, &m_vao);
-	glBindVertexArray(m_vao);
-
 	glGenBuffers(1, &m_vbo);
+	glBindVertexArray(m_vao);
 
 	// VBO 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -261,18 +235,6 @@ void ParticleManager::prepareBuffers()
 	{
 		ns_Util::Logger::LOG_ERROR("Error setting Vertex Element Buffer data.\n");
 	}
-
-	// Instance VBO
-	m_instancePosition.reserve(m_grid.size());
-	glGenBuffers(1, &m_instanceVbo);
-	glBindBuffer(GL_ARRAY_BUFFER, m_instanceVbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * m_instancePosition.size(), m_instancePosition.data(), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, m_instanceVbo);		 // this attribute comes from a different vertex buffer
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glVertexAttribDivisor(1, 1);						// tell OpenGL this is an instanced vertex attribute.
 }
 
 void ParticleManager::updateSandParticle(float elapsedDeltaTimeInSec)
@@ -343,16 +305,10 @@ void ParticleManager::updateWaterParticle(float elapsedDeltaTimeInSec)
 	}
 }
 
-void ParticleManager::updateFireParticle(float elapsedDeltaTimeInSec)
-{
-	(void)elapsedDeltaTimeInSec;
-}
-
 void ParticleManager::release()
 {
 	glDeleteVertexArrays(1, &m_vao);
 	glDeleteBuffers(1, &m_vbo);
 	glDeleteBuffers(1, &m_ebo);
-	glDeleteBuffers(1, &m_instanceVbo);
-	m_instanceVbo = m_vao = m_vbo = m_ebo = 0;
+	m_vao = m_vbo = m_ebo = 0;
 }

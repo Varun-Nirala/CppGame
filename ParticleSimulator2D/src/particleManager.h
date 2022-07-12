@@ -46,7 +46,7 @@ private:
 
 	void updateSandParticle(float elapsedDeltaTimeInSec);
 	void updateWaterParticle(float elapsedDeltaTimeInSec);
-	void updateFireParticle(float elapsedDeltaTimeInSec);
+
 	void release();
 
 private:
@@ -55,14 +55,10 @@ private:
 	GLuint					m_shaderProgram{};
 	GLuint					m_vao{};
 	GLuint					m_vbo{};
-
-	GLuint					m_instanceVbo{};
-	std::vector<glm::vec2>	m_instancePosition{};
-
+	GLuint					m_ebo{};
 	VertexData				m_vertexData;
-
 	Grid					m_grid;
-
+	
 	Particle				m_defaultParticle{ PARTICLE_TYPE::SAND };
 	glm::vec4				m_particleColor;
 
