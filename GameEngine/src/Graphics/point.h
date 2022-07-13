@@ -20,6 +20,7 @@ public:
 
 	void setUniformModel() override;
 
+	glm::vec3 getCentre() override { return m_point; }
 protected:
 	void draw() override;
 

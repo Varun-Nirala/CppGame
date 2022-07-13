@@ -135,7 +135,7 @@ void drawTriangle(Engine& e, ResourceManager& rm)
 		});
 
 	tri->init();
-
+	tri->setRotationAngle(15);
 	e.addDrawable(tri);
 }
 
@@ -145,7 +145,7 @@ void drawRectangle(Engine& e, ResourceManager& rm)
 
 	rect->setRectangle(550.0f, 400.0f, 200.0f, 150.0f);
 	rect->init();
-
+	rect->setRotationAngle(45);
 	e.addDrawable(rect);
 }
 

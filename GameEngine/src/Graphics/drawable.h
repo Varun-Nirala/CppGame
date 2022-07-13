@@ -19,9 +19,14 @@ public:
 
 	void setPixelSize(GLfloat size) { m_pixelSize = size; }
 	void setLineWidth(GLfloat width) { m_lineWidth = width; }
+	void setRotationAngle(GLfloat angleInDeg) { m_rotAngleInDegree = angleInDeg; }
+	void setRotationAxis(glm::vec3 axis) { m_rotAxis = axis; }
+	void setRotationAxis(GLfloat x, GLfloat y, GLfloat z) { m_rotAxis = glm::vec3{ x, y, z }; }
 
 	GLfloat getPixelSize() const { return m_pixelSize; }
 	GLfloat getLineWidth() const { return m_lineWidth; }
+	GLfloat getRotationAngleInDeg() { return m_rotAngleInDegree; }
+	glm::vec3 getRotationAxis() { return m_rotAxis; }
 
 	void setColor(glm::vec3 color) { m_color = glm::vec4(color, 1.0f); }
 	void setColor(glm::vec4 color) { m_color = color; }
@@ -52,6 +57,8 @@ public:
 	virtual void setUniformModel() = 0;
 	virtual void setUniformColor();
 
+	virtual glm::vec3 getCentre() = 0;
+
 	static GLuint createVAO();
 	static GLuint createVBO();
 	static GLuint createEBO();
@@ -65,6 +72,8 @@ protected:
 	glm::vec4						m_color{ 1.0f, 0.0f, 0.0f, 1.0f };
 	GLfloat							m_pixelSize{ 1 };
 	GLfloat							m_lineWidth{ 1 };
+	GLfloat							m_rotAngleInDegree{};
+	glm::vec3						m_rotAxis{ 0.0f, 0.0f, 1.0f };
 };
 
 inline void Drawable::release()

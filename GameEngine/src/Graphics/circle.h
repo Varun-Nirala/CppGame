@@ -23,6 +23,8 @@ public:
 
 	void setUniformModel() override;
 
+	glm::vec3 getCentre() override { return m_centre; }
+
 protected:
 	void draw() override;
 	void allocateTriangle(GLuint shaderID, bool bOwnIt);

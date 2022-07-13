@@ -21,7 +21,7 @@ public:
 	void release() override;
 
 	void setUniformModel() override;
-
+	glm::vec3 getCentre() override { return {}; }
 protected:
 	void draw() override;
 

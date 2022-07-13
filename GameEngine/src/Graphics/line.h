@@ -21,6 +21,7 @@ public:
 
 	void setUniformModel() override;
 
+	glm::vec3 getCentre() override { return m_p[0] + (m_p[1] - m_p[0]) / 2.0f; }
 protected:
 	void draw() override;
 
@@ -132,9 +133,11 @@ inline void Line::setUniformModel()
 	//model = glm::translate(model, m_p[0]);
 
 	// 2nd rotate
-	//model = glm::translate(model, glm::vec3{ 0.5f * size });				// move origin of rotation to center of quad
-	//model = glm::rotate(model, glm::radians(rotationInDeg), rotationVec);	// then rotate
-	//model = glm::translate(model, glm::vec3{ -0.5f * size });				// move origin back
+	glm::vec3 centroid = getCentre();
+
+	model = glm::translate(model, centroid);										// move origin of rotation to center of quad
+	model = glm::rotate(model, glm::radians(m_rotAngleInDegree), m_rotAxis);		// then rotate
+	model = glm::translate(model, -centroid);										// move origin back
 
 	// 3rd scale
 	//model = glm::scale(model, size * scale);

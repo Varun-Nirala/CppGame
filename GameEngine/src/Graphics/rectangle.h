@@ -27,6 +27,8 @@ public:
 
 	void setUniformModel() override;
 
+	glm::vec3 getCentre() override;
+
 protected:
 	void draw() override;
 
@@ -166,12 +168,23 @@ inline void Rectangle::setUniformModel()
 	//model = glm::translate(model, m_vertices[0]);
 
 	// 2nd rotate
-	//model = glm::translate(model, glm::vec3{ 0.5f * glm::length(m_vertices[1] - m_vertices[0]) });	// move origin of rotation to center of quad
-	//model = glm::rotate(model, glm::radians(45.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });					// then rotate
-	//model = glm::translate(model, glm::vec3{ -0.5f * glm::length(m_vertices[1] - m_vertices[0]) });	// move origin back
+	glm::vec3 centroid = getCentre();
+
+	model = glm::translate(model, centroid);										// move origin of rotation to center of quad
+	model = glm::rotate(model, glm::radians(m_rotAngleInDegree), m_rotAxis);		// then rotate
+	model = glm::translate(model, -centroid);										// move origin back
 
 	// 3rd scale
 	//model = glm::scale(model, (m_vertices[1] - m_vertices[0]) * 1.0f);
 
 	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
+}
+
+inline glm::vec3 Rectangle::getCentre()
+{
+	glm::vec3 centroid{};
+	centroid.x = m_vertices[0].x + (m_vertices[1].x - m_vertices[0].x) / 2.0f;
+	centroid.y = m_vertices[0].y + (m_vertices[2].y - m_vertices[0].y) / 2.0f;
+	centroid.z = m_vertices[0].z + (m_vertices[3].z - m_vertices[0].z) / 2.0f;
+	return centroid;
 }
