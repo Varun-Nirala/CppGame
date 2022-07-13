@@ -17,7 +17,7 @@ namespace AsteroidNS
 
         void update(float secElapsed)
         {
-            ;
+            (void)secElapsed;
         }
 
         void render(sf::RenderWindow& w) const
@@ -26,13 +26,19 @@ namespace AsteroidNS
         }
 
     private:
-        bool init(const std::string& image)
+        bool init(const std::string& imagePath)
         {
-            if (!m_texture.loadFromFile(image))
+            sf::Image image;
+            if (!image.loadFromFile(imagePath))
+            {
+                return false;
+            }
+            if (!m_texture.loadFromImage(image))
             {
                 return false;
             }
             m_sprite.setTexture(m_texture);
+            return true;
         }
     private:
         sf::Texture     m_texture;
@@ -53,7 +59,7 @@ namespace AsteroidNS
             :m_triangle(sf::Triangles, 3)
             , m_originPos(headPos)
             , m_size(size)
-            , m_jet(("F:/Varun/Varun_Work/CppSFML/GameSFML/src/assets/Jet.png"))
+            , m_jet(R"(./resources/Jet.png)")
         {
             adjustPos();    // always call after changing head as it orient according to head
 
@@ -86,6 +92,7 @@ namespace AsteroidNS
 
         void update(float secElapsed)
         {
+            (void)secElapsed;
             adjustPos();
         }
 

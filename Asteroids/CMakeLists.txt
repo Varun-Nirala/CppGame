@@ -21,9 +21,32 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 file(GLOB SOURCES "src/*.cpp" "src/*.h")
 
 set(SFML_STATIC_LIBRARIES TRUE)
+set(SFML_DIR "${CMAKE_SOURCE_DIR}/../CommonLibs/SFML")
 
-set(SFML_DIR "F:/Varun/Varun_Work/Libs/SFML-2.5.1/lib/cmake/SFML")
+# Support both 32 and 64 bit builds
+if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x64/sfml-system-d.lib" optimized "${SFML_DIR}/lib/x64/sfml-system.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x64/sfml-window-d.lib" optimized "${SFML_DIR}/lib/x64/sfml-window.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x64/sfml-graphics-d.lib" optimized "${SFML_DIR}/lib/x64/sfml-graphics.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x64/sfml-network-d.lib" optimized "${SFML_DIR}/lib/x64/sfml-network.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x64/sfml-audio-d.lib" optimized "${SFML_DIR}/lib/x64/sfml-audio.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x64/sfml-main-d.lib" optimized "${SFML_DIR}/lib/x64/sfml-main.lib")
+	set(MY_PATH "PATH=%PATH%" "${SFML_DIR}/lib/x64")
+else ()
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x86/sfml-system-d.lib" optimized "${SFML_DIR}/lib/x86/sfml-system.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x86/sfml-window-d.lib" optimized "${SFML_DIR}/lib/x86/sfml-window.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x86/sfml-graphics-d.lib" optimized "${SFML_DIR}/lib/x86/sfml-graphics.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x86/sfml-network-d.lib" optimized "${SFML_DIR}/lib/x86/sfml-network.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x86/sfml-audio-d.lib" optimized "${SFML_DIR}/lib/x86/sfml-audio.lib")
+	list(APPEND SFML_LIB debug "${SFML_DIR}/lib/x86/sfml-main-d.lib" optimized "${SFML_DIR}/lib/x86/sfml-main.lib")
+	set(MY_PATH "PATH=%PATH%" "${SFML_DIR}/lib/x86")
+endif ()
 
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
-add_executable( ${PROJECT} ${SOURCES} )
-target_link_libraries(${PROJECT} sfml-system sfml-window sfml-graphics sfml-network sfml-audio)
+include_directories(${SFML_DIR}/include)
+
+add_executable(${PROJECT} ${SOURCES})
+
+target_link_libraries(${PROJECT} ${SFML_LIB})
+
+set_target_properties(${PROJECT} PROPERTIES VS_DEBUGGER_ENVIRONMENT "${MY_PATH}")
+file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${CONFIGURATION})

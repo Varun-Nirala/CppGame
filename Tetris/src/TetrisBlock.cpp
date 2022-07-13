@@ -62,6 +62,8 @@ void TetrisBlock::translate(float x, float y)
 	sf::Vector2f pos = m_block.getPosition();
 	pos.x += x;
 	pos.y += y;
+	pos.x = std::clamp(pos.x, _s_minX, _s_maxX);
+	pos.y = std::clamp(pos.y, _s_minY, _s_maxY);
 	setPosition(pos);
 }
 
@@ -77,4 +79,9 @@ void TetrisBlock::init(const sf::Vector2f &pos, const sf::Color &color)
 	m_block.setOutlineThickness((float)_s_thickness);
 	m_block.setOutlineColor(sf::Color::Black);
 }
+
+float TetrisBlock::_s_minX = 0.0f;
+float TetrisBlock::_s_maxX = 0.0f;
+float TetrisBlock::_s_minY = 0.0f;
+float TetrisBlock::_s_maxY = 0.0f;
 }

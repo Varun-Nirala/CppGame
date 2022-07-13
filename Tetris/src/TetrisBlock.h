@@ -39,6 +39,9 @@ public:
 	static int getSize() { return _s_size; };
 	static int getThickness() { return _s_thickness; };
 
+	static void setMinMaxX(float minX, float maxX) { _s_minX = minX; _s_maxX = maxX; }
+	static void setMinMaxY(float minY, float maxY) { _s_minY = minY; _s_maxY = maxY; }
+
 private:
 	void init(const sf::Vector2f& pos, const sf::Color& color);
 
@@ -48,6 +51,10 @@ private:
 	float					m_speed{};
 	static const int		_s_size;
 	static const int		_s_thickness;
+	static float			_s_minX;
+	static float			_s_minY;
+	static float			_s_maxX;
+	static float			_s_maxY;
 };
 }
 #endif //__TETRIS_BLOCK_H__

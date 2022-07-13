@@ -51,6 +51,9 @@ void Game::createBoundary(const sf::RenderWindow& window, int topBottomSpacing, 
 
 	m_shapeStartPos.x += nsTetris::TetrisBlock::getSize() * (m_nBlockHorizontally - 1);
 	m_shapeStartPos.x /= 2;
+
+	nsTetris::TetrisBlock::setMinMaxX(m_topLeft.x, m_bottomRight.x);
+	nsTetris::TetrisBlock::setMinMaxY(m_topLeft.y, m_bottomRight.y);
 }
 
 void Game::update(const float elapsedSec)

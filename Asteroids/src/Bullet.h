@@ -9,7 +9,7 @@ namespace AsteroidNS
 class Bullet
 {
 	public:
-		Bullet(int size = 5, float speed = 0.05f)
+		Bullet(float size = 5.0f, float speed = 0.05f)
 			:m_shape(size)
 			,m_speed(speed)
 		{
@@ -29,6 +29,7 @@ class Bullet
 
 		void update(float secElapsed)
 		{
+			(void)secElapsed;
 			m_shape.move(m_direction * m_speed);
 		}
 
