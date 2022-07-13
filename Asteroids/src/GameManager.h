@@ -9,34 +9,17 @@ namespace AsteroidNS
 {
 class GameManager
 {
-	public:
-        GameManager(int width = 512, int height = 256, const char* name = "Asteroids")
-            :m_window(sf::VideoMode(width, height), name)
-            ,m_game(m_window)
-        {
-            initialize();
-        }
+public:
+    GameManager(int width = 512, int height = 256, const char* name = "Asteroids");
 
-		void startGame()
-		{
-            while (m_window.isOpen())
-            {
-                m_game.update();
-                m_game.render();
+    void startGame();
 
-                m_window.display();
-            }
-		}
+private:
+    void initialize();
 
-    private:
-        void initialize()
-        {
-            // @TODO
-        }
-
-	private:
-		sf::RenderWindow		m_window;
-        Game                    m_game;
+private:
+	sf::RenderWindow		m_window;
+    Game                    m_game;
 };
 }
 #endif //__GAMEMANAGER_H__
