@@ -9,7 +9,7 @@
 
 int main()
 {
-    AsteroidNS::GameManager gm;
+    AsteroidNS::GameManager gm(600, 800);
     gm.startGame();
 
     return 0;

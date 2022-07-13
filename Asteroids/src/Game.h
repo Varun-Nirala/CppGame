@@ -34,6 +34,7 @@ private:
 	BattleShip						m_player{};
 	std::vector<Bullet*>			m_bullets{};
 	sf::Clock						m_clock{};
+	sf::Color						m_clearColor{ sf::Color::Blue };
 };
 }
 #endif //__GAME_H__

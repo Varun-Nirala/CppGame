@@ -10,7 +10,7 @@ namespace AsteroidNS
 class GameManager
 {
 public:
-    GameManager(int width = 512, int height = 256, const char* name = "Asteroids");
+    GameManager(int width = 600, int height = 800, const char* name = "Asteroids");
 
     void startGame();
 

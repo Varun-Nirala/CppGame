@@ -6,6 +6,7 @@ Game::Game(sf::RenderWindow &rw)
 	:m_window(rw)
 {
 	m_clock.restart();
+	m_player.setCanFire(true);
 }
 
 Game::~Game()
@@ -44,12 +45,12 @@ void Game::update()
 
 void Game::render() const
 {
-	m_window.clear();
+	m_window.clear(m_clearColor);
 
-	m_player.render(m_window);
-			
 	for (size_t i = 0; i < m_bullets.size(); ++i)
 	{
 		m_bullets[i]->render(m_window);
 	}
+
+	m_player.render(m_window);
 }

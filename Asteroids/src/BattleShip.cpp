@@ -2,14 +2,16 @@
 
 using namespace AsteroidNS;
 
-FighterJet::FighterJet(const std::string& image)
+FighterJet::FighterJet(BattleShip* pBoundTo, const std::string& image, float w, float h)
 {
-    init(image);
+    m_boundedTo = pBoundTo;
+    init(image, (int)w, (int)h);
 }
 
 void FighterJet::update(float secElapsed)
 {
     (void)secElapsed;
+    m_sprite.setPosition(m_boundedTo->getHeadPosition() - sf::Vector2f(m_boundedTo->getSize() / 2.0f, 0.0f));
 }
 
 void FighterJet::render(sf::RenderWindow& w) const
@@ -17,14 +19,9 @@ void FighterJet::render(sf::RenderWindow& w) const
     w.draw(m_sprite);
 }
 
-bool FighterJet::init(const std::string& imagePath)
+bool FighterJet::init(const std::string& imagePath, int w, int h)
 {
-    sf::Image image;
-    if (!image.loadFromFile(imagePath))
-    {
-        return false;
-    }
-    if (!m_texture.loadFromImage(image))
+    if (!m_texture.loadFromFile(imagePath, sf::IntRect(0, 0, w, h)))
     {
         return false;
     }
@@ -34,11 +31,11 @@ bool FighterJet::init(const std::string& imagePath)
 
 float const BattleShip::m_kBulletDelay{ 0.5f };
 
-BattleShip::BattleShip(const sf::Vector2f& headPos, int size)
+BattleShip::BattleShip(const sf::Vector2f& headPos, float size)
     :m_triangle(sf::Triangles, 3)
     , m_originPos(headPos)
     , m_size(size)
-    , m_jet(R"(./resources/Jet.png)")
+    , m_jet(this, R"(./resources/Jet.png)", size, size)
 {
     adjustPos();    // always call after changing head as it orient according to head
 
@@ -66,6 +63,11 @@ bool BattleShip::canFire()
     return m_bCanFire;
 }
 
+float AsteroidNS::BattleShip::getSize()
+{
+    return m_size;
+}
+
 Bullet* BattleShip::fire() const
 {
     Bullet* b = new Bullet();
@@ -76,8 +78,8 @@ Bullet* BattleShip::fire() const
 
 void BattleShip::update(float secElapsed)
 {
-    (void)secElapsed;
     adjustPos();
+    m_jet.update(secElapsed);
 }
 
 void BattleShip::render(sf::RenderWindow& w) const
@@ -89,11 +91,11 @@ void BattleShip::render(sf::RenderWindow& w) const
 void BattleShip::adjustPos()
 {
     m_triangle[HEAD].position.x = m_originPos.x;
-    m_triangle[HEAD].position.y = m_originPos.y - m_size;
+    m_triangle[HEAD].position.y = m_originPos.y;
 
-    m_triangle[LEFT].position.x = m_originPos.x - m_size;
-    m_triangle[LEFT].position.y = m_originPos.y + m_size;
+    m_triangle[LEFT].position.x = m_originPos.x - (m_size / 2.0f);
+    m_triangle[LEFT].position.y = m_originPos.y + (m_size * 0.866f);        // sqrt(3) / 2
 
-    m_triangle[RIGHT].position.x = m_originPos.x + m_size;
-    m_triangle[RIGHT].position.y = m_originPos.y + m_size;
+    m_triangle[RIGHT].position.x = m_originPos.x + (m_size / 2.0f);
+    m_triangle[RIGHT].position.y = m_originPos.y + (m_size * 0.866f);
 }

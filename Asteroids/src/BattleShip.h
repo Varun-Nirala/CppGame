@@ -8,20 +8,21 @@
 namespace AsteroidNS
 {
 
+class BattleShip;
 class FighterJet
 {
 public:
-    FighterJet(const std::string& image);
+    FighterJet(BattleShip *pBoundTo, const std::string& image, float w, float h);
 
     void update(float secElapsed);
-
     void render(sf::RenderWindow& w) const;
 
 private:
-    bool init(const std::string& imagePath);
+    bool init(const std::string& imagePath, int w, int h);
 private:
     sf::Texture     m_texture;
     sf::Sprite      m_sprite;
+    BattleShip      *m_boundedTo{};
 };
 
 
@@ -37,7 +38,7 @@ class BattleShip
     };
 
 public:
-    BattleShip(const sf::Vector2f& headPos = { 0, 0 }, int size = 50);
+    BattleShip(const sf::Vector2f& headPos = { 0, 0 }, float size = 100.0f);
 
     sf::Vector2f getHeadPosition() const;
 
@@ -45,6 +46,8 @@ public:
 
     void setCanFire(bool val);
     bool canFire();
+
+    float getSize();
 
     Bullet* fire() const;
 
@@ -61,7 +64,7 @@ private:
     sf::Vector2f        m_forwardDirection{0.0f, -1.0f};
     FighterJet          m_jet;
     bool                m_bCanFire{ false };
-    int                 m_size{};
+    float               m_size{};
     float               m_lastFire;
 
     static const float  m_kBulletDelay;
