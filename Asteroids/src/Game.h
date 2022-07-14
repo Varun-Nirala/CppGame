@@ -28,7 +28,6 @@ public:
 	void update();
 
 	void render() const;
-
 private:
 	sf::RenderWindow				&m_window;
 	BattleShip						m_player{};

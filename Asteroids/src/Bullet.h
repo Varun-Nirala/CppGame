@@ -9,7 +9,7 @@ namespace AsteroidNS
 class Bullet
 {
 public:
-	Bullet(float size = 5.0f, float speed = 0.05f);
+	Bullet(float size = 5.0f, float speed = 0.50f);
 
 	void setPosition(const sf::Vector2f& pos);
 

@@ -2,55 +2,35 @@
 
 using namespace AsteroidNS;
 
-FighterJet::FighterJet(BattleShip* pBoundTo, const std::string& image, float w, float h)
-{
-    m_boundedTo = pBoundTo;
-    init(image, (int)w, (int)h);
-}
+float const BattleShip::m_kBulletDelay{ 0.25f };
 
-void FighterJet::update(float secElapsed)
+BattleShip::~BattleShip()
 {
-    (void)secElapsed;
-    m_sprite.setPosition(m_boundedTo->getHeadPosition() - sf::Vector2f(m_boundedTo->getSize() / 2.0f, 0.0f));
+    ;
 }
-
-void FighterJet::render(sf::RenderWindow& w) const
-{
-    w.draw(m_sprite);
-}
-
-bool FighterJet::init(const std::string& imagePath, int w, int h)
-{
-    if (!m_texture.loadFromFile(imagePath, sf::IntRect(0, 0, w, h)))
-    {
-        return false;
-    }
-    m_sprite.setTexture(m_texture);
-    return true;
-}
-
-float const BattleShip::m_kBulletDelay{ 0.5f };
 
 BattleShip::BattleShip(const sf::Vector2f& headPos, float size)
-    :m_triangle(sf::Triangles, 3)
-    , m_originPos(headPos)
-    , m_size(size)
-    , m_jet(this, R"(./resources/Jet.png)", size, size)
+    : m_rect(sf::Vector2f(size, size))
 {
-    adjustPos();    // always call after changing head as it orient according to head
+    //m_rect.setOrigin(size / 2.0f, size / 2.0f);
 
-    m_triangle[HEAD].color = sf::Color::Blue;
-    m_triangle[LEFT].color = m_triangle[RIGHT].color = sf::Color::Red;
+    m_texture.loadFromFile(R"(./resources/Jet.png)");
+    m_rect.setTexture(&m_texture, true);
+
+    m_rect.setPosition(headPos);
+
+    m_front.x = m_rect.getPosition().x + getSize() / 2.0f;
+    m_front.y = m_rect.getPosition().y;
 }
 
-sf::Vector2f BattleShip::getHeadPosition() const
+sf::Vector2f BattleShip::getFront() const
 {
-    return m_triangle[HEAD].position;
+    return m_front;
 }
 
-void BattleShip::setOrigin(const sf::Vector2f& head)
+sf::Vector2f BattleShip::getOrigin() const
 {
-    m_originPos = head;
+    return m_rect.getOrigin();
 }
 
 void BattleShip::setCanFire(bool val)
@@ -60,42 +40,36 @@ void BattleShip::setCanFire(bool val)
 
 bool BattleShip::canFire()
 {
-    return m_bCanFire;
+    return m_bCanFire && m_lastFire >= m_kBulletDelay;
 }
 
 float AsteroidNS::BattleShip::getSize()
 {
-    return m_size;
+    return m_rect.getSize().x;
 }
 
-Bullet* BattleShip::fire() const
+Bullet* BattleShip::fire()
 {
+    m_lastFire = 0.0f;
     Bullet* b = new Bullet();
-    b->setPosition(m_triangle[HEAD].position);
+
+    b->setPosition(m_front);
+    
     b->setDirection(m_forwardDirection);
     return b;
 }
 
 void BattleShip::update(float secElapsed)
 {
-    adjustPos();
-    m_jet.update(secElapsed);
+    m_lastFire += secElapsed;
+    m_front.x = m_rect.getPosition().x + getSize() / 2.0f;
+    m_front.y = m_rect.getPosition().y;
+
+    m_rect.setRotation(m_rollAngleInDeg);
+    m_rollAngleInDeg = 0.0f;
 }
 
 void BattleShip::render(sf::RenderWindow& w) const
 {
-    w.draw(m_triangle);
-    m_jet.render(w);
-}
-
-void BattleShip::adjustPos()
-{
-    m_triangle[HEAD].position.x = m_originPos.x;
-    m_triangle[HEAD].position.y = m_originPos.y;
-
-    m_triangle[LEFT].position.x = m_originPos.x - (m_size / 2.0f);
-    m_triangle[LEFT].position.y = m_originPos.y + (m_size * 0.866f);        // sqrt(3) / 2
-
-    m_triangle[RIGHT].position.x = m_originPos.x + (m_size / 2.0f);
-    m_triangle[RIGHT].position.y = m_originPos.y + (m_size * 0.866f);
+    w.draw(m_rect);
 }
