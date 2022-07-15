@@ -16,14 +16,14 @@ public:
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
-	void render() override;
+	void render(GLfloat fovy, GLfloat aspectRatio) override;
 	void release() override;
 
 	void setUniformModel() override;
 
 	glm::vec3 getCentre() override { return m_p[0] + (m_p[1] - m_p[0]) / 2.0f; }
 protected:
-	void draw() override;
+	void draw(GLfloat fovy, GLfloat aspectRatio) override;
 
 private:
 	glm::vec3		m_p[2];
@@ -33,14 +33,12 @@ Line::Line(GLuint shaderID, bool bOwnIt, glm::vec2 p1, glm::vec2 p2)
 	: Drawable(shaderID, bOwnIt)
 {
 	setLine(p1, p2);
-	setLineWidth(2);
 }
 
 Line::Line(GLuint shaderID, bool bOwnIt, glm::vec3 p1, glm::vec3 p2)
 	: Drawable(shaderID, bOwnIt)
 {
 	setLine(p1, p2);
-	setLineWidth(2);
 }
 
 Line::Line(GLuint shaderID, bool bOwnIt, GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
@@ -48,7 +46,6 @@ Line::Line(GLuint shaderID, bool bOwnIt, GLfloat x1, GLfloat y1, GLfloat z1, GLf
 {
 	m_p[0] = glm::vec3(x1, y1, z1);
 	m_p[1] = glm::vec3(x2, y2, z2);
-	setLineWidth(2);
 }
 
 inline void Line::setLine(const glm::vec3& p1, const glm::vec3& p2)
@@ -96,11 +93,11 @@ inline void Line::update(float elapsedTimeInMs)
 	(void)elapsedTimeInMs;
 }
 
-inline void Line::render()
+inline void Line::render(GLfloat fovy, GLfloat aspectRatio)
 {
 	activateAll();
 
-	draw();
+	draw(fovy, aspectRatio);
 
 	deactivateAll();
 }
@@ -110,12 +107,11 @@ inline void Line::release()
 	Drawable::release();
 }
 
-inline void Line::draw()
+inline void Line::draw(GLfloat fovy, GLfloat aspectRatio)
 {
 	glPointSize(m_pixelSize);
-	glLineWidth(m_lineWidth);
 	
-	setUniformProjection();
+	setUniformProjection(fovy, aspectRatio);
 	setUniformView();
 	setUniformModel();
 	setUniformColor();

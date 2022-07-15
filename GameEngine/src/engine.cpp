@@ -160,7 +160,7 @@ void Engine::render()
 {
     for (size_t i = 0, size = m_drawables.size(); i < size; ++i)
     {
-        m_drawables[i]->render();
+        m_drawables[i]->render(m_fovy, m_pWindow->aspectRatio());
     }
 }
 

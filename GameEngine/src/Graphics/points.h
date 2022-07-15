@@ -17,13 +17,13 @@ public:
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
-	void render() override;
+	void render(GLfloat fovy, GLfloat aspectRatio) override;
 	void release() override;
 
 	void setUniformModel() override;
 	glm::vec3 getCentre() override { return {}; }
 protected:
-	void draw() override;
+	void draw(GLfloat fovy, GLfloat aspectRatio) override;
 
 private:
 	std::vector<glm::vec3>		m_points;
@@ -78,11 +78,11 @@ inline void Points::update(float elapsedTimeInMs)
 	(void)elapsedTimeInMs;
 }
 
-inline void Points::render()
+inline void Points::render(GLfloat fovy, GLfloat aspectRatio)
 {
 	activateAll();
 
-	draw();
+	draw(fovy, aspectRatio);
 
 	deactivateAll();
 }
@@ -92,12 +92,11 @@ inline void Points::release()
 	Drawable::release();
 }
 
-inline void Points::draw()
+inline void Points::draw(GLfloat fovy, GLfloat aspectRatio)
 {
 	glPointSize(m_pixelSize);
-	glLineWidth(m_lineWidth);
 
-	setUniformProjection();
+	setUniformProjection(fovy, aspectRatio);
 	setUniformView();
 	setUniformModel();
 	setUniformColor();

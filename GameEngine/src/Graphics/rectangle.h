@@ -16,7 +16,7 @@ public:
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
-	void render() override;
+	void render(GLfloat fovy, GLfloat aspectRatio) override;
 	void release() override;
 
 	void activateAll() override;
@@ -30,7 +30,7 @@ public:
 	glm::vec3 getCentre() override;
 
 protected:
-	void draw() override;
+	void draw(GLfloat fovy, GLfloat aspectRatio) override;
 
 private:
 	glm::vec3					m_vertices[4];
@@ -103,11 +103,11 @@ inline void Rectangle::update(float elapsedTimeInMs)
 	(void)elapsedTimeInMs;
 }
 
-inline void Rectangle::render()
+inline void Rectangle::render(GLfloat fovy, GLfloat aspectRatio)
 {
 	activateAll();
 
-	draw();
+	draw(fovy, aspectRatio);
 
 	deactivateAll();
 }
@@ -148,9 +148,9 @@ inline void Rectangle::deactivateEBO()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-inline void Rectangle::draw()
+inline void Rectangle::draw(GLfloat fovy, GLfloat aspectRatio)
 {
-	setUniformProjection();
+	setUniformProjection(fovy, aspectRatio);
 	setUniformView();
 	setUniformModel();
 	setUniformColor();

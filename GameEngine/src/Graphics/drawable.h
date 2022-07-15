@@ -18,13 +18,11 @@ public:
 	}
 
 	void setPixelSize(GLfloat size) { m_pixelSize = size; }
-	void setLineWidth(GLfloat width) { m_lineWidth = width; }
 	void setRotationAngle(GLfloat angleInDeg) { m_rotAngleInDegree = angleInDeg; }
 	void setRotationAxis(glm::vec3 axis) { m_rotAxis = axis; }
 	void setRotationAxis(GLfloat x, GLfloat y, GLfloat z) { m_rotAxis = glm::vec3{ x, y, z }; }
 
 	GLfloat getPixelSize() const { return m_pixelSize; }
-	GLfloat getLineWidth() const { return m_lineWidth; }
 	GLfloat getRotationAngleInDeg() { return m_rotAngleInDegree; }
 	glm::vec3 getRotationAxis() { return m_rotAxis; }
 
@@ -45,14 +43,14 @@ public:
 
 	virtual void init() = 0;
 	virtual void update(float elapsedTimeInMs) = 0;
-	virtual void render() = 0;
+	virtual void render(GLfloat fovy, GLfloat aspectRatio) = 0;
 
 	virtual void release();
 
 	virtual void activateAll();
 	virtual void deactivateAll();
 
-	virtual void setUniformProjection();
+	virtual void setUniformProjection(GLfloat fovy, GLfloat aspectRatio);
 	virtual void setUniformView();
 	virtual void setUniformModel() = 0;
 	virtual void setUniformColor();
@@ -63,7 +61,7 @@ public:
 	static GLuint createVBO();
 	static GLuint createEBO();
 protected:
-	virtual void draw() = 0;
+	virtual void draw(GLfloat fovy, GLfloat aspectRatio) = 0;
 
 protected:
 	std::pair<GLuint, bool>			m_shader;
@@ -71,7 +69,6 @@ protected:
 	std::pair<GLuint, bool>			m_vbo;
 	glm::vec4						m_color{ 1.0f, 0.0f, 0.0f, 1.0f };
 	GLfloat							m_pixelSize{ 1 };
-	GLfloat							m_lineWidth{ 1 };
 	GLfloat							m_rotAngleInDegree{};
 	glm::vec3						m_rotAxis{ 0.0f, 0.0f, 1.0f };
 };
@@ -109,12 +106,16 @@ inline void Drawable::deactivateAll()
 	deactivateShader();
 }
 
-inline void Drawable::setUniformProjection()
+inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 {
 	glm::mat4 projection = glm::identity<glm::mat4>();
-	
+#if defined(ORTHOGRAPHIC_VIEW)
+	(void)fovy;
+	(void)aspectRatio;
 	projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, CAM_NEAR, CAM_FAR);
-	
+#elif defined(PERSPECTIVE_VIEW)
+	projection = glm::perspective(fovy, aspectRatio, CAM_NEAR, CAM_FAR);
+#endif
 	ShaderProgram::setUniform_fm(m_shader.first, "projection", projection);
 }
 

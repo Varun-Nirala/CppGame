@@ -21,13 +21,13 @@ public:
 	
 	void init() override;
 	void update(float elapsedTimeInMs) override;
-	void render() override;
+	void render(GLfloat fovy, GLfloat aspectRatio) override;
 	void release() override;
 
 	void setUniformModel() override;
 	glm::vec3 getCentre() override { return {}; }
 protected:
-	void draw() override;
+	void draw(GLfloat fovy, GLfloat aspectRatio) override;
 
 private:
 	std::vector<glm::vec3>			m_lines;
@@ -37,7 +37,6 @@ private:
 Lines::Lines(GLuint shaderID, bool bOwnIt)
 	: Drawable(shaderID, bOwnIt)
 {
-	setLineWidth(2);
 }
 
 inline void Lines::setLines(const std::vector<glm::vec2>& lines)
@@ -105,11 +104,11 @@ inline void Lines::update(float elapsedTimeInMs)
 	(void)elapsedTimeInMs;
 }
 
-inline void Lines::render()
+inline void Lines::render(GLfloat fovy, GLfloat aspectRatio)
 {
 	activateAll();
 
-	draw();
+	draw(fovy, aspectRatio);
 
 	deactivateAll();
 }
@@ -119,12 +118,11 @@ inline void Lines::release()
 	Drawable::release();
 }
 
-inline void Lines::draw()
+inline void Lines::draw(GLfloat fovy, GLfloat aspectRatio)
 {
 	glPointSize(m_pixelSize);
-	glLineWidth(m_lineWidth);
 
-	setUniformProjection();
+	setUniformProjection(fovy, aspectRatio);
 	setUniformView();
 	setUniformModel();
 	setUniformColor();

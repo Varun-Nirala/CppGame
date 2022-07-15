@@ -16,7 +16,7 @@ public:
 	using MousebuttonCallback	= std::function<void(int, int, int)>;
 public:
 	~DisplayWindow();
-	DisplayWindow(const char* title, int width, int height, int &hintOpenGlMajorVersion, int &hintOpenGlMinorVersion);
+	DisplayWindow(const char* title, int width, int height, int& hintOpenGlMajorVersion, int& hintOpenGlMinorVersion);
 
 	const GLFWwindow* glfwWindow() const { return m_pWindow; }
 	GLFWwindow* glfwWindow() { return m_pWindow; }
@@ -56,6 +56,9 @@ private:
 	std::string							m_title;
 	int									m_width{};
 	int									m_height{};
+
+	int									m_fbWidth{};
+	int									m_fbHeight{};
 	bool								m_bIsOpen{true};
 
 	InputManager						m_inputManager;

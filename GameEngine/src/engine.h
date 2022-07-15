@@ -48,6 +48,6 @@ private:
 	std::unique_ptr<DisplayWindow>			m_pWindow;
 	glm::vec4								m_clearColor{ 0.2f, 0.3f, 0.3f, 1.0f };
 	GLuint									m_enabledBits{};
-
+	GLfloat									m_fovy{ 45.0 };
 	std::vector<Drawable*>					m_drawables;
 };

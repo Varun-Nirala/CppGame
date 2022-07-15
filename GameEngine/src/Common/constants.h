@@ -2,6 +2,12 @@
 
 #include <glm/glm.hpp>
 
+#if 1
+	#define ORTHOGRAPHIC_VIEW
+#else
+	#define PERSPECTIVE_VIEW
+#endif
+
 extern const char *TITLE;
 extern const int WIDTH;
 extern const int HEIGHT;

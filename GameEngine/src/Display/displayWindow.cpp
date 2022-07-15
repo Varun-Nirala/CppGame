@@ -10,19 +10,19 @@ DisplayWindow::~DisplayWindow()
 	release();
 }
 
-DisplayWindow::DisplayWindow(const char* title, int width, int height, int &hintOpenGlMajorVersion, int &hintOpenGlMinorVersion)
-    : m_width(width)
-    , m_height(height)
-    , m_title(title)
+DisplayWindow::DisplayWindow(const char* title, int width, int height, int& hintOpenGlMajorVersion, int& hintOpenGlMinorVersion)
+	: m_width(width)
+	, m_height(height)
+	, m_title(title)
 	, m_inputManager(true, true)
 {
-    using ns_Util::Logger;
+	using ns_Util::Logger;
 
-    if (glfwInit() == GLFW_FALSE)
-    {
-        Logger::LOG_ERROR("Failed to init GLFW.\n");
-        return;
-    }
+	if (glfwInit() == GLFW_FALSE)
+	{
+		Logger::LOG_ERROR("Failed to init GLFW.\n");
+		return;
+	}
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, hintOpenGlMajorVersion);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, hintOpenGlMinorVersion);
@@ -70,7 +70,8 @@ DisplayWindow::DisplayWindow(const char* title, int width, int height, int &hint
 
 	registerCallbacks();
 
-	glViewport(0, 0, m_width, m_height);
+	glfwGetFramebufferSize(m_pWindow, &m_fbWidth, &m_fbHeight);
+	glViewport(0, 0, m_fbWidth, m_fbHeight);
 
 }
 
@@ -87,7 +88,7 @@ void DisplayWindow::postRender()
 
 float DisplayWindow::aspectRatio() const
 {
-    return m_width / (float)m_height;
+    return m_fbWidth / (float)m_fbHeight;
 }
 
 void DisplayWindow::onClose()
@@ -102,10 +103,10 @@ void DisplayWindow::onRefresh()
 
 void DisplayWindow::onResize(int newWidth, int newHeight)
 {
-	m_width = newWidth;
-	m_height = newHeight;
+	m_fbWidth = newWidth;
+	m_fbHeight = newHeight;
 
-	glViewport(0, 0, m_width, m_height);
+	glViewport(0, 0, m_fbWidth, m_fbHeight);
 }
 
 void DisplayWindow::onKeyInput(int key, int scancode, int action, int mods)
