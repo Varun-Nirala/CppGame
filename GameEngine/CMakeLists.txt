@@ -47,20 +47,24 @@ endif ()
 # Common libs END
 
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+set(CAMERA_DIR ${SOURCE_DIR}/Camera)
 set(COMMON_DIR ${SOURCE_DIR}/Common)
 set(DISPLAY_DIR ${SOURCE_DIR}/Display)
 set(GRAPHICS_DIR ${SOURCE_DIR}/Graphics)
 set(INPUT_DIR ${SOURCE_DIR}/Input)
 
+
 include_directories(${SOURCE_DIR})
 
 file(GLOB SRCS "${SOURCE_DIR}/*.h" "${SOURCE_DIR}/*.hpp" "${SOURCE_DIR}/*.cpp")
+file(GLOB CAMERA "${CAMERA_DIR}/*.h" "${CAMERA_DIR}/*.hpp" "${CAMERA_DIR}/*.cpp")
 file(GLOB COMMON "${COMMON_DIR}/*.h" "${COMMON_DIR}/*.hpp" "${COMMON_DIR}/*.cpp")
 file(GLOB DISPLAY "${DISPLAY_DIR}/*.h" "${DISPLAY_DIR}/*.hpp" "${DISPLAY_DIR}/*.cpp")
 file(GLOB GRAPHICS "${GRAPHICS_DIR}/*.h" "${GRAPHICS_DIR}/*.hpp" "${GRAPHICS_DIR}/*.cpp")
 file(GLOB INPUT "${INPUT_DIR}/*.h" "${INPUT_DIR}/*.hpp" "${INPUT_DIR}/*.cpp")
 
 source_group("" FILES ${SRCS})
+source_group("Camera" FILES ${CAMERA})
 source_group("Common" FILES ${COMMON})
 source_group("Display" FILES ${DISPLAY})
 source_group("Graphics" FILES ${GRAPHICS})

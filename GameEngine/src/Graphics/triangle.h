@@ -16,14 +16,14 @@ public:
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio) override;
+	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	void setUniformModel() override;
 
 	glm::vec3 getCentre() override;
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio) override;
+	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 
 private:
 	glm::vec3					m_vertices[3];
@@ -81,11 +81,11 @@ inline void Triangle::update(float elapsedTimeInMs)
 	(void)elapsedTimeInMs;
 }
 
-inline void Triangle::render(GLfloat fovy, GLfloat aspectRatio)
+inline void Triangle::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
 
-	draw(fovy, aspectRatio);
+	draw(fovy, aspectRatio, camera);
 
 	deactivateAll();
 }
@@ -95,10 +95,10 @@ inline void Triangle::release()
 	Drawable::release();
 }
 
-inline void Triangle::draw(GLfloat fovy, GLfloat aspectRatio)
+inline void Triangle::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	setUniformProjection(fovy, aspectRatio);
-	setUniformView();
+	setUniformView(camera);
 	setUniformModel();
 	setUniformColor();
 

@@ -3,7 +3,20 @@
 #include "Display/displayWindow.h"
 #include "Graphics/drawable.h"
 
-Engine::Engine() = default;
+#include "Common/constants.h"
+
+Engine::Engine()
+    : m_camera(glm::vec3{ 0.0f, 0.0f, 3.0f })
+{
+#if defined(ORTHOGRAPHIC_VIEW)
+    m_camera.setNear(kORTHOGRAPHIC_NEAR);
+    m_camera.setFar(kORTHOGRAPHIC_FAR);
+#elif defined(PERSPECTIVE_VIEW)
+    m_camera.setNear(kPERSPECTIVE_NEAR);
+    m_camera.setFar(kPERSPECTIVE_FAR);
+#endif
+}
+
 Engine::~Engine() = default;
 
 bool Engine::init(const char* title, int width, int height, int& hintOpenGlMajorVersion, int& hintOpenGlMinorVersion)
@@ -43,6 +56,7 @@ void Engine::startLoop()
 
 void Engine::onKeyInput(const KeyButton& keybutton)
 {
+    m_camera.onKeyInput(keybutton);
     if (keybutton.action.down && keybutton.keycode == KEY_ESCAPE)
     {
         m_pWindow->onClose();
@@ -52,20 +66,17 @@ void Engine::onKeyInput(const KeyButton& keybutton)
 
 void Engine::onMouseMove(GLdouble posX, GLdouble posY, GLdouble offsetX, GLdouble offsetY)
 {
-    (void)posX;
-    (void)posY;
-    (void)offsetX;
-    (void)offsetY;
+    m_camera.onCursorMove(posX, posY, offsetX, offsetY);
 }
 
 void Engine::onMouseScroll(GLdouble offsetX, GLdouble offsetY)
 {
-    (void)offsetX;
-    (void)offsetY;
+    m_camera.onScroll(offsetX, offsetY);
 }
 
 void Engine::onMouseButton(const MouseButton& mousebutton)
 {
+    m_camera.onMouseButton(mousebutton);
     if (mousebutton.button.left)
     {
         if (mousebutton.action.down)
@@ -143,6 +154,7 @@ void Engine::gameLoop()
 
 void Engine::update(float elapsedDeltaTimeInMs)
 {
+    m_camera.update(elapsedDeltaTimeInMs);
     for (size_t i = 0, size = m_drawables.size(); i < size; ++i)
     {
         m_drawables[i]->update(elapsedDeltaTimeInMs);
@@ -160,7 +172,7 @@ void Engine::render()
 {
     for (size_t i = 0, size = m_drawables.size(); i < size; ++i)
     {
-        m_drawables[i]->render(m_fovy, m_pWindow->aspectRatio());
+        m_drawables[i]->render(m_fovy, m_pWindow->aspectRatio(), m_camera);
     }
 }
 

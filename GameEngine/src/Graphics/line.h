@@ -16,14 +16,14 @@ public:
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio) override;
+	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	void setUniformModel() override;
 
 	glm::vec3 getCentre() override { return m_p[0] + (m_p[1] - m_p[0]) / 2.0f; }
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio) override;
+	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 
 private:
 	glm::vec3		m_p[2];
@@ -93,11 +93,11 @@ inline void Line::update(float elapsedTimeInMs)
 	(void)elapsedTimeInMs;
 }
 
-inline void Line::render(GLfloat fovy, GLfloat aspectRatio)
+inline void Line::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
 
-	draw(fovy, aspectRatio);
+	draw(fovy, aspectRatio, camera);
 
 	deactivateAll();
 }
@@ -107,12 +107,12 @@ inline void Line::release()
 	Drawable::release();
 }
 
-inline void Line::draw(GLfloat fovy, GLfloat aspectRatio)
+inline void Line::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	glPointSize(m_pixelSize);
 	
 	setUniformProjection(fovy, aspectRatio);
-	setUniformView();
+	setUniformView(camera);
 	setUniformModel();
 	setUniformColor();
 

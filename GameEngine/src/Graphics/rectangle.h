@@ -16,7 +16,7 @@ public:
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio) override;
+	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	void activateAll() override;
@@ -30,7 +30,7 @@ public:
 	glm::vec3 getCentre() override;
 
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio) override;
+	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 
 private:
 	glm::vec3					m_vertices[4];
@@ -103,11 +103,11 @@ inline void Rectangle::update(float elapsedTimeInMs)
 	(void)elapsedTimeInMs;
 }
 
-inline void Rectangle::render(GLfloat fovy, GLfloat aspectRatio)
+inline void Rectangle::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
 
-	draw(fovy, aspectRatio);
+	draw(fovy, aspectRatio, camera);
 
 	deactivateAll();
 }
@@ -148,10 +148,10 @@ inline void Rectangle::deactivateEBO()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-inline void Rectangle::draw(GLfloat fovy, GLfloat aspectRatio)
+inline void Rectangle::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	setUniformProjection(fovy, aspectRatio);
-	setUniformView();
+	setUniformView(camera);
 	setUniformModel();
 	setUniformColor();
 	

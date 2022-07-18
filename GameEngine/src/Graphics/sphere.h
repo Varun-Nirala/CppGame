@@ -17,7 +17,7 @@ public:
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio) override;
+	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	void setUniformModel() override;
@@ -25,7 +25,7 @@ public:
 	glm::vec3 getCentre() override { return m_centre; }
 
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio) override;
+	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 	GLfloat mapValue(GLint value, GLint currRangeMin, GLint currRangeMax, GLfloat targetRangeMin, GLfloat targetRangeMax);
 private:
 	GLuint					m_ebo{};
@@ -99,9 +99,9 @@ inline void Sphere::update(float elapsedTimeInMs)
 	m_points.update(elapsedTimeInMs);
 }
 
-inline void Sphere::render(GLfloat fovy, GLfloat aspectRatio)
+inline void Sphere::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
-	m_points.render(fovy, aspectRatio);
+	m_points.render(fovy, aspectRatio, camera);
 }
 
 inline void Sphere::release()
@@ -115,8 +115,9 @@ inline void Sphere::setUniformModel()
 	m_points.setUniformModel();
 }
 
-inline void Sphere::draw(GLfloat fovy, GLfloat aspectRatio)
+inline void Sphere::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
+	(void)camera;
 	(void)fovy;
 	(void)aspectRatio;
 	return;

@@ -45,7 +45,7 @@ public:
 
 	virtual void init() = 0;
 	virtual void update(float elapsedTimeInMs) = 0;
-	virtual void render(GLfloat fovy, GLfloat aspectRatio) = 0;
+	virtual void render(GLfloat fovy, GLfloat aspectRatio, const Camera &camera) = 0;
 
 	virtual void release();
 
@@ -53,7 +53,7 @@ public:
 	virtual void deactivateAll();
 
 	virtual void setUniformProjection(GLfloat fovy, GLfloat aspectRatio);
-	virtual void setUniformView();
+	virtual void setUniformView(const Camera& camera);
 	virtual void setUniformModel() = 0;
 	virtual void setUniformColor();
 
@@ -63,7 +63,7 @@ public:
 	static GLuint createVBO();
 	static GLuint createEBO();
 protected:
-	virtual void draw(GLfloat fovy, GLfloat aspectRatio) = 0;
+	virtual void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) = 0;
 
 protected:
 	std::pair<GLuint, bool>			m_shader;
@@ -116,9 +116,9 @@ inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 	(void)fovy;
 	(void)aspectRatio;
 #if defined(ORTHOGRAPHIC_VIEW)
-	projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, CAM_NEAR, CAM_FAR);
+	projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, kORTHOGRAPHIC_NEAR, kORTHOGRAPHIC_FAR);
 #elif defined(PERSPECTIVE_VIEW)
-	projection = glm::perspective(fovy, aspectRatio, CAM_NEAR, CAM_FAR);
+	projection = glm::perspective(fovy, aspectRatio, kPERSPECTIVE_NEAR, kPERSPECTIVE_FAR);
 #endif
 	ShaderProgram::setUniform_fm(m_shader.first, "projection", projection);
 }
@@ -143,11 +143,12 @@ inline void Drawable::setUniformModel()
 	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
 }
 
-inline void Drawable::setUniformView()
+inline void Drawable::setUniformView(const Camera& camera)
 {
+	(void)camera;
 	glm::mat4 view = glm::identity<glm::mat4>();
 
-	//view = glm::lookAt(VIEW_POSITION, VIEW_POSITION + VIEW_FRONT, VIEW_UP);
+	view = camera.viewMatrix();
 
 	ShaderProgram::setUniform_fm(m_shader.first, "view", view);
 }

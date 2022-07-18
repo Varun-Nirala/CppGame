@@ -9,6 +9,8 @@
 #include "Input/Ikeyboard.h"
 #include "Input/Imouse.h"
 
+#include "Camera/camera.h"
+
 class DisplayWindow;
 class Drawable;
 
@@ -50,4 +52,5 @@ private:
 	GLuint									m_enabledBits{};
 	GLfloat									m_fovy{ 45.0 };
 	std::vector<Drawable*>					m_drawables;
+	Camera									m_camera;
 };

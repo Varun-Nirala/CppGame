@@ -14,12 +14,11 @@ extern const int HEIGHT;
 extern const int OPENGL_MAJOR_VERSION;
 extern const int OPENGL_MINOR_VERSION;
 
-extern const float CAM_NEAR;
-extern const float CAM_FAR;
+extern const float kPERSPECTIVE_NEAR;
+extern const float kPERSPECTIVE_FAR;
 
-extern const glm::vec3 VIEW_POSITION;
-extern const glm::vec3 VIEW_FRONT;
-extern const glm::vec3 VIEW_UP;
+extern const float kORTHOGRAPHIC_NEAR;
+extern const float kORTHOGRAPHIC_FAR;
 
 extern const glm::vec2 kGRAVITY;
 

@@ -6,18 +6,11 @@ const int HEIGHT						= 600;
 const int OPENGL_MAJOR_VERSION			= 4;
 const int OPENGL_MINOR_VERSION			= 6;
 
-#if defined(ORTHOGRAPHIC_VIEW)
-	extern const float CAM_NEAR				= -150.0f;
-	extern const float CAM_FAR				= 150.0f;
-	extern const glm::vec3 VIEW_POSITION	= glm::vec3{ 0.0f, 0.0f, 0.0f };
-#elif defined(PERSPECTIVE_VIEW)
-	extern const float CAM_NEAR				= 0.1f;
-	extern const float CAM_FAR				= 100.0f;
-	extern const glm::vec3 VIEW_POSITION	= glm::vec3{ 0.0f, 0.0f, 3.0f };
-#endif
+const float kPERSPECTIVE_NEAR			= 0.1f;
+const float kPERSPECTIVE_FAR			= 100.0f;
 
-extern const glm::vec3 VIEW_FRONT		= glm::vec3{ 0.0f, 0.0f, -1.0f };
-extern const glm::vec3 VIEW_UP			= glm::vec3{ 0.0f, 1.0f, 0.0f };
+const float kORTHOGRAPHIC_NEAR			= -100.0f;
+const float kORTHOGRAPHIC_FAR			= 100.0f;
 
 const glm::vec2 kGRAVITY				= { 0.0f, 9.807f};
 
