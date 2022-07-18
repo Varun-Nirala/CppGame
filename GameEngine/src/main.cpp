@@ -16,7 +16,7 @@
 #include "Graphics/triangle.h"
 #include "Graphics/rectangle.h"
 #include "Graphics/circle.h"
-#include "Graphics/sphere_1.h"
+#include "Graphics/sphere.h"
 
 // opengl screen
 // -1,1        1,1
@@ -162,7 +162,7 @@ void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 
 void drawSphere(Engine& e, ResourceManager& rm)
 {
-	Sphere_1* sphere = new Sphere_1(rm.shader("PointWithMVP_Shader"), false, 100.0f, glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, 0.0f), 150, 150);
+	Sphere* sphere = new Sphere(rm.shader("PointWithMVP_Shader"), false, 100.0f, glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, 0.0f), 150, 150);
 	sphere->init();
 	e.addDrawable(sphere);
 }

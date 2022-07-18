@@ -8,12 +8,12 @@
 
 #include "points.h"
 
-class Sphere_1 : public Drawable
+class Sphere : public Drawable
 {
 public:
-	Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centre, GLint longitude, GLint latitude);
-	Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centre, GLint longitude, GLint latitude);
-	Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z, GLint longitude, GLint latitude);
+	Sphere(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centre, GLint longitude, GLint latitude);
+	Sphere(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centre, GLint longitude, GLint latitude);
+	Sphere(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z, GLint longitude, GLint latitude);
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
@@ -38,7 +38,7 @@ private:
 	Points					m_points;
 };
 
-Sphere_1::Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centre, GLint longitude, GLint latitude)
+Sphere::Sphere(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centre, GLint longitude, GLint latitude)
 	: Drawable(shaderID, bOwnIt)
 	, m_radius(radius)
 	, m_centre(centre, 0.0f)
@@ -49,7 +49,7 @@ Sphere_1::Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centr
 	init();
 }
 
-Sphere_1::Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centre, GLint longitude, GLint latitude)
+Sphere::Sphere(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centre, GLint longitude, GLint latitude)
 	: Drawable(shaderID, bOwnIt)
 	, m_radius(radius)
 	, m_centre(centre)
@@ -60,7 +60,7 @@ Sphere_1::Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centr
 	init();
 }
 
-Sphere_1::Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z, GLint longitude, GLint latitude)
+Sphere::Sphere(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z, GLint longitude, GLint latitude)
 	: Drawable(shaderID, bOwnIt)
 	, m_radius(radius)
 	, m_centre(x, y, z)
@@ -71,7 +71,7 @@ Sphere_1::Sphere_1(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfl
 	init();
 }
 
-inline void Sphere_1::init()
+inline void Sphere::init()
 {
 	constexpr GLfloat PI = glm::pi<float>();
 	constexpr GLfloat HALF_PI = PI / 2.0f;
@@ -94,35 +94,35 @@ inline void Sphere_1::init()
 	m_points.init();
 }
 
-inline void Sphere_1::update(float elapsedTimeInMs)
+inline void Sphere::update(float elapsedTimeInMs)
 {
 	m_points.update(elapsedTimeInMs);
 }
 
-inline void Sphere_1::render(GLfloat fovy, GLfloat aspectRatio)
+inline void Sphere::render(GLfloat fovy, GLfloat aspectRatio)
 {
 	m_points.render(fovy, aspectRatio);
 }
 
-inline void Sphere_1::release()
+inline void Sphere::release()
 {
 	Drawable::release();
 	m_points.release();
 }
 
-inline void Sphere_1::setUniformModel()
+inline void Sphere::setUniformModel()
 {
 	m_points.setUniformModel();
 }
 
-inline void Sphere_1::draw(GLfloat fovy, GLfloat aspectRatio)
+inline void Sphere::draw(GLfloat fovy, GLfloat aspectRatio)
 {
 	(void)fovy;
 	(void)aspectRatio;
 	return;
 }
 
-inline GLfloat Sphere_1::mapValue(GLint value, GLint currRangeMin, GLint currRangeMax, GLfloat targetRangeMin, GLfloat targetRangeMax)
+inline GLfloat Sphere::mapValue(GLint value, GLint currRangeMin, GLint currRangeMax, GLfloat targetRangeMin, GLfloat targetRangeMax)
 {
 	return ((value - currRangeMin) / GLfloat(currRangeMax - currRangeMin)) * (targetRangeMax - targetRangeMin) + targetRangeMin;
 }
