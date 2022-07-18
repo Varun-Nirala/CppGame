@@ -16,6 +16,7 @@
 #include "Graphics/triangle.h"
 #include "Graphics/rectangle.h"
 #include "Graphics/circle.h"
+#include "Graphics/sphere_1.h"
 
 // opengl screen
 // -1,1        1,1
@@ -41,7 +42,7 @@ void drawLines(Engine& e, ResourceManager& rm);
 void drawTriangle(Engine& e, ResourceManager& rm);
 void drawRectangle(Engine& e, ResourceManager& rm);
 void drawCircle(Engine& e, ResourceManager& rm, bool bFilled);
-
+void drawSphere(Engine& e, ResourceManager& rm);
 
 int main()
 {
@@ -79,6 +80,8 @@ int main()
 	drawCircle(e, rm, false);		// draw circle
 
 	drawCircle(e, rm, true);		// draw filled circle
+
+	drawSphere(e, rm);
 
 	e.startLoop();
 	return 0;
@@ -151,9 +154,15 @@ void drawRectangle(Engine& e, ResourceManager& rm)
 
 void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 {
-	Circle *cir = new Circle(rm.shader("PointWithMVP_Shader"), false, 85.0f, glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, 0.0f));
+	Circle *cir = new Circle(rm.shader("PointWithMVP_Shader"), false, 85.0f, glm::vec3(WIDTH / 2.0f, (HEIGHT / 2.0f) - 200.0f, 0.0f));
 	cir->setDrawFilled(bFilled);
 	cir->init();
 	e.addDrawable(cir);
+}
 
+void drawSphere(Engine& e, ResourceManager& rm)
+{
+	Sphere_1* sphere = new Sphere_1(rm.shader("PointWithMVP_Shader"), false, 100.0f, glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, 0.0f), 150, 150);
+	sphere->init();
+	e.addDrawable(sphere);
 }

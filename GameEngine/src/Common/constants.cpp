@@ -7,14 +7,15 @@ const int OPENGL_MAJOR_VERSION			= 4;
 const int OPENGL_MINOR_VERSION			= 6;
 
 #if defined(ORTHOGRAPHIC_VIEW)
-	extern const float CAM_NEAR			= -5.0f;
-	extern const float CAM_FAR			= 5.0f;			// as VIEW_POSITION has 3 so we need >= 3
+	extern const float CAM_NEAR				= -150.0f;
+	extern const float CAM_FAR				= 150.0f;
+	extern const glm::vec3 VIEW_POSITION	= glm::vec3{ 0.0f, 0.0f, 0.0f };
 #elif defined(PERSPECTIVE_VIEW)
-	extern const float CAM_NEAR			= 0.1f;
-	extern const float CAM_FAR			= 100.0f;
+	extern const float CAM_NEAR				= 0.1f;
+	extern const float CAM_FAR				= 100.0f;
+	extern const glm::vec3 VIEW_POSITION	= glm::vec3{ 0.0f, 0.0f, 3.0f };
 #endif
 
-extern const glm::vec3 VIEW_POSITION	= glm::vec3{ 0.0f, 0.0f, 3.0f };
 extern const glm::vec3 VIEW_FRONT		= glm::vec3{ 0.0f, 0.0f, -1.0f };
 extern const glm::vec3 VIEW_UP			= glm::vec3{ 0.0f, 1.0f, 0.0f };
 

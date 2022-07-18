@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "lines.h"
 #include "triangle.h"
 
 class Circle : public Drawable

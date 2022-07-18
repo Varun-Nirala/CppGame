@@ -33,6 +33,8 @@ public:
 	void setVAO(GLuint id, bool bOwnIt) { m_vao.first = id; m_vao.second = bOwnIt; }
 	void setVBO(GLuint id, bool bOwnIt) { m_vbo.first = id; m_vbo.second = bOwnIt; }
 
+	void setDrawInWireFrameMode(bool mode) { m_bDrawInWireFrameMode = mode; }
+
 	void activateShader() { glUseProgram(m_shader.first); }
 	void activateVAO() { glBindVertexArray(m_vao.first); }
 	void activateVBO() { glBindBuffer(GL_ARRAY_BUFFER, m_vbo.first); }
@@ -71,6 +73,8 @@ protected:
 	GLfloat							m_pixelSize{ 1 };
 	GLfloat							m_rotAngleInDegree{};
 	glm::vec3						m_rotAxis{ 0.0f, 0.0f, 1.0f };
+
+	bool							m_bDrawInWireFrameMode{ false };
 };
 
 inline void Drawable::release()
@@ -109,9 +113,9 @@ inline void Drawable::deactivateAll()
 inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 {
 	glm::mat4 projection = glm::identity<glm::mat4>();
-#if defined(ORTHOGRAPHIC_VIEW)
 	(void)fovy;
 	(void)aspectRatio;
+#if defined(ORTHOGRAPHIC_VIEW)
 	projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, CAM_NEAR, CAM_FAR);
 #elif defined(PERSPECTIVE_VIEW)
 	projection = glm::perspective(fovy, aspectRatio, CAM_NEAR, CAM_FAR);
@@ -143,7 +147,7 @@ inline void Drawable::setUniformView()
 {
 	glm::mat4 view = glm::identity<glm::mat4>();
 
-	view = glm::lookAt(VIEW_POSITION, VIEW_POSITION + VIEW_FRONT, VIEW_UP);
+	//view = glm::lookAt(VIEW_POSITION, VIEW_POSITION + VIEW_FRONT, VIEW_UP);
 
 	ShaderProgram::setUniform_fm(m_shader.first, "view", view);
 }
