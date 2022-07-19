@@ -13,7 +13,7 @@ public:
 	Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centre);
 	Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z = 0.0f);
 
-	void setDrawFilled(bool val) { m_bFilled = val; }
+	void setDrawInWireFrameMode(bool mode) override;
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
@@ -31,8 +31,7 @@ private:
 	glm::vec3				m_centre;
 	GLfloat					m_radius{};
 	std::vector<Triangle*>	m_triangles;
-	GLuint					m_triangleCount{ 45 };
-	bool					m_bFilled{ false };
+	const GLuint			m_triangleCount{ 45 };
 };
 
 Circle::Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centre)
@@ -57,6 +56,18 @@ Circle::Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat 
 	, m_centre(x, y, z)
 {
 	allocateTriangle(shaderID, false);
+}
+
+inline void Circle::setDrawInWireFrameMode(bool mode)
+{
+	if (m_bDrawInWireFrameMode != mode)
+	{
+		m_bDrawInWireFrameMode = mode;
+		for (size_t i = 0; i < m_triangles.size(); ++i)
+		{
+			m_triangles[i]->setDrawInWireFrameMode(mode);
+		}
+	}
 }
 
 inline void Circle::init()
@@ -129,6 +140,7 @@ inline void Circle::allocateTriangle(GLuint shaderID, bool bOwnIt)
 	for (GLuint i = 0; i < m_triangleCount; ++i)
 	{
 		m_triangles[i] = new Triangle(shaderID, bOwnIt);
+		m_triangles[i]->setDrawInWireFrameMode(m_bDrawInWireFrameMode);
 	}
 }
 

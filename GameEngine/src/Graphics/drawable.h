@@ -7,6 +7,7 @@
 
 #include "Common/constants.h"
 #include "shaderProgram.h"
+#include "Camera/camera.h"
 
 class Drawable
 {
@@ -33,7 +34,7 @@ public:
 	void setVAO(GLuint id, bool bOwnIt) { m_vao.first = id; m_vao.second = bOwnIt; }
 	void setVBO(GLuint id, bool bOwnIt) { m_vbo.first = id; m_vbo.second = bOwnIt; }
 
-	void setDrawInWireFrameMode(bool mode) { m_bDrawInWireFrameMode = mode; }
+	virtual void setDrawInWireFrameMode(bool mode) { m_bDrawInWireFrameMode = mode; }
 
 	void activateShader() { glUseProgram(m_shader.first); }
 	void activateVAO() { glBindVertexArray(m_vao.first); }
@@ -63,6 +64,7 @@ public:
 	static GLuint createVBO();
 	static GLuint createEBO();
 protected:
+	void setDrawMode();
 	virtual void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) = 0;
 
 protected:
@@ -118,7 +120,7 @@ inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 #if defined(ORTHOGRAPHIC_VIEW)
 	projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, kORTHOGRAPHIC_NEAR, kORTHOGRAPHIC_FAR);
 #elif defined(PERSPECTIVE_VIEW)
-	projection = glm::perspective(fovy, aspectRatio, kPERSPECTIVE_NEAR, kPERSPECTIVE_FAR);
+	projection = glm::perspective(glm::radians(fovy), aspectRatio, kPERSPECTIVE_NEAR, kPERSPECTIVE_FAR);
 #endif
 	ShaderProgram::setUniform_fm(m_shader.first, "projection", projection);
 }
@@ -152,4 +154,16 @@ inline GLuint Drawable::createEBO()
 	GLuint id{};
 	glGenBuffers(1, &id);
 	return id;
+}
+
+inline void Drawable::setDrawMode()
+{
+	if (m_bDrawInWireFrameMode)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 }

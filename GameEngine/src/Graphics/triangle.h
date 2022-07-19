@@ -84,7 +84,7 @@ inline void Triangle::update(float elapsedTimeInMs)
 inline void Triangle::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
-
+	setDrawMode();
 	draw(fovy, aspectRatio, camera);
 
 	deactivateAll();

@@ -96,6 +96,7 @@ inline void Line::update(float elapsedTimeInMs)
 inline void Line::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
+	setDrawMode();
 
 	draw(fovy, aspectRatio, camera);
 

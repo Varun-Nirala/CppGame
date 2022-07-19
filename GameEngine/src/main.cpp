@@ -14,6 +14,7 @@
 #include "Graphics/line.h"
 #include "Graphics/lines.h"
 #include "Graphics/triangle.h"
+#include "Graphics/triangleStrip.h"
 #include "Graphics/rectangle.h"
 #include "Graphics/circle.h"
 #include "Graphics/sphere.h"
@@ -40,6 +41,7 @@ void drawPoints(Engine& e, ResourceManager& rm);
 void drawLine(Engine& e, ResourceManager& rm);
 void drawLines(Engine& e, ResourceManager& rm);
 void drawTriangle(Engine& e, ResourceManager& rm);
+void drawTriangleStrip(Engine& e, ResourceManager& rm);
 void drawRectangle(Engine& e, ResourceManager& rm);
 void drawCircle(Engine& e, ResourceManager& rm, bool bFilled);
 void drawSphere(Engine& e, ResourceManager& rm);
@@ -73,11 +75,13 @@ int main()
 	
 	drawLines(e, rm);
 
-	drawTriangle(e, rm);
+	//drawTriangle(e, rm);
+
+	drawTriangleStrip(e, rm);
 
 	drawRectangle(e, rm);
 
-	drawCircle(e, rm, false);		// draw circle
+	drawCircle(e, rm, false);		// draw wireframe circle
 
 	drawCircle(e, rm, true);		// draw filled circle
 
@@ -142,6 +146,18 @@ void drawTriangle(Engine& e, ResourceManager& rm)
 	e.addDrawable(tri);
 }
 
+void drawTriangleStrip(Engine& e, ResourceManager& rm)
+{
+	TriangleStrip* triStrip = new TriangleStrip(rm.shader("PointWithMVP_Shader"), false);
+	triStrip->addTriangleVertex(glm::vec2{ 200.0f, 400.0f });
+	triStrip->addTriangleVertex(glm::vec2{ 50.0f, 550.0f });
+	triStrip->addTriangleVertex(glm::vec2{ 500.0f, 400.0f });
+	triStrip->addTriangleVertex(glm::vec2{ 350.0f, 550.0f });
+	triStrip->setDrawInWireFrameMode(true);
+	triStrip->init();
+	e.addDrawable(triStrip);
+}
+
 void drawRectangle(Engine& e, ResourceManager& rm)
 {
 	Rectangle* rect = new Rectangle(rm.shader("PointWithMVP_Shader"), false);
@@ -155,7 +171,7 @@ void drawRectangle(Engine& e, ResourceManager& rm)
 void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 {
 	Circle *cir = new Circle(rm.shader("PointWithMVP_Shader"), false, 85.0f, glm::vec3(WIDTH / 2.0f, (HEIGHT / 2.0f) - 200.0f, 0.0f));
-	cir->setDrawFilled(bFilled);
+	cir->setDrawInWireFrameMode(!bFilled);
 	cir->init();
 	e.addDrawable(cir);
 }
@@ -163,6 +179,7 @@ void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 void drawSphere(Engine& e, ResourceManager& rm)
 {
 	Sphere* sphere = new Sphere(rm.shader("PointWithMVP_Shader"), false, 100.0f, glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, 0.0f), 20, 20);
+	sphere->setDrawInWireFrameMode(true);
 	sphere->init();
 	e.addDrawable(sphere);
 }

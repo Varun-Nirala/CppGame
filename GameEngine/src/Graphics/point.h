@@ -85,7 +85,7 @@ inline void Point::update(float elapsedTimeInMs)
 inline void Point::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
-
+	setDrawMode();
 	draw(fovy, aspectRatio, camera);
 	
 	deactivateAll();
