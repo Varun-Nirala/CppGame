@@ -76,21 +76,32 @@ inline void Sphere::init()
 	constexpr GLfloat PI = glm::pi<float>();
 	constexpr GLfloat HALF_PI = PI / 2.0f;
 
-	for (GLint i = 0; i < m_longitude; ++i)
+	std::vector<std::vector<glm::vec3>> grid(m_latitude + 1, std::vector<glm::vec3>(m_longitude + 1, glm::vec3{}));
+
+	for (GLint lat = 0; lat < m_latitude; ++lat)
 	{
-		GLfloat lonAngle = mapValue(i, 0, m_longitude, -PI, PI);
-
-		for (GLint j = 0; j < m_latitude; ++j)
+		GLfloat latAngle = mapValue(lat, 0, m_latitude, -HALF_PI, HALF_PI);
+		for (GLint lon = 0; lon < m_longitude; ++lon)
 		{
-			GLfloat latAngle = mapValue(j, 0, m_latitude, -HALF_PI, HALF_PI);
-
+			GLfloat lonAngle = mapValue(lon, 0, m_longitude, -PI, PI);
+		
 			glm::vec3 vertex;
 			vertex.x = m_radius * std::sinf(lonAngle) * std::cosf(latAngle);
 			vertex.y = m_radius * std::sinf(lonAngle) * std::sinf(latAngle);
 			vertex.z = m_radius * std::cosf(lonAngle);
-			m_points.addPoint(vertex + m_centre);
+
+			grid[lat][lon] = vertex + m_centre;
 		}
 	}
+
+	for (GLint lat = 0; lat < m_latitude; ++lat)
+	{
+		for (GLint lon = 0; lon < m_longitude; ++lon)
+		{
+			m_points.addPoint(grid[lat][lon]);
+		}
+	}
+
 	m_points.init();
 }
 
