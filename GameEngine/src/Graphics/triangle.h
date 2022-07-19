@@ -112,7 +112,7 @@ inline void Triangle::setUniformModel()
 	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
 
 	// 1st translate
-	//model = glm::translate(model, m_vertices[0]);
+	model = glm::translate(model, glm::vec3{});
 
 	// 2nd rotate
 
@@ -123,7 +123,7 @@ inline void Triangle::setUniformModel()
 	model = glm::translate(model, -centroid);										// move origin back
 
 	// 3rd scale
-	//model = glm::scale(model, (m_vertices[1] - m_vertices[0]) * 1.0f);
+	//model = glm::scale(model, glm::vec3(5.0f, 1.0f, 1.0f));
 
 	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
 }

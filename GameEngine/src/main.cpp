@@ -162,7 +162,7 @@ void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 
 void drawSphere(Engine& e, ResourceManager& rm)
 {
-	Sphere* sphere = new Sphere(rm.shader("PointWithMVP_Shader"), false, 100.0f, glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, 0.0f), 150, 150);
+	Sphere* sphere = new Sphere(rm.shader("PointWithMVP_Shader"), false, 100.0f, glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, 0.0f), 20, 20);
 	sphere->init();
 	e.addDrawable(sphere);
 }

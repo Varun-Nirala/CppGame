@@ -123,34 +123,9 @@ inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 	ShaderProgram::setUniform_fm(m_shader.first, "projection", projection);
 }
 
-inline void Drawable::setUniformModel()
-{
-	glm::mat4 model = glm::identity<glm::mat4>();
-
-	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
-
-	// 1st translate
-	//model = glm::translate(model, position);
-
-	// 2nd rotate
-	//model = glm::translate(model, glm::vec3{ 0.5f * size });				// move origin of rotation to center of quad
-	//model = glm::rotate(model, glm::radians(rotationInDeg), rotationVec);	// then rotate
-	//model = glm::translate(model, glm::vec3{ -0.5f * size });				// move origin back
-
-	// 3rd scale
-	//model = glm::scale(model, size * scale);
-
-	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
-}
-
 inline void Drawable::setUniformView(const Camera& camera)
 {
-	(void)camera;
-	glm::mat4 view = glm::identity<glm::mat4>();
-
-	view = camera.viewMatrix();
-
-	ShaderProgram::setUniform_fm(m_shader.first, "view", view);
+	ShaderProgram::setUniform_fm(m_shader.first, "view", camera.viewMatrix());
 }
 
 inline void Drawable::setUniformColor()

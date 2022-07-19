@@ -57,8 +57,6 @@ private:
 	int									m_width{};
 	int									m_height{};
 
-	int									m_fbWidth{};
-	int									m_fbHeight{};
 	bool								m_bIsOpen{true};
 
 	InputManager						m_inputManager;

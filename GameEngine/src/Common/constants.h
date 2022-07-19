@@ -9,8 +9,8 @@
 #endif
 
 extern const char *TITLE;
-extern const int WIDTH;
-extern const int HEIGHT;
+extern int WIDTH;
+extern int HEIGHT;
 extern const int OPENGL_MAJOR_VERSION;
 extern const int OPENGL_MINOR_VERSION;
 

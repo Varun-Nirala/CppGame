@@ -2,6 +2,7 @@
 #include "displayWindow.h"
 #include "Common/logger.h"
 #include "Common/debugOpenGL.h"
+#include "Common/constants.h"
 
 #define DEBUG_OPENGL
 
@@ -70,9 +71,13 @@ DisplayWindow::DisplayWindow(const char* title, int width, int height, int& hint
 
 	registerCallbacks();
 
-	glfwGetFramebufferSize(m_pWindow, &m_fbWidth, &m_fbHeight);
-	glViewport(0, 0, m_fbWidth, m_fbHeight);
-
+	glfwGetFramebufferSize(m_pWindow, &m_width, &m_height);
+	glViewport(0, 0, m_width, m_height);
+	
+	WIDTH = m_width;
+	HEIGHT = m_height;
+	
+	glfwSetCursorPos(m_pWindow, m_width / 2.0f, m_height / 2.0f);
 }
 
 void DisplayWindow::preRender()
@@ -88,7 +93,7 @@ void DisplayWindow::postRender()
 
 float DisplayWindow::aspectRatio() const
 {
-    return m_fbWidth / (float)m_fbHeight;
+    return m_width / (float)m_height;
 }
 
 void DisplayWindow::onClose()
@@ -103,10 +108,13 @@ void DisplayWindow::onRefresh()
 
 void DisplayWindow::onResize(int newWidth, int newHeight)
 {
-	m_fbWidth = newWidth;
-	m_fbHeight = newHeight;
+	m_width = newWidth;
+	m_height = newHeight;
 
-	glViewport(0, 0, m_fbWidth, m_fbHeight);
+	WIDTH = m_width;
+	HEIGHT = m_height;
+
+	glViewport(0, 0, m_width, m_height);
 }
 
 void DisplayWindow::onKeyInput(int key, int scancode, int action, int mods)

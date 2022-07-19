@@ -1,8 +1,8 @@
 #include "Common/constants.h"
 
 const char *TITLE						= "Engine";
-const int WIDTH							= 800;
-const int HEIGHT						= 600;
+int WIDTH								= 800;
+int HEIGHT								= 600;
 const int OPENGL_MAJOR_VERSION			= 4;
 const int OPENGL_MINOR_VERSION			= 6;
 
