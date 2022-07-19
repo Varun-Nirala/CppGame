@@ -31,8 +31,8 @@ Camera::Camera(glm::vec3 pos, glm::vec3 front, glm::vec3 up, GLfloat yaw, GLfloa
     , m_speed { kSPEED }
     , m_senstivity { kSENSTIVITY }
     , m_zoom { kZOOM_MAX }
-    , m_near(kPERSPECTIVE_NEAR)
-    , m_far(kPERSPECTIVE_FAR)
+    , m_near(kORTHOGRAPHIC_NEAR)
+    , m_far(kORTHOGRAPHIC_FAR)
 {
     recalculateCameraAttributes();
 }
@@ -45,8 +45,8 @@ Camera::Camera(GLfloat posX, GLfloat posY, GLfloat posZ, GLfloat upX, GLfloat up
     , m_speed{ kSPEED }
     , m_senstivity{ kSENSTIVITY }
     , m_zoom{ kZOOM_MAX }
-    , m_near(kPERSPECTIVE_NEAR)
-    , m_far(kPERSPECTIVE_FAR)
+    , m_near(kORTHOGRAPHIC_NEAR)
+    , m_far(kORTHOGRAPHIC_FAR)
 {
     recalculateCameraAttributes();
 }
@@ -56,9 +56,9 @@ glm::mat4 Camera::viewMatrix() const
     return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-void Camera::update(GLdouble elapsedTime)
+void Camera::update(GLdouble elapsedTimeInMs)
 {
-    m_velocity = m_speed * elapsedTime;
+    m_velocity = m_speed * (elapsedTimeInMs / 1000.0f);
     if (m_bStateChanged)
     {
         recalculateCameraAttributes();

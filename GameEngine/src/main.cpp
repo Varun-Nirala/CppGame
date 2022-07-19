@@ -68,23 +68,16 @@ int main()
 	rm.addShader("PointWithMVP_Shader", shaders);
 
 	drawPoint(e, rm);
-
 	drawPoints(e, rm);
-
 	drawLine(e, rm);
-	
 	drawLines(e, rm);
-
-	//drawTriangle(e, rm);
-
+	drawTriangle(e, rm);
 	drawTriangleStrip(e, rm);
-
 	drawRectangle(e, rm);
 
 	drawCircle(e, rm, false);		// draw wireframe circle
 
 	drawCircle(e, rm, true);		// draw filled circle
-
 	drawSphere(e, rm);
 
 	e.startLoop();

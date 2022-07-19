@@ -19,8 +19,6 @@ public:
 	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
-	void setUniformModel() override;
-
 	glm::vec3 getCentre() override;
 protected:
 	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
@@ -103,29 +101,6 @@ inline void Triangle::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& came
 	setUniformColor();
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-inline void Triangle::setUniformModel()
-{
-	glm::mat4 model = glm::identity<glm::mat4>();
-
-	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
-
-	// 1st translate
-	model = glm::translate(model, glm::vec3{0.0f, 0.0f, -3.0f});
-
-	// 2nd rotate
-
-	glm::vec3 centroid = getCentre();
-
-	model = glm::translate(model, centroid);										// move origin of rotation to center of quad
-	model = glm::rotate(model, glm::radians(m_rotAngleInDegree), m_rotAxis);		// then rotate
-	model = glm::translate(model, -centroid);										// move origin back
-
-	// 3rd scale
-	//model = glm::scale(model, glm::vec3(5.0f, 1.0f, 1.0f));
-
-	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
 }
 
 inline glm::vec3 Triangle::getCentre()

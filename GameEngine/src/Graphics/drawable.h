@@ -20,12 +20,18 @@ public:
 
 	void setPixelSize(GLfloat size) { m_pixelSize = size; }
 	void setRotationAngle(GLfloat angleInDeg) { m_rotAngleInDegree = angleInDeg; }
-	void setRotationAxis(glm::vec3 axis) { m_rotAxis = axis; }
+	void setRotationAxis(const glm::vec3 &axis) { m_rotAxis = axis; }
 	void setRotationAxis(GLfloat x, GLfloat y, GLfloat z) { m_rotAxis = glm::vec3{ x, y, z }; }
+	void setTranslatePosition(const glm::vec3& pos) { m_translatePosition = pos; }
+	void setTranslatePosition(GLfloat x, GLfloat y, GLfloat z) { m_translatePosition = glm::vec3{ x, y, z }; }
+	void setScale(const glm::vec3& pos) { m_scale = pos; }
+	void setScale(GLfloat x, GLfloat y, GLfloat z) { m_scale = glm::vec3{ x, y, z }; }
 
 	GLfloat getPixelSize() const { return m_pixelSize; }
 	GLfloat getRotationAngleInDeg() { return m_rotAngleInDegree; }
 	glm::vec3 getRotationAxis() { return m_rotAxis; }
+	glm::vec3 setTranslatePosition() const{ return m_translatePosition; }
+	glm::vec3 setScale() const { return m_scale; }
 
 	void setColor(glm::vec3 color) { m_color = glm::vec4(color, 1.0f); }
 	void setColor(glm::vec4 color) { m_color = color; }
@@ -55,7 +61,7 @@ public:
 
 	virtual void setUniformProjection(GLfloat fovy, GLfloat aspectRatio);
 	virtual void setUniformView(const Camera& camera);
-	virtual void setUniformModel() = 0;
+	virtual void setUniformModel();
 	virtual void setUniformColor();
 
 	virtual glm::vec3 getCentre() = 0;
@@ -73,8 +79,11 @@ protected:
 	std::pair<GLuint, bool>			m_vbo;
 	glm::vec4						m_color{ 1.0f, 0.0f, 0.0f, 1.0f };
 	GLfloat							m_pixelSize{ 1 };
+
 	GLfloat							m_rotAngleInDegree{};
 	glm::vec3						m_rotAxis{ 0.0f, 0.0f, 1.0f };
+	glm::vec3						m_scale{ 1.0f };
+	glm::vec3						m_translatePosition{ 0.0f };
 
 	bool							m_bDrawInWireFrameMode{ false };
 };
@@ -129,6 +138,29 @@ inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 inline void Drawable::setUniformView(const Camera& camera)
 {
 	ShaderProgram::setUniform_fm(m_shader.first, "view", camera.viewMatrix());
+}
+
+inline void Drawable::setUniformModel()
+{
+	glm::mat4 model = glm::identity<glm::mat4>();
+
+	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
+
+	// 1st translate
+	model = glm::translate(model, m_translatePosition);
+
+	// 2nd rotate
+
+	glm::vec3 centroid = getCentre();
+
+	model = glm::translate(model, centroid);										// move origin of rotation to center of quad
+	model = glm::rotate(model, glm::radians(m_rotAngleInDegree), m_rotAxis);		// then rotate
+	model = glm::translate(model, -centroid);										// move origin back
+
+	// 3rd scale
+	model = glm::scale(model, m_scale);
+
+	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
 }
 
 inline void Drawable::setUniformColor()

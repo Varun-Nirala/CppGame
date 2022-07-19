@@ -77,7 +77,6 @@ inline void Circle::init()
 	// x = rcos0
 	// y = rsin0
 	glm::vec3 p1 = m_centre;
-	p1.x += m_radius;
 
 	glm::vec3 p2 = p1;
 	GLfloat offset = 360.0f / m_triangleCount;
@@ -88,7 +87,6 @@ inline void Circle::init()
 	{
 		p1.x = m_centre.x + m_radius * (GLfloat)std::cos(glm::radians(i));
 		p1.y = m_centre.y + m_radius * (GLfloat)std::sin(glm::radians(i));
-
 		p2.x = m_centre.x + m_radius * (GLfloat)std::cos(glm::radians(i + offset));
 		p2.y = m_centre.y + m_radius * (GLfloat)std::sin(glm::radians(i + offset));
 

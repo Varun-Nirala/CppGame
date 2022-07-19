@@ -25,8 +25,6 @@ public:
 	void activateEBO();
 	void deactivateEBO();
 
-	void setUniformModel() override;
-
 	glm::vec3 getCentre() override;
 
 protected:
@@ -156,28 +154,6 @@ inline void Rectangle::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& cam
 	setUniformColor();
 	
 	glDrawElements(GL_TRIANGLES, (GLsizei)m_indices.size(), GL_UNSIGNED_INT, 0);
-}
-
-inline void Rectangle::setUniformModel()
-{
-	glm::mat4 model = glm::identity<glm::mat4>();
-
-	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
-
-	// 1st translate
-	//model = glm::translate(model, m_vertices[0]);
-
-	// 2nd rotate
-	glm::vec3 centroid = getCentre();
-
-	model = glm::translate(model, centroid);										// move origin of rotation to center of quad
-	model = glm::rotate(model, glm::radians(m_rotAngleInDegree), m_rotAxis);		// then rotate
-	model = glm::translate(model, -centroid);										// move origin back
-
-	// 3rd scale
-	//model = glm::scale(model, (m_vertices[1] - m_vertices[0]) * 1.0f);
-
-	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
 }
 
 inline glm::vec3 Rectangle::getCentre()
