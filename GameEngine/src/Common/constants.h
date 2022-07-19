@@ -2,11 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#if 1
-	#define ORTHOGRAPHIC_VIEW
-#else
-	#define PERSPECTIVE_VIEW
-#endif
+extern bool kbOrthographicView;
 
 extern const char *TITLE;
 extern int WIDTH;

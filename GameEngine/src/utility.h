@@ -9,8 +9,6 @@
 
 #include "Common/logger.h"
 
-
-
 class Utility
 {
 public:

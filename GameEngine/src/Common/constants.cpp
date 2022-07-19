@@ -6,6 +6,8 @@ int HEIGHT								= 600;
 const int OPENGL_MAJOR_VERSION			= 4;
 const int OPENGL_MINOR_VERSION			= 6;
 
+bool kbOrthographicView					= true;
+
 const float kPERSPECTIVE_NEAR			= 0.1f;
 const float kPERSPECTIVE_FAR			= 100.0f;
 

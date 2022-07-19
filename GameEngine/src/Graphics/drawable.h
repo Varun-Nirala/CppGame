@@ -115,13 +115,14 @@ inline void Drawable::deactivateAll()
 inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 {
 	glm::mat4 projection = glm::identity<glm::mat4>();
-	(void)fovy;
-	(void)aspectRatio;
-#if defined(ORTHOGRAPHIC_VIEW)
-	projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, kORTHOGRAPHIC_NEAR, kORTHOGRAPHIC_FAR);
-#elif defined(PERSPECTIVE_VIEW)
-	projection = glm::perspective(glm::radians(fovy), aspectRatio, kPERSPECTIVE_NEAR, kPERSPECTIVE_FAR);
-#endif
+	if (kbOrthographicView)
+	{
+		projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, kORTHOGRAPHIC_NEAR, kORTHOGRAPHIC_FAR);
+	}
+	else
+	{
+		projection = glm::perspective(glm::radians(fovy), aspectRatio, kPERSPECTIVE_NEAR, kPERSPECTIVE_FAR);
+	}
 	ShaderProgram::setUniform_fm(m_shader.first, "projection", projection);
 }
 

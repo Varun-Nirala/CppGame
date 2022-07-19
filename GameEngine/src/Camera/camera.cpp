@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Common/constants.h"
 
+#include "utility.h"
+
 const GLint FORWARD			= KEY_W;
 const GLint BACKWARD		= KEY_S;
 const GLint LEFT			= KEY_A;
@@ -123,14 +125,14 @@ void Camera::print(const std::string& prefix) const
     Logger::LOG_MSG(prefix, "  Mouse Senstivity  : ", m_senstivity, '\n');
     Logger::LOG_MSG(prefix, "  Zoom Factor       : ", m_zoom, '\n');
     Logger::LOG_MSG(prefix, "  Near and Far      : ", m_near, ", ", m_far, '\n');
-    //Logger::LOG_MSG(prefix, "  Current Velocity  : ", m_velocity, '\n');
-    //Logger::LOG_MSG(prefix, "  Position          : ", glmVecAsString(m_position), '\n');
-    //Logger::LOG_MSG(prefix, "  Front             : ", glmVecAsString(m_front), '\n');
-    //Logger::LOG_MSG(prefix, "  Right             : ", glmVecAsString(m_right), '\n');
-    //Logger::LOG_MSG(prefix, "  Up                : ", glmVecAsString(m_up), '\n');
-    //Logger::LOG_MSG(prefix, "  World Up          : ", glmVecAsString(m_worldUp), '\n');
-    //Logger::LOG_MSG(prefix, "  Pitch Constrained : ", m_bConstraintPitch ? "True" : "False", '\n');
-    //Logger::LOG_MSG('\n');
+    Logger::LOG_MSG(prefix, "  Current Velocity  : ", m_velocity, '\n');
+    Logger::LOG_MSG(prefix, "  Position          : ", Utility::glmVecAsString(m_position), '\n');
+    Logger::LOG_MSG(prefix, "  Front             : ", Utility::glmVecAsString(m_front), '\n');
+    Logger::LOG_MSG(prefix, "  Right             : ", Utility::glmVecAsString(m_right), '\n');
+    Logger::LOG_MSG(prefix, "  Up                : ", Utility::glmVecAsString(m_up), '\n');
+    Logger::LOG_MSG(prefix, "  World Up          : ", Utility::glmVecAsString(m_worldUp), '\n');
+    Logger::LOG_MSG(prefix, "  Pitch Constrained : ", m_bConstraintPitch ? "True" : "False", '\n');
+    Logger::LOG_MSG('\n');
 }
 
 void Camera::recalculateCameraAttributes()

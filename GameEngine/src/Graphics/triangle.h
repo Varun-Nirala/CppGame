@@ -112,7 +112,7 @@ inline void Triangle::setUniformModel()
 	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
 
 	// 1st translate
-	model = glm::translate(model, glm::vec3{});
+	model = glm::translate(model, glm::vec3{0.0f, 0.0f, -3.0f});
 
 	// 2nd rotate
 

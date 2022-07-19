@@ -5,16 +5,21 @@
 
 #include "Common/constants.h"
 
+#include "Common/logger.h"
+
 Engine::Engine()
     : m_camera(glm::vec3{ 0.0f, 0.0f, 3.0f })
 {
-#if defined(ORTHOGRAPHIC_VIEW)
-    m_camera.setNear(kORTHOGRAPHIC_NEAR);
-    m_camera.setFar(kORTHOGRAPHIC_FAR);
-#elif defined(PERSPECTIVE_VIEW)
-    m_camera.setNear(kPERSPECTIVE_NEAR);
-    m_camera.setFar(kPERSPECTIVE_FAR);
-#endif
+    if (kbOrthographicView)
+    {
+        m_camera.setNear(kORTHOGRAPHIC_NEAR);
+        m_camera.setFar(kORTHOGRAPHIC_FAR);
+    }
+    else
+    {
+        m_camera.setNear(kPERSPECTIVE_NEAR);
+        m_camera.setFar(kPERSPECTIVE_FAR);
+    }
 }
 
 Engine::~Engine() = default;
@@ -61,6 +66,18 @@ void Engine::onKeyInput(const KeyButton& keybutton)
     {
         m_pWindow->onClose();
         return;
+    }
+    else if (keybutton.action.down && keybutton.keycode == KEY_C)
+    {
+        if (kbOrthographicView)
+        {
+            ns_Util::Logger::LOG_INFO("Changing view from Orthographic to Perspective.\n");
+        }
+        else
+        {
+            ns_Util::Logger::LOG_INFO("Changing view from Perspective to Orthographic.\n");
+        }
+        kbOrthographicView = !kbOrthographicView;
     }
 }
 
