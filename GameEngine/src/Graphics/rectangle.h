@@ -54,7 +54,7 @@ inline void Rectangle::setRectangle(GLfloat x, GLfloat y, GLfloat width, GLfloat
 	m_vertices[3].x = x + width;
 	m_vertices[3].y = y + height;
 
-	m_vertices[0].z = m_vertices[1].z = m_vertices[2].z = m_vertices[3].z = 0.0f;
+	m_vertices[0].z = m_vertices[1].z = m_vertices[2].z = m_vertices[3].z = kDEFAULT_Z;
 
 	m_indices = { 0, 1, 2, 1, 2, 3 };
 }

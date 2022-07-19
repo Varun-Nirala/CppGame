@@ -83,7 +83,7 @@ protected:
 	GLfloat							m_rotAngleInDegree{};
 	glm::vec3						m_rotAxis{ 0.0f, 0.0f, 1.0f };
 	glm::vec3						m_scale{ 1.0f };
-	glm::vec3						m_translatePosition{ 0.0f };
+	glm::vec3						m_translatePosition{ 0.0f, 0.0f, kDEFAULT_Z };
 
 	bool							m_bDrawInWireFrameMode{ false };
 };
@@ -137,7 +137,9 @@ inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 
 inline void Drawable::setUniformView(const Camera& camera)
 {
-	ShaderProgram::setUniform_fm(m_shader.first, "view", camera.viewMatrix());
+	glm::mat4 view = glm::identity<glm::mat4>();
+	view = camera.viewMatrix();
+	ShaderProgram::setUniform_fm(m_shader.first, "view", view);
 }
 
 inline void Drawable::setUniformModel()

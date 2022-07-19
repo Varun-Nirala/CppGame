@@ -11,7 +11,7 @@ class Circle : public Drawable
 public:
 	Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec2 centre);
 	Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, glm::vec3 centre);
-	Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z = 0.0f);
+	Circle(GLuint shaderID, bool bOwnIt, GLfloat radius, GLfloat x, GLfloat y, GLfloat z = kDEFAULT_Z);
 
 	void setDrawInWireFrameMode(bool mode) override;
 

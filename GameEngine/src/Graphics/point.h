@@ -11,7 +11,7 @@ class Point : public Drawable
 public:
 	Point(GLuint shaderID, bool bOwnIt, glm::vec2 point);
 	Point(GLuint shaderID, bool bOwnIt, glm::vec3 point);
-	Point(GLuint shaderID, bool bOwnIt, GLfloat x, GLfloat y, GLfloat z = 0.0f);
+	Point(GLuint shaderID, bool bOwnIt, GLfloat x, GLfloat y, GLfloat z = kDEFAULT_Z);
 
 	void init() override;
 	void update(float elapsedTimeInMs) override;
@@ -28,7 +28,7 @@ private:
 
 Point::Point(GLuint shaderID, bool bOwnIt, glm::vec2 point)
 	: Drawable(shaderID, bOwnIt)
-	, m_point(point, 0.0f)
+	, m_point(point, kDEFAULT_Z)
 {
 	setPixelSize(2);
 }

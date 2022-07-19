@@ -34,7 +34,7 @@ TriangleStrip::TriangleStrip(GLuint shaderID, bool bOwnIt)
 
 inline void TriangleStrip::addTriangleVertex(const glm::vec2 v)
 {
-	m_vertices.push_back(glm::vec3(v, 0.0f));
+	m_vertices.push_back(glm::vec3(v, kDEFAULT_Z));
 }
 
 inline void TriangleStrip::addTriangleVertex(const glm::vec3 v)

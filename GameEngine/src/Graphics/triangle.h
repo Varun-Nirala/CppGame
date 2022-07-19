@@ -34,9 +34,9 @@ Triangle::Triangle(GLuint shaderID, bool bOwnIt)
 
 inline void Triangle::setTriangle(const std::vector<glm::vec2>& vec)
 {
-	m_vertices[0] = glm::vec3(vec[0], 0.0f);
-	m_vertices[1] = glm::vec3(vec[1], 0.0f);
-	m_vertices[2] = glm::vec3(vec[2], 0.0f);
+	m_vertices[0] = glm::vec3(vec[0], kDEFAULT_Z);
+	m_vertices[1] = glm::vec3(vec[1], kDEFAULT_Z);
+	m_vertices[2] = glm::vec3(vec[2], kDEFAULT_Z);
 }
 
 inline void Triangle::setTriangle(const std::vector<glm::vec3>& vec)

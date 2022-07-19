@@ -8,7 +8,6 @@
 #include "Common/logger.h"
 
 Engine::Engine()
-    : m_camera(glm::vec3{ 0.0f, 0.0f, 3.0f })
 {
     if (kbOrthographicView)
     {

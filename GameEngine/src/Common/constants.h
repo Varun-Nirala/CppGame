@@ -16,6 +16,8 @@ extern const float kPERSPECTIVE_FAR;
 extern const float kORTHOGRAPHIC_NEAR;
 extern const float kORTHOGRAPHIC_FAR;
 
+extern const float kDEFAULT_Z;
+
 extern const glm::vec2 kGRAVITY;
 
 extern const float kKMH_TO_MS;

@@ -44,7 +44,7 @@ inline void Lines::setLines(const std::vector<glm::vec2>& lines)
 	m_lines.reserve(lines.size());
 	for (auto& x : lines)
 	{
-		m_lines.push_back(glm::vec3(x, 0.0f));
+		m_lines.push_back(glm::vec3(x, kDEFAULT_Z));
 	}
 }
 
@@ -55,8 +55,8 @@ inline void Lines::setLines(const std::vector<glm::vec3>& lines)
 
 inline void Lines::addine(const glm::vec2 p1, const glm::vec2 p2)
 {
-	m_lines.push_back(glm::vec3(p1, 0.0f));
-	m_lines.push_back(glm::vec3(p2, 0.0f));
+	m_lines.push_back(glm::vec3(p1, kDEFAULT_Z));
+	m_lines.push_back(glm::vec3(p2, kDEFAULT_Z));
 }
 
 inline void Lines::addine(const glm::vec3 p1, const glm::vec3 p2)

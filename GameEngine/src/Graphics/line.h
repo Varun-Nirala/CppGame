@@ -54,8 +54,8 @@ inline void Line::setLine(const glm::vec3& p1, const glm::vec3& p2)
 
 inline void Line::setLine(const glm::vec2& p1, const glm::vec2& p2)
 {
-	m_p[0] = glm::vec3(p1, 0.0f);
-	m_p[1] = glm::vec3(p2, 0.0f);
+	m_p[0] = glm::vec3(p1, kDEFAULT_Z);
+	m_p[1] = glm::vec3(p2, kDEFAULT_Z);
 }
 
 inline void Line::init()
