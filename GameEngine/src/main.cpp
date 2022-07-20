@@ -55,6 +55,7 @@ int main()
 	int minor = OPENGL_MINOR_VERSION;
 
 	e.init(TITLE, WIDTH, HEIGHT, major, minor);
+	e.enableDepthTest();
 
 	glEnable(GL_LINE_SMOOTH);
 
@@ -67,17 +68,17 @@ int main()
 	shaders[1] = std::make_pair(R"(.\resources\Shaders\pointWithMVP.frag)", SHADER_TYPE::FRAG);
 	rm.addShader("PointWithMVP_Shader", shaders);
 
-	drawPoint(e, rm);
-	drawPoints(e, rm);
-	drawLine(e, rm);
-	drawLines(e, rm);
-	drawTriangle(e, rm);
-	drawTriangleStrip(e, rm);
-	drawRectangle(e, rm);
+	//drawPoint(e, rm);
+	//drawPoints(e, rm);
+	//drawLine(e, rm);
+	//drawLines(e, rm);
+	//drawTriangle(e, rm);
+	//drawTriangleStrip(e, rm);
+	//drawRectangle(e, rm);
 
-	drawCircle(e, rm, false);		// draw wireframe circle
+	//drawCircle(e, rm, false);		// draw wireframe circle
 
-	drawCircle(e, rm, true);		// draw filled circle
+	//drawCircle(e, rm, true);		// draw filled circle
 	drawSphere(e, rm);
 
 	e.startLoop();
@@ -86,7 +87,7 @@ int main()
 
 void drawPoint(Engine& e, ResourceManager& rm)
 {
-	Point *point = new Point(rm.shader("PointWithMVP_Shader"), true, glm::vec2{ 50.0f, 50.0f });
+	Point *point = new Point(rm.shader("PointWithMVP_Shader"), true, glm::vec2{ 0.0f, 0.0f });
 	point->init();
 	e.addDrawable(point);
 }
@@ -94,8 +95,8 @@ void drawPoint(Engine& e, ResourceManager& rm)
 void drawPoints(Engine& e, ResourceManager& rm)
 {
 	Points *points = new Points(rm.shader("PointWithMVP_Shader"), false);
-	float inc = 1.0f;
-	glm::vec3 start(50.0f, 100.0f, 0.0f);
+	float inc = 0.01f;
+	glm::vec2 start(0.0f, 0.0f);
 
 	for (size_t i = 0; i < 30; ++i)
 	{
@@ -108,7 +109,7 @@ void drawPoints(Engine& e, ResourceManager& rm)
 
 void drawLine(Engine& e, ResourceManager& rm)
 {
-	Line *line = new Line(rm.shader("PointWithMVP_Shader"), false, glm::vec2(100.0f, 150.0f), glm::vec2(150.0f, 250.0f));
+	Line *line = new Line(rm.shader("PointWithMVP_Shader"), false, glm::vec2(0.0f, 0.0f), glm::vec2(0.5f, 0.5f));
 	line->init();
 	e.addDrawable(line);
 }
@@ -116,8 +117,8 @@ void drawLine(Engine& e, ResourceManager& rm)
 void drawLines(Engine& e, ResourceManager& rm)
 {
 	Lines *lines = new Lines(rm.shader("PointWithMVP_Shader"), false);
-	lines->addine(glm::vec2(600.0f, 10.0f), glm::vec2(450.0f, 210.0f));
-	lines->addine(glm::vec2(450.0f, 210.0f), glm::vec2(750.0f, 210.0f));
+	lines->addine(glm::vec2(0.0f, 1.0f), glm::vec2(-1.0f, -1.0f));
+	lines->addine(glm::vec2(-1.0f, -1.0f), glm::vec2(1.0f, -1.0f));
 
 	lines->setMakeLoop(true);
 	lines->init();
@@ -129,9 +130,9 @@ void drawTriangle(Engine& e, ResourceManager& rm)
 {
 	Triangle* tri = new Triangle(rm.shader("PointWithMVP_Shader"), false);
 	tri->setTriangle({ 
-		glm::vec2{200.0f, 400.0f},
-		glm::vec2{50.0f, 550.0f},
-		glm::vec2{350.0f, 550.0f}
+		glm::vec2{0.0f, -1.0f},
+		glm::vec2{-1.0f, -1.0f},
+		glm::vec2{1.0f, -1.0f}
 		});
 
 	tri->init();
@@ -142,10 +143,10 @@ void drawTriangle(Engine& e, ResourceManager& rm)
 void drawTriangleStrip(Engine& e, ResourceManager& rm)
 {
 	TriangleStrip* triStrip = new TriangleStrip(rm.shader("PointWithMVP_Shader"), false);
-	triStrip->addTriangleVertex(glm::vec2{ 200.0f, 400.0f });
-	triStrip->addTriangleVertex(glm::vec2{ 50.0f, 550.0f });
-	triStrip->addTriangleVertex(glm::vec2{ 500.0f, 400.0f });
-	triStrip->addTriangleVertex(glm::vec2{ 350.0f, 550.0f });
+	triStrip->addTriangleVertex(glm::vec2{ -1.0f, 1.0f });					// top left
+	triStrip->addTriangleVertex(glm::vec2{ -1.0f, -1.0f });					// left
+	triStrip->addTriangleVertex(glm::vec2{ 1.0f, 1.0f });					// top right
+	triStrip->addTriangleVertex(glm::vec2{ 1.0f, -1.0f });					// right
 	triStrip->setDrawInWireFrameMode(true);
 	triStrip->init();
 	e.addDrawable(triStrip);
@@ -155,7 +156,7 @@ void drawRectangle(Engine& e, ResourceManager& rm)
 {
 	Rectangle* rect = new Rectangle(rm.shader("PointWithMVP_Shader"), false);
 
-	rect->setRectangle(550.0f, 400.0f, 200.0f, 150.0f);
+	rect->setRectangle(-0.9f, 0.9f, 0.8f, 0.8f);
 	rect->init();
 	rect->setRotationAngle(45);
 	e.addDrawable(rect);
@@ -163,7 +164,7 @@ void drawRectangle(Engine& e, ResourceManager& rm)
 
 void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 {
-	Circle *cir = new Circle(rm.shader("PointWithMVP_Shader"), false, 85.0f, glm::vec3(WIDTH / 2.0f, (HEIGHT / 2.0f) - 200.0f, kDEFAULT_Z));
+	Circle *cir = new Circle(rm.shader("PointWithMVP_Shader"), false, 1.0f, glm::vec3(0.0f, 0.0f, kDEFAULT_Z));
 	cir->setDrawInWireFrameMode(!bFilled);
 	cir->init();
 	e.addDrawable(cir);
@@ -171,7 +172,7 @@ void drawCircle(Engine& e, ResourceManager& rm, bool bFilled)
 
 void drawSphere(Engine& e, ResourceManager& rm)
 {
-	Sphere* sphere = new Sphere(rm.shader("PointWithMVP_Shader"), false, 100.0f, glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, kDEFAULT_Z), 20, 20);
+	Sphere* sphere = new Sphere(rm.shader("PointWithMVP_Shader"), false, 1.0f, glm::vec3(0.0f, 0.0f, kDEFAULT_Z), 20, 20);
 	sphere->setDrawInWireFrameMode(true);
 	sphere->init();
 	e.addDrawable(sphere);

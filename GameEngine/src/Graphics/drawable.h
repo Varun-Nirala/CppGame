@@ -83,7 +83,7 @@ protected:
 	GLfloat							m_rotAngleInDegree{};
 	glm::vec3						m_rotAxis{ 0.0f, 0.0f, 1.0f };
 	glm::vec3						m_scale{ 1.0f };
-	glm::vec3						m_translatePosition{ 0.0f, 0.0f, kDEFAULT_Z };
+	glm::vec3						m_translatePosition{ 0.0f, 0.0f, -2.0f };
 
 	bool							m_bDrawInWireFrameMode{ false };
 };
@@ -137,19 +137,25 @@ inline void Drawable::setUniformProjection(GLfloat fovy, GLfloat aspectRatio)
 
 inline void Drawable::setUniformView(const Camera& camera)
 {
-	glm::mat4 view = glm::identity<glm::mat4>();
-	view = camera.viewMatrix();
-	ShaderProgram::setUniform_fm(m_shader.first, "view", view);
+	ShaderProgram::setUniform_fm(m_shader.first, "view", camera.viewMatrix());
 }
 
 inline void Drawable::setUniformModel()
 {
-	glm::mat4 model = glm::identity<glm::mat4>();
+	glm::mat4 model(1.0f);
 
 	// Order :: Scale -> Rotate -> Translate; so because of matrix we have to do it in reverse order
 
+	glm::vec3 orthoGrpahicTranslate{};
+	GLfloat orthoGraphicScale = 1.0f;
+	if (kbOrthographicView)
+	{
+		orthoGrpahicTranslate = glm::vec3(WIDTH / 2.0f, HEIGHT / 2.0f, -kDEFAULT_Z);
+		orthoGraphicScale = 100.0f;
+	}
+
 	// 1st translate
-	model = glm::translate(model, m_translatePosition);
+	model = glm::translate(model, m_translatePosition + orthoGrpahicTranslate);
 
 	// 2nd rotate
 
@@ -160,7 +166,7 @@ inline void Drawable::setUniformModel()
 	model = glm::translate(model, -centroid);										// move origin back
 
 	// 3rd scale
-	model = glm::scale(model, m_scale);
+	model = glm::scale(model, m_scale * orthoGraphicScale);
 
 	ShaderProgram::setUniform_fm(m_shader.first, "model", model);
 }

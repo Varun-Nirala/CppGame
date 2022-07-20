@@ -14,7 +14,7 @@ const float kPERSPECTIVE_FAR			= 100.0f;
 const float kORTHOGRAPHIC_NEAR			= 0.1f;
 const float kORTHOGRAPHIC_FAR			= 100.0f;
 
-extern const float kDEFAULT_Z			= -2.5f;
+extern const float kDEFAULT_Z			= -1.0f;
 
 const glm::vec2 kGRAVITY				= { 0.0f, 9.807f};
 

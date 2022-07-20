@@ -13,6 +13,7 @@ public:
 	Points(GLuint shaderID, bool bOwnIt);
 
 	void setPoints(const std::vector<glm::vec3>& points);
+	void addPoint(const glm::vec2& point);
 	void addPoint(const glm::vec3& point);
 
 	void init() override;
@@ -37,6 +38,11 @@ Points::Points(GLuint shaderID, bool bOwnIt)
 inline void Points::setPoints(const std::vector<glm::vec3>& points)
 {
 	m_points = points;
+}
+
+inline void Points::addPoint(const glm::vec2& point)
+{
+	m_points.push_back(glm::vec3(point, kDEFAULT_Z));
 }
 
 inline void Points::addPoint(const glm::vec3& point)
