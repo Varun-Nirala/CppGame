@@ -43,7 +43,7 @@ public:
 	TextDisplay() = default;
 
 	bool prepareShader(const std::string &vertexShaderFile = R"(./resources/Shaders/text.vert)", const std::string& fragmentShaderFile = R"(./resources/Shaders/text.frag)");
-	bool loadFont(const std::string& filepath = R"(./resources/Fonts/Arial/arial.ttf)", const int fontSize = 46);
+	bool loadFont(const std::string& filepath = R"(./resources/Fonts/Arial/arial.ttf)", const int fontSize = 20);
 
 	void addTextToRender(const std::string &text, GLfloat posX, GLfloat posY, GLfloat scale, const glm::vec4 &color);
 	void setTextToRender(const std::string& text, GLfloat posX, GLfloat posY, GLfloat scale, const glm::vec4 &color);

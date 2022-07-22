@@ -135,9 +135,11 @@ void TextDisplay::setTextToRender(const std::string& text, GLfloat posX, GLfloat
 void TextDisplay::render()
 {
 	ShaderProgram::activate(m_shaderProgram);
+
 	glm::mat4 projection = glm::mat4{ 1.0f };
-	projection = glm::ortho(0.0f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.0f, -1.0f, 1.0f);
+	projection = glm::ortho(0.0f, (GLfloat)WIDTH, 0.0f, (GLfloat)HEIGHT);
 	ShaderProgram::setUniform_fm(m_shaderProgram, "projection", projection);
+	
 	for (size_t i = 0; i < m_text.size(); ++i)
 	{
 		ShaderProgram::setUniform_fv(m_shaderProgram, "textColor", m_text[i].color);
@@ -146,7 +148,7 @@ void TextDisplay::render()
 
 		for (char ch : m_text[i].text)
 		{
-			GlyphChar& gCh = m_charMap[ch];
+			const GlyphChar& gCh = m_charMap[ch];
 
 			GLfloat posX = m_text[i].posX + gCh.bearing.x * m_text[i].scale;
 			GLfloat posY = m_text[i].posY - (gCh.size.y - gCh.bearing.y) * m_text[i].scale;
