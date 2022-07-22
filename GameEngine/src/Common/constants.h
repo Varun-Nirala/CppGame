@@ -159,3 +159,4 @@ extern const glm::vec3 kCOLOR_SILVER;
 extern const glm::vec3 kCOLOR_LIGHT_GRAY;
 extern const glm::vec3 kCOLOR_GAINSBORO;
 extern const glm::vec3 kCOLOR_WHITE_SMOKE;
+extern const glm::vec3 kCOLOR_WHITE;

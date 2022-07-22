@@ -158,3 +158,5 @@ const glm::vec3 kCOLOR_DARK_GRAY                            { 0.66, 0.66, 0.66 }
 const glm::vec3 kCOLOR_SILVER                               { 0.75, 0.75, 0.75 };
 const glm::vec3 kCOLOR_LIGHT_GRAY                           { 0.83, 0.83, 0.83 };
 const glm::vec3 kCOLOR_GAINSBORO                            { 0.86, 0.86, 0.86 };
+const glm::vec3 kCOLOR_WHITE_SMOKE							{ 0.95, 0.95, 0.95 };
+const glm::vec3 kCOLOR_WHITE								{ 1.00, 1.00, 1.00 };
