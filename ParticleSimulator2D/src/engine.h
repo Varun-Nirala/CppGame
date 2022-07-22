@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
+#include "text.h"
+
 class DisplayWindow;
 class ParticleManager;
 
@@ -36,9 +38,12 @@ private:
 	void render();
 	void preRender();
 	void postRender();
+
+	void displayFPS(float currentTimeInSec);
 private:
 	std::unique_ptr<DisplayWindow>			m_pWindow;
 	std::unique_ptr<ParticleManager>		m_particleManager;
 	glm::vec4								m_clearColor{ 0.2f, 0.3f, 0.3f, 1.0f };
 	GLuint									m_enabledBits{};
+	TextDisplay								m_textDisplay;
 };

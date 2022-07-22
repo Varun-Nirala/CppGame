@@ -3,6 +3,8 @@
 #include "particleManager.h"
 #include "displayWindow.h"
 
+#include "Common/logger.h"
+
 Engine::Engine() = default;
 Engine::~Engine() = default;
 
@@ -10,7 +12,11 @@ bool Engine::init(const char* title, int width, int height, int& hintOpenGlMajor
 {
     m_enabledBits = GL_COLOR_BUFFER_BIT;
     m_pWindow = std::make_unique<DisplayWindow>(title, width, height, hintOpenGlMajorVersion, hintOpenGlMinorVersion);
-    m_particleManager = std::make_unique<ParticleManager>(PARTICLE_TYPE::WATER, width, height, glm::vec2{ 0.0f, 0.0f });
+    m_particleManager = std::make_unique<ParticleManager>(PARTICLE_TYPE::SAND, width, height, glm::vec2{ 0.0f, 0.0f });
+
+    m_textDisplay.prepareShader();
+    m_textDisplay.loadFont();
+
     return m_pWindow != nullptr;
 }
 
@@ -91,6 +97,9 @@ void Engine::gameLoop()
     while (m_pWindow->isOpen())
     {
         currTime = m_pWindow->getCurrentTimeInSec();
+
+        displayFPS(currTime);
+
         update(currTime - lastTime);
         
         preRender();
@@ -116,9 +125,26 @@ void Engine::preRender()
 void Engine::render()
 {
     m_particleManager->render();
+    m_textDisplay.addTextToRender("This is sample text", 25.0f, 25.0f, 1.0f, glm::vec4(kCOLOR_DARK_GREEN, 1.0f));
+    m_textDisplay.addTextToRender("(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec4(kCOLOR_MINT_CREAM, 1.0f));
+    m_textDisplay.render();
 }
 
 void Engine::postRender()
 {
     m_pWindow->postRender();
+}
+
+void Engine::displayFPS(float currentTimeInSec)
+{
+    static float lastTime = currentTimeInSec;
+    static int numOfFrames = 0;
+
+    numOfFrames++;
+    if (currentTimeInSec - lastTime >= 1.0)
+    {
+        ns_Util::Logger::LOG_INFO("FPS : ", numOfFrames, " || ", 1000.0 / double(numOfFrames), " ms/frame\n");
+        numOfFrames = 0;
+        lastTime += 1.0;
+    }
 }

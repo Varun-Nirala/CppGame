@@ -24,20 +24,24 @@ set(COMMON_LIBS_DIR "CommonLibs")
 set(GLAD_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/GLAD)
 set(GLFW_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/GLFW)
 set(GLM_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/GLM/glm)
+set(FREETYPE_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/FREE_TYPE)
 
 set(WINDOWS_DIR "C:/Windows/System32")
 
 include_directories(${GLAD_DIR}/include)
 include_directories(${GLFW_DIR}/include)
 include_directories(${GLM_DIR})
+include_directories(${FREETYPE_DIR}/include)
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
 	list(APPEND GLFW_LIB "${GLFW_DIR}/lib/x64/glfw3.lib")
-	set(MY_PATH "PATH=%PATH%" "${GLFW_DIR}/lib/x64;${SDL2_DIR}/lib/x64")
+	list(APPEND FREETYPE_LIB "${FREETYPE_DIR}/lib/x64/freetype.lib")
+	set(MY_PATH "PATH=%PATH%" "${GLFW_DIR}/lib/x64;${SDL2_DIR}/lib/x64;${FREETYPE_DIR}/lib/x64")
 else ()
 	list(APPEND GLFW_LIB "${GLFW_DIR}/lib/x86/glfw3.lib")
-	set(MY_PATH "PATH=%PATH%" "${GLFW_DIR}/lib/x86;${SDL2_DIR}/lib/x86")
+	list(APPEND FREETYPE_LIB "${FREETYPE_DIR}/lib/x86/freetype.lib")
+	set(MY_PATH "PATH=%PATH%" "${GLFW_DIR}/lib/x86;${SDL2_DIR}/lib/x86${FREETYPE_DIR}/lib/x86")
 endif ()
 
 #add_library(glad ${GLAD_DIR}/src/glad.c)
@@ -62,7 +66,7 @@ set(GLAD_SRC ${GLAD_DIR}/src/glad.c)
 add_executable( ${PROJECT} ${SOURCES} ${GLAD_SRC})
 
 target_link_libraries(${PROJECT} opengl32) # glad stb_image)
-target_link_libraries(${PROJECT} ${GLFW_LIB})
+target_link_libraries(${PROJECT} ${GLFW_LIB} ${FREETYPE_LIB})
 
 set_target_properties(${PROJECT} PROPERTIES VS_DEBUGGER_ENVIRONMENT "${MY_PATH}")
 
