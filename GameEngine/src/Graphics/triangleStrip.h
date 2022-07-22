@@ -15,13 +15,13 @@ public:
 	void addTriangleVertex(const glm::vec3 v);
 
 	void init() override;
-	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void update(float elapsedDeltaTimeInSec) override;
+	void render(GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	glm::vec3 getCentre() override { return {}; }
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void draw(GLfloat aspectRatio, const Camera& camera) override;
 
 private:
 	std::vector<glm::vec3>				m_vertices;
@@ -70,16 +70,16 @@ inline void TriangleStrip::init()
 	deactivateVAO();
 }
 
-inline void TriangleStrip::update(float elapsedTimeInMs)
+inline void TriangleStrip::update(float elapsedDeltaTimeInSec)
 {
-	(void)elapsedTimeInMs;
+	(void)elapsedDeltaTimeInSec;
 }
 
-inline void TriangleStrip::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void TriangleStrip::render(GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
 	setDrawMode();
-	draw(fovy, aspectRatio, camera);
+	draw(aspectRatio, camera);
 
 	deactivateAll();
 }
@@ -89,9 +89,9 @@ inline void TriangleStrip::release()
 	Drawable::release();
 }
 
-inline void TriangleStrip::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void TriangleStrip::draw(GLfloat aspectRatio, const Camera& camera)
 {
-	setUniformProjection(fovy, aspectRatio);
+	setUniformProjection(camera.zoomFactor(), aspectRatio);
 	setUniformView(camera);
 	setUniformModel();
 	setUniformColor();

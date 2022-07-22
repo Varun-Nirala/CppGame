@@ -15,13 +15,13 @@ public:
 	void setTriangle(const std::vector<glm::vec3> &vec);
 
 	void init() override;
-	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void update(float elapsedDeltaTimeInSec) override;
+	void render(GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	glm::vec3 getCentre() override;
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void draw(GLfloat aspectRatio, const Camera& camera) override;
 
 private:
 	glm::vec3					m_vertices[3];
@@ -74,16 +74,16 @@ inline void Triangle::init()
 	deactivateVAO();
 }
 
-inline void Triangle::update(float elapsedTimeInMs)
+inline void Triangle::update(float elapsedDeltaTimeInSec)
 {
-	(void)elapsedTimeInMs;
+	(void)elapsedDeltaTimeInSec;
 }
 
-inline void Triangle::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void Triangle::render(GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
 	setDrawMode();
-	draw(fovy, aspectRatio, camera);
+	draw(aspectRatio, camera);
 
 	deactivateAll();
 }
@@ -93,9 +93,9 @@ inline void Triangle::release()
 	Drawable::release();
 }
 
-inline void Triangle::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void Triangle::draw(GLfloat aspectRatio, const Camera& camera)
 {
-	setUniformProjection(fovy, aspectRatio);
+	setUniformProjection(camera.zoomFactor(), aspectRatio);
 	setUniformView(camera);
 	setUniformModel();
 	setUniformColor();

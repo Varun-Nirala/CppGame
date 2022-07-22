@@ -157,8 +157,9 @@ void Engine::gameLoop()
     GLfloat currTime{};
     while (m_pWindow->isOpen())
     {
-        currTime = m_pWindow->getCurrentTimeInMilliSec();
+        currTime = m_pWindow->getCurrentTimeInSec();
         update(currTime - lastTime);
+        lastTime = currTime;
         
         preRender();
         
@@ -168,12 +169,12 @@ void Engine::gameLoop()
     }
 }
 
-void Engine::update(float elapsedDeltaTimeInMs)
+void Engine::update(float elapsedDeltaTimeInSec)
 {
-    m_camera.update(elapsedDeltaTimeInMs);
+    m_camera.update(elapsedDeltaTimeInSec);
     for (size_t i = 0, size = m_drawables.size(); i < size; ++i)
     {
-        m_drawables[i]->update(elapsedDeltaTimeInMs);
+        m_drawables[i]->update(elapsedDeltaTimeInSec);
     }
 }
 
@@ -188,7 +189,7 @@ void Engine::render()
 {
     for (size_t i = 0, size = m_drawables.size(); i < size; ++i)
     {
-        m_drawables[i]->render(m_fovy, m_pWindow->aspectRatio(), m_camera);
+        m_drawables[i]->render(m_pWindow->aspectRatio(), m_camera);
     }
 }
 

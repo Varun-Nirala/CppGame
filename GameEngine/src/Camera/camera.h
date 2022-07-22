@@ -69,7 +69,7 @@ public:
 	inline void setConstrainedPitch(bool val) { m_bConstraintPitch = val; }
 
 	glm::mat4 viewMatrix() const;
-	void update(GLdouble elapsedTimeInMs);
+	void update(GLdouble elapsedDeltaTimeInSec);
 
 	void onKeyInput(const KeyButton &keybutton);
 	void onCursorMove(GLdouble posX, GLdouble posY, GLdouble offsetX, GLdouble offsetY);

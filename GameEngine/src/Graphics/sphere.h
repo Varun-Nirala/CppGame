@@ -22,8 +22,8 @@ public:
 	void setDrawInWireFrameMode(bool mode) override;
 
 	void init() override;
-	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void update(float elapsedDeltaTimeInSec) override;
+	void render(GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	void setUniformModel() override;
@@ -31,7 +31,7 @@ public:
 	glm::vec3 getCentre() override { return m_centre; }
 
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void draw(GLfloat aspectRatio, const Camera& camera) override;
 	void allocateTriangleStrip(GLuint shaderID, bool bOwnIt);
 	GLfloat mapValue(GLint value, GLint currRangeMin, GLint currRangeMax, GLfloat targetRangeMin, GLfloat targetRangeMax);
 
@@ -127,20 +127,20 @@ inline void Sphere::init()
 	}
 }
 
-inline void Sphere::update(float elapsedTimeInMs)
+inline void Sphere::update(float elapsedDeltaTimeInSec)
 {
 	for (GLint lat = 0; lat < m_latitude; ++lat)
 	{
-		m_triStrips[lat]->update(elapsedTimeInMs);
+		m_triStrips[lat]->update(elapsedDeltaTimeInSec);
 	}
 }
 
-inline void Sphere::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void Sphere::render(GLfloat aspectRatio, const Camera& camera)
 {
 	setDrawMode();
 	for (GLint lat = 0; lat < m_latitude; ++lat)
 	{
-		m_triStrips[lat]->render(fovy, aspectRatio, camera);
+		m_triStrips[lat]->render(aspectRatio, camera);
 	}
 }
 
@@ -163,10 +163,9 @@ inline void Sphere::setUniformModel()
 	}
 }
 
-inline void Sphere::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void Sphere::draw(GLfloat aspectRatio, const Camera& camera)
 {
 	(void)camera;
-	(void)fovy;
 	(void)aspectRatio;
 	return;
 }

@@ -16,8 +16,8 @@ public:
 	void setDrawInWireFrameMode(bool mode) override;
 
 	void init() override;
-	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void update(float elapsedDeltaTimeInSec) override;
+	void render(GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	void setUniformModel() override;
@@ -25,7 +25,7 @@ public:
 	glm::vec3 getCentre() override { return m_centre; }
 
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void draw(GLfloat aspectRatio, const Camera& camera) override;
 	void allocateTriangle(GLuint shaderID, bool bOwnIt);
 private:
 	glm::vec3				m_centre;
@@ -99,19 +99,19 @@ inline void Circle::init()
 	}
 }
 
-inline void Circle::update(float elapsedTimeInMs)
+inline void Circle::update(float elapsedDeltaTimeInSec)
 {
 	for (GLuint i = 0; i < m_triangleCount; ++i)
 	{
-		m_triangles[i]->update(elapsedTimeInMs);
+		m_triangles[i]->update(elapsedDeltaTimeInSec);
 	}
 }
 
-inline void Circle::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void Circle::render(GLfloat aspectRatio, const Camera& camera)
 {
 	for (GLuint i = 0; i < m_triangleCount; ++i)
 	{
-		m_triangles[i]->render(fovy, aspectRatio, camera);
+		m_triangles[i]->render(aspectRatio, camera);
 	}
 }
 
@@ -125,10 +125,9 @@ inline void Circle::release()
 	m_triangles.clear();
 }
 
-inline void Circle::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void Circle::draw(GLfloat aspectRatio, const Camera& camera)
 {
 	(void)camera;
-	(void)fovy;
 	(void)aspectRatio;
 }
 

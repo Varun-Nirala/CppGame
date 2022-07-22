@@ -56,9 +56,9 @@ glm::mat4 Camera::viewMatrix() const
     return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-void Camera::update(GLdouble elapsedTimeInMs)
+void Camera::update(GLdouble elapsedDeltaTimeInSec)
 {
-    m_velocity = m_speed * (elapsedTimeInMs / 1000.0f);
+    m_velocity = m_speed * (elapsedDeltaTimeInSec);
     if (m_bStateChanged)
     {
         recalculateCameraAttributes();
@@ -84,6 +84,7 @@ void Camera::onKeyInput(const KeyButton& keybutton)
     {
         m_position += m_right * (GLfloat)m_velocity;
     }
+    m_velocity = 0.0f;
 }
 
 void Camera::onCursorMove(GLdouble posX, GLdouble posY, GLdouble offsetX, GLdouble offsetY)
@@ -98,7 +99,7 @@ void Camera::onCursorMove(GLdouble posX, GLdouble posY, GLdouble offsetX, GLdoub
 
     if (constrainedPitch())
     {
-        glm::clamp(m_pitch, kPITCH_MIN, kPITCH_MAX);
+        m_pitch = glm::clamp(m_pitch, kPITCH_MIN, kPITCH_MAX);
     }
 
     m_bStateChanged = true;
@@ -108,7 +109,7 @@ void Camera::onScroll(GLdouble offsetX, GLdouble offsetY)
 {
     (void)offsetX;
     m_zoom -= static_cast<GLfloat>(offsetY);
-    glm::clamp(m_zoom, kZOOM_MIN, kZOOM_MAX);
+    m_zoom = glm::clamp(m_zoom, kZOOM_MIN, kZOOM_MAX);
 }
 
 void Camera::onMouseButton(const MouseButton& mousebutton)

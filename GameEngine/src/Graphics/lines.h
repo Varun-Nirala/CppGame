@@ -20,13 +20,13 @@ public:
 	void setMakeLoop(bool val);
 	
 	void init() override;
-	void update(float elapsedTimeInMs) override;
-	void render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void update(float elapsedDeltaTimeInSec) override;
+	void render(GLfloat aspectRatio, const Camera& camera) override;
 	void release() override;
 
 	glm::vec3 getCentre() override { return {}; }
 protected:
-	void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) override;
+	void draw(GLfloat aspectRatio, const Camera& camera) override;
 
 private:
 	std::vector<glm::vec3>			m_lines;
@@ -98,17 +98,17 @@ inline void Lines::init()
 	deactivateVAO();
 }
 
-inline void Lines::update(float elapsedTimeInMs)
+inline void Lines::update(float elapsedDeltaTimeInSec)
 {
-	(void)elapsedTimeInMs;
+	(void)elapsedDeltaTimeInSec;
 }
 
-inline void Lines::render(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void Lines::render(GLfloat aspectRatio, const Camera& camera)
 {
 	activateAll();
 	setDrawMode();
 
-	draw(fovy, aspectRatio, camera);
+	draw(aspectRatio, camera);
 
 	deactivateAll();
 }
@@ -118,11 +118,11 @@ inline void Lines::release()
 	Drawable::release();
 }
 
-inline void Lines::draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera)
+inline void Lines::draw(GLfloat aspectRatio, const Camera& camera)
 {
 	glPointSize(m_pixelSize);
 
-	setUniformProjection(fovy, aspectRatio);
+	setUniformProjection(camera.zoomFactor(), aspectRatio);
 	setUniformView(camera);
 	setUniformModel();
 	setUniformColor();

@@ -51,8 +51,8 @@ public:
 	void deactivateVBO() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 
 	virtual void init() = 0;
-	virtual void update(float elapsedTimeInMs) = 0;
-	virtual void render(GLfloat fovy, GLfloat aspectRatio, const Camera &camera) = 0;
+	virtual void update(float elapsedDeltaTimeInSec) = 0;
+	virtual void render(GLfloat aspectRatio, const Camera &camera) = 0;
 
 	virtual void release();
 
@@ -71,7 +71,7 @@ public:
 	static GLuint createEBO();
 protected:
 	void setDrawMode();
-	virtual void draw(GLfloat fovy, GLfloat aspectRatio, const Camera& camera) = 0;
+	virtual void draw(GLfloat aspectRatio, const Camera& camera) = 0;
 
 protected:
 	std::pair<GLuint, bool>			m_shader;
