@@ -79,8 +79,6 @@ void ParticleManager::update(float elapsedDeltaTimeInSec)
 	Particle *newParticle = m_defaultParticle.clone();
 	newParticle->transformations().position = m_grid[0][m_grid.cols() / 2].position;
 
-	Particle *p = m_grid[0][m_grid.cols() / 2].particle;
-	p = newParticle;
 	m_grid[0][m_grid.cols() / 2].particle = newParticle;
 	if (m_defaultParticle.type() == PARTICLE_TYPE::SAND)
 	{
@@ -103,8 +101,8 @@ void ParticleManager::render()
 				//bindBuffers();
 				//setProjectionUniform();
 				//setColorUnifrom();
-				setModelUnifrom(m_grid[i][j].particle);
-				glDrawElements(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0);
+				//setModelUnifrom(m_grid[i][j].particle);
+				//glDrawElements(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0);
 			}
 		}
 	}

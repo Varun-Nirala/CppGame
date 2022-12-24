@@ -39,16 +39,19 @@ public:
 	void setShader(GLuint id, bool bOwnIt) { m_shader.first = id; m_shader.second = bOwnIt; }
 	void setVAO(GLuint id, bool bOwnIt) { m_vao.first = id; m_vao.second = bOwnIt; }
 	void setVBO(GLuint id, bool bOwnIt) { m_vbo.first = id; m_vbo.second = bOwnIt; }
+	void setEBO(GLuint id, bool bOwnIt) { m_ebo.first = id; m_ebo.second = bOwnIt; }
 
 	virtual void setDrawInWireFrameMode(bool mode) { m_bDrawInWireFrameMode = mode; }
 
 	void activateShader() { glUseProgram(m_shader.first); }
 	void activateVAO() { glBindVertexArray(m_vao.first); }
 	void activateVBO() { glBindBuffer(GL_ARRAY_BUFFER, m_vbo.first); }
+	void activateEBO() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo.first); }
 
 	void deactivateShader() { glUseProgram(0); }
 	void deactivateVAO() { glBindVertexArray(0); }
 	void deactivateVBO() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+	void deactivateEBO() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
 
 	virtual void init() = 0;
 	virtual void update(float elapsedDeltaTimeInSec) = 0;
@@ -77,6 +80,7 @@ protected:
 	std::pair<GLuint, bool>			m_shader;
 	std::pair<GLuint, bool>			m_vao;
 	std::pair<GLuint, bool>			m_vbo;
+	std::pair<GLuint, bool>			m_ebo;
 	glm::vec4						m_color{ 1.0f, 0.0f, 0.0f, 1.0f };
 	GLfloat							m_pixelSize{ 1 };
 
@@ -104,7 +108,13 @@ inline void Drawable::release()
 	{
 		glDeleteBuffers(1, &m_vbo.first);
 	}
-	m_shader.first = m_vao.first = m_vbo.first = 0;
+
+	if (m_ebo.second && m_ebo.first)
+	{
+		glDeleteBuffers(1, &m_ebo.first);
+	}
+	m_shader.first = m_vao.first = m_vbo.first = m_ebo.first = 0;
+	m_shader.second = m_vao.second = m_vbo.second = m_ebo.second = false;
 }
 
 inline void Drawable::activateAll()

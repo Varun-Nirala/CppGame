@@ -12,8 +12,6 @@ public:
 
 	void setRectangle(GLfloat x, GLfloat y, GLfloat width, GLfloat height);
 
-	void setEBO(GLuint id, bool bOwnIt) { m_ebo.first = id; m_ebo.second = bOwnIt; }
-
 	void init() override;
 	void update(float elapsedDeltaTimeInSec) override;
 	void render(GLfloat aspectRatio, const Camera& camera) override;
@@ -21,9 +19,6 @@ public:
 
 	void activateAll() override;
 	void deactivateAll() override;
-
-	void activateEBO();
-	void deactivateEBO();
 
 	glm::vec3 getCentre() override;
 
@@ -33,7 +28,6 @@ protected:
 private:
 	glm::vec3					m_vertices[4];
 	std::array<GLuint, 6>		m_indices;
-	std::pair<GLuint, bool>		m_ebo;
 };
 
 Rectangle::Rectangle(GLuint shaderID, bool bOwnIt)
@@ -113,11 +107,6 @@ inline void Rectangle::render(GLfloat aspectRatio, const Camera& camera)
 inline void Rectangle::release()
 {
 	Drawable::release();
-	if (m_ebo.second && m_ebo.first)
-	{
-		glDeleteBuffers(1, &m_ebo.first);
-	}
-	m_ebo.first = 0;
 }
 
 inline void Rectangle::activateAll()
@@ -134,16 +123,6 @@ inline void Rectangle::deactivateAll()
 	deactivateVAO();
 	deactivateShader();
 	deactivateEBO();
-}
-
-inline void Rectangle::activateEBO()
-{
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo.first);
-}
-
-inline void Rectangle::deactivateEBO()
-{
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 inline void Rectangle::draw(GLfloat aspectRatio, const Camera& camera)

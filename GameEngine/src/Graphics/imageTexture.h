@@ -72,7 +72,7 @@ private:
 	GLuint					m_id{};
 	std::vector<value_type>	m_coordinates;
 	GLsizei					m_valuePerCoordinate{};
-	glm::vec4				m_borderColor;
+	glm::vec4				m_borderColor{};
 	GLenum					m_target{ GL_TEXTURE_2D };
 	bool					m_bActive{ false };
 };
