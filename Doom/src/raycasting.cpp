@@ -6,6 +6,7 @@ Raycasting::Raycasting(Game* pGame)
 	: m_pGame(pGame)
 {
 	m_rays.resize(NUM_RAYS);
+	m_rectangles.resize(NUM_RAYS);
 }
 
 void Raycasting::raycast()
@@ -90,13 +91,32 @@ void Raycasting::raycast()
 			depthVert += deltaDepth;
 		}
 
+		// depth
 		float depth = std::min(depthHor, depthVert);
 
+		// remove fishbowl effect
+		depth *= glm::cos(m_pGame->player().angle() - rayAngle);
+
+		// save the ray
 		m_rays[ray].x1 = int(px * 100);
 		m_rays[ray].y1 = int(py * 100);
 		
 		m_rays[ray].x2 = (int)(100 * px + 100 * depth * cosVal);
 		m_rays[ray].y2 = (int)(100 * py + 100 * depth * sinVal);
+
+		// projection
+		float projHeight = SCREEN_DIST / (depth + 0.0001f);
+
+		// save walls
+		m_rectangles[ray].rectangle.x = ray * SCALE;
+		m_rectangles[ray].rectangle.y = HALF_HEIGHT - (int)(projHeight / 2);
+		m_rectangles[ray].rectangle.w = SCALE;
+		m_rectangles[ray].rectangle.h = (int)projHeight;
+
+		m_rectangles[ray].color.r = Uint8(255 / (1 + std::pow(depth, 5) * 0.00002f));
+		m_rectangles[ray].color.g = m_rectangles[ray].color.r;
+		m_rectangles[ray].color.b = m_rectangles[ray].color.r;
+		m_rectangles[ray].color.a = 255;
 
 		rayAngle += DELTA_ANGLE;
 	}
@@ -110,6 +130,12 @@ void Raycasting::update(float dt)
 
 void Raycasting::draw()
 {
+	//drawRays();
+	drawWalls();
+}
+
+void Raycasting::drawRays()
+{
 	SDL_Color c = convert(kCOLOR_YELLOW);
 	SDL_SetRenderDrawColor(m_pGame->renderer(), c.r, c.g, c.b, c.a);
 
@@ -117,4 +143,17 @@ void Raycasting::draw()
 	{
 		SDL_RenderDrawLine(m_pGame->renderer(), ray.x1, ray.y1, ray.x2, ray.y2);
 	}
+}
+
+void Raycasting::drawWalls()
+{
+	SDL_Color c = convert(kCOLOR_WHITE);
+	
+
+	for (const Rectangle &rect : m_rectangles)
+	{
+		SDL_SetRenderDrawColor(m_pGame->renderer(), rect.color.r, rect.color.g, rect.color.b, rect.color.a);
+		SDL_RenderFillRect(m_pGame->renderer(), &(rect.rectangle));
+	}
+	
 }

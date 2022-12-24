@@ -109,8 +109,8 @@ void Game::draw()
 {
 	preDraw();
 
-	m_map.draw();
-	m_player.draw();
+	//m_map.draw();
+	//m_player.draw();
 	m_raycasting.draw();
 
 	postDraw();

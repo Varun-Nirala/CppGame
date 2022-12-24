@@ -16,6 +16,7 @@ extern float PLAYER_SPEED;
 extern float PLAYER_ROT_SPEED;
 
 // Raycasting
+
 extern float FOV;
 extern float HALF_FOV;
 extern int NUM_RAYS;
@@ -30,7 +31,12 @@ extern float TAU;
 extern const char *TITLE;
 extern int WIDTH;
 extern int HEIGHT;
+extern int HALF_WIDTH;
+extern int HALF_HEIGHT;
 extern float FPS;
+
+extern float SCREEN_DIST;
+extern int SCALE;
 
 // Color
 

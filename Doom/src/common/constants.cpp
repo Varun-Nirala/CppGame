@@ -18,13 +18,6 @@ extern float PLAYER_ANGLE				= 0.0f;
 extern float PLAYER_SPEED				= 0.004f;
 extern float PLAYER_ROT_SPEED			= 0.002f;
 
-// Player
-
-const char *TITLE						= "Doom";
-int WIDTH								= 1600;
-int HEIGHT								= 900;
-float FPS								= 60.0f;
-
 // Raycasting
 
 float FOV								= (float)M_PI / 3.0f;
@@ -36,7 +29,17 @@ int MAX_DEPTH							= 20;
 
 // Game
 
-extern float TAU = 2.0f * (float)M_PI;
+extern float TAU						= 2.0f * (float)M_PI;
+
+const char* TITLE						= "Doom";
+int WIDTH								= 1600;
+int HEIGHT								= 900;
+int HALF_WIDTH							= WIDTH / 2;
+int HALF_HEIGHT							= HEIGHT / 2;
+float FPS								= 60.0f;
+
+float SCREEN_DIST						= HALF_WIDTH / glm::tan(HALF_FOV);
+int SCALE								= WIDTH / NUM_RAYS;
 
 const glm::vec3 kCOLOR_MAROON                               { 0.50, 0.00, 0.00 };
 const glm::vec3 kCOLOR_DARK_RED                             { 0.55, 0.00, 0.00 };
