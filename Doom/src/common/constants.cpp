@@ -41,6 +41,14 @@ float FPS								= 60.0f;
 float SCREEN_DIST						= HALF_WIDTH / glm::tan(HALF_FOV);
 int SCALE								= WIDTH / NUM_RAYS;
 
+
+// Texture
+
+int TEXTURE_SIZE						= 256;
+int HALF_TEXTURE_SIZE					= TEXTURE_SIZE / 2;
+
+// Color
+
 const glm::vec3 kCOLOR_MAROON                               { 0.50, 0.00, 0.00 };
 const glm::vec3 kCOLOR_DARK_RED                             { 0.55, 0.00, 0.00 };
 const glm::vec3 kCOLOR_BROWN                                { 0.65, 0.16, 0.16 };

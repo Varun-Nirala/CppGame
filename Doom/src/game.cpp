@@ -7,6 +7,7 @@ Game::Game()
 	: m_map(this)
 	, m_player(this)
 	, m_raycasting(this)
+	, m_objectRenderer(this)
 {
 }
 
@@ -14,7 +15,7 @@ bool Game::init()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		ns_Util::Logger::LOG_ERROR("Error initializing SDL : ", SDL_GetError());
+		ns_Util::Logger::LOG_ERROR("Error initializing SDL : ", SDL_GetError(), '\n');
 		assert(false);
 		return false;
 	}
@@ -24,7 +25,7 @@ bool Game::init()
 
 	if ((flags & initedFlags) != flags)
 	{
-		ns_Util::Logger::LOG_ERROR("Error initializing SDL_Image : ", SDL_GetError());
+		ns_Util::Logger::LOG_ERROR("Error initializing SDL_Image : ", SDL_GetError(), '\n');
 		assert(false);
 		return false;
 	}
@@ -37,7 +38,7 @@ bool Game::init()
 
 	if (!m_pWindow)
 	{
-		ns_Util::Logger::LOG_ERROR("Error creating window : ", SDL_GetError());
+		ns_Util::Logger::LOG_ERROR("Error creating window : ", SDL_GetError(), '\n');
 		assert(false);
 		return false;
 	}
@@ -48,17 +49,19 @@ bool Game::init()
 
 	if (!m_pRenderer)
 	{
-		ns_Util::Logger::LOG_ERROR("Error creating renderer : ", SDL_GetError());
+		ns_Util::Logger::LOG_ERROR("Error creating renderer : ", SDL_GetError(), '\n');
 		assert(false);
 		return false;
 	}
 
 	if (TTF_Init() < 0)
 	{
-		ns_Util::Logger::LOG_ERROR("Error initializingg SDL_ttf : ", TTF_GetError());
+		ns_Util::Logger::LOG_ERROR("Error initializingg SDL_ttf : ", TTF_GetError(), '\n');
 		assert(false);
 		return false;
 	}
+
+	m_objectRenderer.init();
 
 	return true;
 }
@@ -112,6 +115,7 @@ void Game::draw()
 	//m_map.draw();
 	//m_player.draw();
 	m_raycasting.draw();
+	m_objectRenderer.draw();
 
 	postDraw();
 }

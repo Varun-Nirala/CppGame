@@ -13,6 +13,7 @@
 #include "map.h"
 #include "player.h"
 #include "raycasting.h"
+#include "objectRenderer.h"
 
 class Game
 {
@@ -38,6 +39,12 @@ public:
 	const Map& map() const { return m_map; }
 	Map& map() { return m_map; }
 
+	const Raycasting& raycasting() const { return m_raycasting; }
+	Raycasting& raycasting() { return m_raycasting; }
+
+	const ObjectRenderer& objectRenderer() const { return m_objectRenderer; }
+	ObjectRenderer& objectRenderer() { return m_objectRenderer; }
+
 	const Player& player() const { return m_player; }
 	Player& player() { return m_player; }
 
@@ -56,6 +63,7 @@ private:
 
 	Player					m_player;
 	Raycasting				m_raycasting;
+	ObjectRenderer			m_objectRenderer;
 };
 
 #endif // !__GAME_H__

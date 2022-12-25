@@ -7,6 +7,8 @@ Raycasting::Raycasting(Game* pGame)
 {
 	m_rays.resize(NUM_RAYS);
 	m_rectangles.resize(NUM_RAYS);
+	m_results.resize(NUM_RAYS);
+	m_objectsToRender.resize(NUM_RAYS, TextureObject(pGame, 0, glm::vec2{}));
 }
 
 void Raycasting::raycast()
@@ -18,6 +20,9 @@ void Raycasting::raycast()
 	const int map_y = (int)m_pGame->player().mapPosition().y;
 
 	float rayAngle = m_pGame->player().angle() - HALF_FOV + 0.0001f;
+
+	char textureHor{ '1' };
+	char textureVert{ '1' };
 
 	for (int ray = 0; ray < NUM_RAYS; ++ray)
 	{
@@ -31,12 +36,12 @@ void Raycasting::raycast()
 		if (sinVal > 0.0f)
 		{
 			yHor = map_y + 1.0f;
-			dy = 1;
+			dy = 1.0f;
 		}
 		else
 		{
 			yHor = map_y - 0.000001f;
-			dy = -1;
+			dy = -1.0f;
 		}
 
 		float depthHor = (yHor - py) / sinVal;
@@ -49,6 +54,7 @@ void Raycasting::raycast()
 		{
 			if (m_pGame->map().isValid((int)yHor, (int)xHor) && m_pGame->map()[(int)yHor][(int)xHor] == FILLED_CELL)
 			{
+				textureHor = m_pGame->map()[(int)yHor][(int)xHor];
 				break;
 			}
 
@@ -82,6 +88,7 @@ void Raycasting::raycast()
 		{
 			if (m_pGame->map().isValid((int)yVert, (int)xVert) && m_pGame->map()[(int)yVert][(int)xVert] == FILLED_CELL)
 			{
+				textureVert = m_pGame->map()[(int)yVert][(int)xVert];
 				break;
 			}
 
@@ -92,31 +99,51 @@ void Raycasting::raycast()
 		}
 
 		// depth
-		float depth = std::min(depthHor, depthVert);
+		float depth{};
+		char textureKey{};
+		float offset{};
+
+		if (depthVert < depthHor)
+		{
+			depth = depthVert;
+			textureKey = textureVert;
+			yVert = std::fmodf(yVert, 1.0f);
+			offset = (cosVal > 0) ? yVert : (1 - yVert);
+		}
+		else
+		{
+			depth = depthHor;
+			textureKey = textureHor;
+			xHor = std::fmodf(xHor, 1.0f);
+			offset = (sinVal > 0) ? (1 - xHor) : xHor;
+		}
+		
+		// projection
+		float projHeight = SCREEN_DIST / (depth + 0.0001f);
 
 		// remove fishbowl effect
 		depth *= glm::cos(m_pGame->player().angle() - rayAngle);
 
 		// save the ray
-		m_rays[ray].x1 = int(px * 100);
-		m_rays[ray].y1 = int(py * 100);
+		m_rays[ray].p1 = { int(px * 100), int(py * 100) };
 		
-		m_rays[ray].x2 = (int)(100 * px + 100 * depth * cosVal);
-		m_rays[ray].y2 = (int)(100 * py + 100 * depth * sinVal);
-
-		// projection
-		float projHeight = SCREEN_DIST / (depth + 0.0001f);
+		m_rays[ray].p2 = { (int)(100 * px + 100 * depth * cosVal), (int)(100 * py + 100 * depth * sinVal) };
 
 		// save walls
-		m_rectangles[ray].rectangle.x = ray * SCALE;
-		m_rectangles[ray].rectangle.y = HALF_HEIGHT - (int)(projHeight / 2);
-		m_rectangles[ray].rectangle.w = SCALE;
-		m_rectangles[ray].rectangle.h = (int)projHeight;
+		m_rectangles[ray].rect.x = ray * SCALE;
+		m_rectangles[ray].rect.y = HALF_HEIGHT - (int)(projHeight / 2);
+		m_rectangles[ray].rect.w = SCALE;
+		m_rectangles[ray].rect.h = (int)projHeight;
 
 		m_rectangles[ray].color.r = Uint8(255 / (1 + std::pow(depth, 5) * 0.00002f));
 		m_rectangles[ray].color.g = m_rectangles[ray].color.r;
 		m_rectangles[ray].color.b = m_rectangles[ray].color.r;
 		m_rectangles[ray].color.a = 255;
+
+		m_results[ray].depth = depth;
+		m_results[ray].projectionHeight = projHeight;
+		m_results[ray].textureKey = textureKey;
+		m_results[ray].offset = offset;
 
 		rayAngle += DELTA_ANGLE;
 	}
@@ -126,12 +153,31 @@ void Raycasting::update(float dt)
 {
 	(void)dt;
 	raycast();
+	fillObjectsToRender();
 }
 
 void Raycasting::draw()
 {
 	//drawRays();
-	drawWalls();
+	//drawWalls();
+}
+
+void Raycasting::fillObjectsToRender()
+{
+	for (int ray = 0; ray < NUM_RAYS; ++ray)
+	{
+		const RaycastingResult& res = m_results[ray];
+
+		m_objectsToRender[ray].position.x = ray * (float)SCALE;
+		m_objectsToRender[ray].position.y = HALF_HEIGHT - res.projectionHeight / 2;
+
+		m_objectsToRender[ray].depth = res.depth;
+
+		m_objectsToRender[ray].texture = m_pGame->objectRenderer().getTexture(res.textureKey)->subTexture(
+			int(res.offset * (TEXTURE_SIZE - SCALE)), 0, SCALE, TEXTURE_SIZE);
+
+		m_objectsToRender[ray].texture.scale(SCALE, (int)res.projectionHeight);
+	}
 }
 
 void Raycasting::drawRays()
@@ -141,7 +187,7 @@ void Raycasting::drawRays()
 
 	for (const Line& ray : m_rays)
 	{
-		SDL_RenderDrawLine(m_pGame->renderer(), ray.x1, ray.y1, ray.x2, ray.y2);
+		SDL_RenderDrawLine(m_pGame->renderer(), ray.p1.x, ray.p1.y, ray.p2.x, ray.p2.y);
 	}
 }
 
@@ -149,11 +195,10 @@ void Raycasting::drawWalls()
 {
 	SDL_Color c = convert(kCOLOR_WHITE);
 	
-
 	for (const Rectangle &rect : m_rectangles)
 	{
 		SDL_SetRenderDrawColor(m_pGame->renderer(), rect.color.r, rect.color.g, rect.color.b, rect.color.a);
-		SDL_RenderFillRect(m_pGame->renderer(), &(rect.rectangle));
+		SDL_RenderFillRect(m_pGame->renderer(), &(rect.rect));
 	}
 	
 }

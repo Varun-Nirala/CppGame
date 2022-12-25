@@ -2,12 +2,12 @@
 
 #include <vector>
 
-
 int main()
 {
-	Game g;
+	Game game;
+	game.init();
 
-	g.init();
-	g.run();
+	game.run();
+
 	return 0;
 }

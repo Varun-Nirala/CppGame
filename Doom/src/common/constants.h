@@ -38,6 +38,10 @@ extern float FPS;
 extern float SCREEN_DIST;
 extern int SCALE;
 
+// Texture
+extern int TEXTURE_SIZE;
+extern int HALF_TEXTURE_SIZE;
+
 // Color
 
 extern const glm::vec3 kCOLOR_MAROON;
