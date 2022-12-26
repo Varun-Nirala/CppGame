@@ -52,7 +52,7 @@ void Raycasting::raycast()
 
 		for (int d = 0; d < MAX_DEPTH; ++d)
 		{
-			if (m_pGame->map().isValid((int)yHor, (int)xHor) && m_pGame->map()[(int)yHor][(int)xHor] == FILLED_CELL)
+			if (m_pGame->map().isValid((int)yHor, (int)xHor) && m_pGame->map()[(int)yHor][(int)xHor] != EMPTY_CELL)
 			{
 				textureHor = m_pGame->map()[(int)yHor][(int)xHor];
 				break;
@@ -86,7 +86,7 @@ void Raycasting::raycast()
 
 		for (int d = 0; d < MAX_DEPTH; ++d)
 		{
-			if (m_pGame->map().isValid((int)yVert, (int)xVert) && m_pGame->map()[(int)yVert][(int)xVert] == FILLED_CELL)
+			if (m_pGame->map().isValid((int)yVert, (int)xVert) && m_pGame->map()[(int)yVert][(int)xVert] != EMPTY_CELL)
 			{
 				textureVert = m_pGame->map()[(int)yVert][(int)xVert];
 				break;
@@ -168,15 +168,30 @@ void Raycasting::fillObjectsToRender()
 	{
 		const RaycastingResult& res = m_results[ray];
 
-		m_objectsToRender[ray].position.x = ray * (float)SCALE;
-		m_objectsToRender[ray].position.y = HALF_HEIGHT - res.projectionHeight / 2;
-
 		m_objectsToRender[ray].depth = res.depth;
 
-		m_objectsToRender[ray].texture = m_pGame->objectRenderer().getTexture(res.textureKey)->subTexture(
-			int(res.offset * (TEXTURE_SIZE - SCALE)), 0, SCALE, TEXTURE_SIZE);
+		if (res.projectionHeight < HEIGHT)
+		{
+			m_objectsToRender[ray].texture = m_pGame->objectRenderer().getTexture(res.textureKey)->subTexture(
+				int(res.offset * (TEXTURE_SIZE - SCALE)), 0, SCALE, TEXTURE_SIZE);
 
-		m_objectsToRender[ray].texture.scale(SCALE, (int)res.projectionHeight);
+			m_objectsToRender[ray].texture.scale(SCALE, (int)res.projectionHeight);
+
+			m_objectsToRender[ray].position.x = ray * (float)SCALE;
+			m_objectsToRender[ray].position.y = HALF_HEIGHT - res.projectionHeight / 2;
+		}
+		else
+		{
+			int textureHeight = int(TEXTURE_SIZE * HEIGHT / res.projectionHeight);
+
+			m_objectsToRender[ray].texture = m_pGame->objectRenderer().getTexture(res.textureKey)->subTexture(
+				int(res.offset * (TEXTURE_SIZE - SCALE)), HALF_TEXTURE_SIZE - textureHeight / 2, SCALE, textureHeight);
+
+			m_objectsToRender[ray].texture.scale(SCALE, HEIGHT);
+
+			m_objectsToRender[ray].position.x = ray * (float)SCALE;
+			m_objectsToRender[ray].position.y = 0;
+		}
 	}
 }
 

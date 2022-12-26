@@ -23,20 +23,24 @@ public:
 
 	float angle() const { return m_angle; }
 	void setAngle(float angle) { m_angle = angle; }
+
+	int relative() const { return m_playerRelative; }
 private:
 	void movement(float dt);
+	void mouseControl(float dt);
 
 	bool checkWall(int x, int y);
 
-	void checlWallCollision(float dx, float dy);
+	void checlWallCollision(float dt, float dx, float dy);
 
 	void drawLineOfSight();
 	void drawPlayer();
 
 private:
-	Game		*m_pGame{};
-	glm::vec2	m_position{};
-	float		m_angle{};
+	Game			*m_pGame{};
+	glm::vec2		m_position{};
+	float			m_angle{};
+	int				m_playerRelative{};
 };
 
 #endif // !__PLAYER_H__

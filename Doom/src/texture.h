@@ -24,8 +24,8 @@ public:
 	int width() const { return m_width; }
 	int height() const { return m_height; }
 
-	const SDL_Texture* getTexture() const { return m_pTexture; }
-	SDL_Texture* getTexture() { return m_pTexture; }
+	const SDL_Texture* texture() const { return m_pTexture; }
+	SDL_Texture* texture() { return m_pTexture; }
 
 	bool loadTexture(const std::string& path);
 

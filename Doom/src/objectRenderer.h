@@ -29,10 +29,13 @@ public:
 
 private:
 	void renderGameObjects();
+	void drawBackground();
 	void clear();
 private:
 	Game									*m_pGame{};
 	std::unordered_map<char, Texture *>		m_textureMap;
+	Texture									m_bgTexture;
+	int										m_skyTextureOffset{};
 };
 
 #endif //!__OBJECT_RENDERER_H__

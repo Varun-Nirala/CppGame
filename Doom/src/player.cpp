@@ -12,6 +12,7 @@ Player::Player(Game *pGame)
 void Player::update(float dt)
 {
 	movement(dt);
+	mouseControl(dt);
 }
 
 void Player::draw()
@@ -38,40 +39,90 @@ void Player::movement(float dt)
 	float dx{};
 	float dy{};
 
-	for (const SDL_Event& event : m_pGame->events())
+	for (const SDL_Event& event : m_pGame->keyboardEvents())
 	{
 		if (event.type == SDL_KEYDOWN)
 		{
-			switch (event.key.keysym.scancode)
+			switch (event.key.keysym.sym)
 			{
-				case SDL_SCANCODE_W:
+				case SDLK_w:
 					dx += speedCos;
 					dy += speedSin;
 					break;
 
-				case SDL_SCANCODE_S:
+				case SDLK_s:
 					dx -= speedCos;
 					dy -= speedSin;
 					break;
 
-				case SDL_SCANCODE_A:
+				case SDLK_a:
 					dx += speedSin;
 					dy -= speedCos;
 					break;
 
-				case SDL_SCANCODE_D:
+				case SDLK_d:
 					dx -= speedSin;
 					dy += speedCos;
 					break;
 
-				case SDL_SCANCODE_LEFT:
+				/*case SDLK_LEFT:
 					m_angle -= PLAYER_ROT_SPEED * dt;
 					break;
 
-				case SDL_SCANCODE_RIGHT:
+				case SDLK_RIGHT:
 					m_angle += PLAYER_ROT_SPEED * dt;
 					break;
+				*/
 			}
+		}
+	}
+
+	checlWallCollision(dt, dx, dy);
+}
+
+void Player::mouseControl(float dt)
+{
+	int x{};
+	int y{};
+
+	for (const SDL_Event& event : m_pGame->mouseEvents())
+	{
+		switch (event.type)
+		{
+			case SDL_MOUSEMOTION:
+				x = event.motion.x;
+				y = event.motion.y;
+
+				if (x < MOUSE_BORDER_LEFT || x > MOUSE_BORDER_RIGHT)
+				{
+					SDL_WarpMouseInWindow(m_pGame->window(), HALF_WIDTH, HALF_HEIGHT);
+				}
+
+				m_playerRelative = event.motion.xrel;
+				m_playerRelative = std::max(-MOUSE_MAX_REL, std::min(MOUSE_MAX_REL, m_playerRelative));
+				m_angle += m_playerRelative * MOUSE_SENSTIVITY * dt;
+				break;
+
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.button.button == SDL_BUTTON_LEFT)
+				{
+					;
+				}
+				else if (event.button.button == SDL_BUTTON_RIGHT)
+				{
+					;
+				}
+				else if (event.button.button == SDL_BUTTON_MIDDLE)
+				{
+					;
+				}
+				break;
+
+			case SDL_MOUSEBUTTONUP:
+				break;
+
+			default:
+				break;
 		}
 	}
 
@@ -79,23 +130,22 @@ void Player::movement(float dt)
 	{
 		m_angle -= TAU;
 	}
-
-	checlWallCollision(dx, dy);
 }
 
 bool Player::checkWall(int x, int y)
 {
-	return m_pGame->map()[y][x] == FILLED_CELL;
+	return m_pGame->map()[y][x] != EMPTY_CELL;
 }
 
-void Player::checlWallCollision(float dx, float dy)
+void Player::checlWallCollision(float dt, float dx, float dy)
 {
-	if (!checkWall(int(m_position.x + dx), int(m_position.y)))
+	float scale = PLAYER_SIZE_SCALE / dt;
+	if (!checkWall(int(m_position.x + dx * scale), int(m_position.y)))
 	{
 		m_position.x += dx;
 	}
 
-	if (!checkWall(int(m_position.x), int(m_position.y + dy)))
+	if (!checkWall(int(m_position.x), int(m_position.y + dy * scale)))
 	{
 		m_position.y += dy;
 	}

@@ -4,16 +4,19 @@
 
 ObjectRenderer::ObjectRenderer(Game *pGame)
 	: m_pGame(pGame)
+    , m_bgTexture(pGame)
 {
 }
 
 void ObjectRenderer::init()
 {
     loadWallTextures(TEXTURE_SIZE, TEXTURE_SIZE);
+    m_bgTexture.loadTexture(R"(.\resources\textures\sky.png)", WIDTH, HALF_HEIGHT);
 }
 
 void ObjectRenderer::draw()
 {
+    drawBackground();
     renderGameObjects();
 }
 
@@ -62,7 +65,38 @@ void ObjectRenderer::renderGameObjects()
     for (TextureObject& obj : m_pGame->raycasting().getObjectsToRender())
     {
         const SDL_Rect dstRect = { (int)obj.position.x, (int)obj.position.y, obj.texture.width(), obj.texture.height() };
-        SDL_RenderCopy(m_pGame->renderer(), obj.texture.getTexture(), nullptr, &dstRect);
+        SDL_RenderCopy(m_pGame->renderer(), obj.texture.texture(), nullptr, &dstRect);
+    }
+}
+
+void ObjectRenderer::drawBackground()
+{
+    // Sky
+    m_skyTextureOffset = int(m_skyTextureOffset + 4.5f * m_pGame->player().relative()) % WIDTH;
+
+    SDL_Rect dstRect = { -m_skyTextureOffset, 0, WIDTH, HEIGHT };
+    SDL_RenderCopy(m_pGame->renderer(), m_bgTexture.texture(), nullptr, &dstRect);
+
+    dstRect = { -m_skyTextureOffset + WIDTH, 0, WIDTH, HEIGHT };
+    SDL_RenderCopy(m_pGame->renderer(), m_bgTexture.texture(), nullptr, &dstRect);
+
+    // Floor
+    SDL_Rect rect;
+    rect.x = 0;
+    rect.y = HALF_HEIGHT;
+    rect.w = WIDTH;
+    rect.h = HEIGHT;
+
+    SDL_SetRenderDrawColor(m_pGame->renderer(), FLOOR_COLOR.r, FLOOR_COLOR.g, FLOOR_COLOR.b, FLOOR_COLOR.a);
+
+    bool bFilledRectange = true;
+    if (bFilledRectange)
+    {
+        SDL_RenderFillRect(m_pGame->renderer(), &rect);
+    }
+    else
+    {
+        SDL_RenderDrawRect(m_pGame->renderer(), &rect);
     }
 }
 

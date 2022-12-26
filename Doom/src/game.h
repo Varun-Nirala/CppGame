@@ -27,7 +27,8 @@ public:
 	void preDraw();
 	void draw();
 	void postDraw();
-	void run();
+
+	void run(bool bRunOnMaxFPS = true);
 
 	void quit();
 
@@ -35,7 +36,8 @@ public:
 
 	SDL_Window* window() const { return m_pWindow; }
 	SDL_Renderer* renderer() const { return m_pRenderer; }
-	const std::vector<SDL_Event>& events() const { return m_events; }
+	const std::vector<SDL_Event>& keyboardEvents() const { return m_keyboardEvents; }
+	const std::vector<SDL_Event>& mouseEvents() const { return m_mouseEvents; }
 	const Map& map() const { return m_map; }
 	Map& map() { return m_map; }
 
@@ -49,11 +51,16 @@ public:
 	Player& player() { return m_player; }
 
 private:
+	void runControlledFPS();
+	void runMaxFPS();
+
+private:
 	SDL_Window				*m_pWindow{};
 	SDL_Renderer			*m_pRenderer{};
 
 	SDL_Color				m_clearColor{ convert(kCOLOR_BLACK) };
-	std::vector<SDL_Event>	m_events;
+	std::vector<SDL_Event>	m_keyboardEvents;
+	std::vector<SDL_Event>	m_mouseEvents;
 
 	bool					m_bQuitGame{ false };
 

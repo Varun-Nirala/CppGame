@@ -60,6 +60,8 @@ bool Game::init()
 		assert(false);
 		return false;
 	}
+	
+	SDL_ShowCursor(SDL_DISABLE);
 
 	m_objectRenderer.init();
 
@@ -68,33 +70,16 @@ bool Game::init()
 
 void Game::update(float dt)
 {
+	const std::string title = "DOOM   FPS : " + std::to_string(1000.0f / dt);
+	SDL_SetWindowTitle(m_pWindow, title.c_str());
+
 	m_player.update(dt);
 	m_raycasting.update(dt);
 }
 
-void Game::run()
+void Game::run(bool bRunOnMaxFPS)
 {
-	float accumulator{};
-	Uint32 lastTicks{};
-
-	while (!m_bQuitGame)
-	{
-		const Uint32 currTicks = SDL_GetTicks();
-		const float elapsedTimeInMs = float(currTicks - lastTicks);
-		
-		accumulator += elapsedTimeInMs;
-
-		while (!m_bQuitGame && accumulator >= m_timePerFrameInMs)
-		{
-			checkEvents();
-
-			update(m_timePerFrameInMs);
-			draw();
-			accumulator -= m_timePerFrameInMs;
-		}
-		lastTicks = currTicks;
-		//ns_Util::Logger::LOG_INFO("Elapsed time in ms : ", elapsedTimeInMs, ", FPS : ", 1000.0f / elapsedTimeInMs, '\n');
-	}
+	bRunOnMaxFPS ? runMaxFPS() : runControlledFPS();
 }
 
 void Game::preDraw()
@@ -135,7 +120,8 @@ void Game::quit()
 
 void Game::checkEvents()
 {
-	m_events.clear();
+	m_keyboardEvents.clear();
+	m_mouseEvents.clear();
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event))
@@ -145,10 +131,58 @@ void Game::checkEvents()
 			m_bQuitGame = true;
 			break;
 		}
-		else
+		else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
 		{
-			m_events.push_back(event);
-			//break;
+			m_keyboardEvents.push_back(event);
 		}
+		else if (event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
+		{
+			m_mouseEvents.push_back(event);
+		}
+	}
+}
+
+void Game::runControlledFPS()
+{
+	float accumulator{};
+	Uint32 lastTicks{};
+
+	while (!m_bQuitGame)
+	{
+		const Uint32 currTicks = SDL_GetTicks();
+		const float elapsedTimeInMs = float(currTicks - lastTicks);
+
+		accumulator += elapsedTimeInMs;
+
+		while (!m_bQuitGame && accumulator >= m_timePerFrameInMs)
+		{
+			checkEvents();
+
+			update(m_timePerFrameInMs);
+			draw();
+			accumulator -= m_timePerFrameInMs;
+		}
+
+		lastTicks = currTicks;
+		//ns_Util::Logger::LOG_INFO("Elapsed time in ms : ", elapsedTimeInMs, ", FPS : ", 1000.0f / elapsedTimeInMs, '\n');
+	}
+}
+
+void Game::runMaxFPS()
+{
+	Uint32 lastTicks{};
+
+	while (!m_bQuitGame)
+	{
+		const Uint32 currTicks = SDL_GetTicks();
+		const float elapsedTimeInMs = float(currTicks - lastTicks);
+
+		checkEvents();
+
+		update(elapsedTimeInMs);
+		draw();
+
+		lastTicks = currTicks;
+		//ns_Util::Logger::LOG_INFO("Elapsed time in ms : ", elapsedTimeInMs, ", FPS : ", 1000.0f / elapsedTimeInMs, '\n');
 	}
 }

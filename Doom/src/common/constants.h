@@ -4,9 +4,21 @@
 #include <SDL.h>
 
 #define EMPTY_CELL '_'
-#define FILLED_CELL '1'
 
 SDL_Color convert(const glm::vec3& color);
+
+// Game
+
+extern float TAU;
+
+extern const char* TITLE;
+extern int WIDTH;
+extern int HEIGHT;
+extern int HALF_WIDTH;
+extern int HALF_HEIGHT;
+extern float FPS;
+
+extern SDL_Color FLOOR_COLOR;
 
 // Player
 
@@ -14,6 +26,12 @@ extern glm::vec2 PLAYER_POS;
 extern float PLAYER_ANGLE;
 extern float PLAYER_SPEED;
 extern float PLAYER_ROT_SPEED;
+extern int PLAYER_SIZE_SCALE;
+
+extern float MOUSE_SENSTIVITY;
+extern int MOUSE_MAX_REL;
+extern int MOUSE_BORDER_LEFT;
+extern int MOUSE_BORDER_RIGHT;
 
 // Raycasting
 
@@ -24,23 +42,13 @@ extern int HALF_NUM_RAYS;
 extern float DELTA_ANGLE;
 extern int MAX_DEPTH;
 
-// Game
-
-extern float TAU;
-
-extern const char *TITLE;
-extern int WIDTH;
-extern int HEIGHT;
-extern int HALF_WIDTH;
-extern int HALF_HEIGHT;
-extern float FPS;
-
-extern float SCREEN_DIST;
-extern int SCALE;
-
 // Texture
 extern int TEXTURE_SIZE;
 extern int HALF_TEXTURE_SIZE;
+
+
+extern float SCREEN_DIST;
+extern int SCALE;
 
 // Color
 
