@@ -56,18 +56,10 @@ struct RaycastingResult
 
 struct TextureObject
 {
-	Texture			texture;
+	char			textureKey;
 	float			depth{};
-	glm::vec2		position{};
-
-	TextureObject() = default;
-
-	TextureObject(Game *pGame, float depth, const glm::vec2& pos)
-		: texture(pGame)
-	{
-		this->depth = depth;
-		this->position = pos;
-	}
+	SDL_Rect		srcRect{};
+	SDL_Rect		dstRect{};
 };
 
 #endif //!__COMMON_H__

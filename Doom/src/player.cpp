@@ -134,7 +134,11 @@ void Player::mouseControl(float dt)
 
 bool Player::checkWall(int x, int y)
 {
-	return m_pGame->map()[y][x] != EMPTY_CELL;
+	if (m_pGame->map().isValid(x, y) && m_pGame->map()[y][x] != EMPTY_CELL)
+	{
+		return true;
+	}
+	return false;
 }
 
 void Player::checlWallCollision(float dt, float dx, float dy)

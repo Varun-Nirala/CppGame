@@ -8,7 +8,7 @@ Raycasting::Raycasting(Game* pGame)
 	m_rays.resize(NUM_RAYS);
 	m_rectangles.resize(NUM_RAYS);
 	m_results.resize(NUM_RAYS);
-	m_objectsToRender.resize(NUM_RAYS, TextureObject(pGame, 0, glm::vec2{}));
+	m_objectsToRender.resize(NUM_RAYS);
 }
 
 void Raycasting::raycast()
@@ -169,28 +169,33 @@ void Raycasting::fillObjectsToRender()
 		const RaycastingResult& res = m_results[ray];
 
 		m_objectsToRender[ray].depth = res.depth;
+		m_objectsToRender[ray].textureKey = res.textureKey;
 
 		if (res.projectionHeight < HEIGHT)
 		{
-			m_objectsToRender[ray].texture = m_pGame->objectRenderer().getTexture(res.textureKey)->subTexture(
-				int(res.offset * (TEXTURE_SIZE - SCALE)), 0, SCALE, TEXTURE_SIZE);
+			m_objectsToRender[ray].srcRect.x = int(res.offset * (TEXTURE_SIZE - SCALE));
+			m_objectsToRender[ray].srcRect.y = 0;
+			m_objectsToRender[ray].srcRect.w = SCALE;
+			m_objectsToRender[ray].srcRect.h = TEXTURE_SIZE;
 
-			m_objectsToRender[ray].texture.scale(SCALE, (int)res.projectionHeight);
-
-			m_objectsToRender[ray].position.x = ray * (float)SCALE;
-			m_objectsToRender[ray].position.y = HALF_HEIGHT - res.projectionHeight / 2;
+			m_objectsToRender[ray].dstRect.x = int(ray * SCALE);
+			m_objectsToRender[ray].dstRect.y = HALF_HEIGHT - int(res.projectionHeight / 2);
+			m_objectsToRender[ray].dstRect.w = SCALE;
+			m_objectsToRender[ray].dstRect.h = (int)res.projectionHeight;
 		}
 		else
 		{
 			int textureHeight = int(TEXTURE_SIZE * HEIGHT / res.projectionHeight);
 
-			m_objectsToRender[ray].texture = m_pGame->objectRenderer().getTexture(res.textureKey)->subTexture(
-				int(res.offset * (TEXTURE_SIZE - SCALE)), HALF_TEXTURE_SIZE - textureHeight / 2, SCALE, textureHeight);
+			m_objectsToRender[ray].srcRect.x = int(res.offset * (TEXTURE_SIZE - SCALE));
+			m_objectsToRender[ray].srcRect.y = HALF_TEXTURE_SIZE - textureHeight / 2;
+			m_objectsToRender[ray].srcRect.w = SCALE;
+			m_objectsToRender[ray].srcRect.h = textureHeight;
 
-			m_objectsToRender[ray].texture.scale(SCALE, HEIGHT);
-
-			m_objectsToRender[ray].position.x = ray * (float)SCALE;
-			m_objectsToRender[ray].position.y = 0;
+			m_objectsToRender[ray].dstRect.x = int(ray * SCALE);
+			m_objectsToRender[ray].dstRect.y = 0;
+			m_objectsToRender[ray].dstRect.w = SCALE;
+			m_objectsToRender[ray].dstRect.h = HEIGHT;
 		}
 	}
 }

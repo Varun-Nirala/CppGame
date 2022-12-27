@@ -13,48 +13,55 @@ SDL_Color convert(const glm::vec3& color)
 
 // Game
 
-extern float TAU						= 2.0f * (float)M_PI;
+extern const float TAU						= 2.0f * (float)M_PI;
 
-extern const char* TITLE				= "Doom";
-extern int WIDTH						= 1600;
-extern int HEIGHT						= 900;
-extern int HALF_WIDTH					= WIDTH / 2;
-extern int HALF_HEIGHT					= HEIGHT / 2;
-extern float FPS						= 60.0f;
+extern const char* TITLE					= "Doom";
+extern const int WIDTH						= 1600;
+extern const int HEIGHT						= 900;
+extern const int HALF_WIDTH					= WIDTH / 2;
+extern const int HALF_HEIGHT				= HEIGHT / 2;
+extern const float FPS						= 60.0f;
 
-extern SDL_Color FLOOR_COLOR			= { 30, 30, 30, 255 };
+extern const SDL_Color FLOOR_COLOR			= { 30, 30, 30, 255 };
 
 // Player
 
-extern glm::vec2 PLAYER_POS				= { 1.5f, 5.0f };
-extern float PLAYER_ANGLE				= 0.0f;
-extern float PLAYER_SPEED				= 0.004f;
-extern float PLAYER_ROT_SPEED			= 0.002f;
-extern int PLAYER_SIZE_SCALE			= 60;
+extern const glm::vec2 PLAYER_POS			= { 1.5f, 5.0f };
+extern const float PLAYER_ANGLE				= 0.0f;
+extern const float PLAYER_SPEED				= 0.004f;
+extern const float PLAYER_ROT_SPEED			= 0.002f;
+extern const int PLAYER_SIZE_SCALE			= 60;
 
-extern float MOUSE_SENSTIVITY			= 0.0002f;
-extern int MOUSE_MAX_REL				= 40;
-extern int MOUSE_BORDER_LEFT			= 100;
-extern int MOUSE_BORDER_RIGHT			= WIDTH - MOUSE_BORDER_LEFT;
+extern const float MOUSE_SENSTIVITY			= 0.0002f;
+extern const int MOUSE_MAX_REL				= 40;
+extern const int MOUSE_BORDER_LEFT			= 100;
+extern const int MOUSE_BORDER_RIGHT			= WIDTH - MOUSE_BORDER_LEFT;
 
 // Raycasting
 
-extern float FOV							= (float)M_PI / 3.0f;
-extern float HALF_FOV						= FOV / 2.0f;
-extern int NUM_RAYS							= WIDTH / 2;
-extern int HALF_NUM_RAYS					= NUM_RAYS / 2;
-extern float DELTA_ANGLE					= FOV / NUM_RAYS;
-extern int MAX_DEPTH						= 20;
+extern const float FOV						= (float)M_PI / 3.0f;
+extern const float HALF_FOV					= FOV / 2.0f;
+extern const int NUM_RAYS					= WIDTH / 2;
+extern const int HALF_NUM_RAYS				= NUM_RAYS / 2;
+extern const float DELTA_ANGLE				= FOV / NUM_RAYS;
+extern const int MAX_DEPTH					= 20;
 
 // Texture
 
-extern int TEXTURE_SIZE						= 256;
-extern int HALF_TEXTURE_SIZE				= TEXTURE_SIZE / 2;
+extern const int TEXTURE_SIZE				= 256;
+extern const int HALF_TEXTURE_SIZE			= TEXTURE_SIZE / 2;
 
+// Texture Key Mapping
+extern const char WALL_1					= '1';
+extern const char WALL_2					= '2';
+extern const char WALL_3					= '3';
+extern const char WALL_4					= '4';
+extern const char WALL_5					= '5';
 
+extern const char SKY						= 'S';
 
-extern float SCREEN_DIST					= HALF_WIDTH / glm::tan(HALF_FOV);
-extern int SCALE							= WIDTH / NUM_RAYS;
+extern const float SCREEN_DIST				= HALF_WIDTH / glm::tan(HALF_FOV);
+extern const int SCALE						= WIDTH / NUM_RAYS;
 
 // Color
 

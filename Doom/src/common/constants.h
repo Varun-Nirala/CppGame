@@ -9,46 +9,56 @@ SDL_Color convert(const glm::vec3& color);
 
 // Game
 
-extern float TAU;
+extern const float TAU;
 
 extern const char* TITLE;
-extern int WIDTH;
-extern int HEIGHT;
-extern int HALF_WIDTH;
-extern int HALF_HEIGHT;
-extern float FPS;
+extern const int WIDTH;
+extern const int HEIGHT;
+extern const int HALF_WIDTH;
+extern const int HALF_HEIGHT;
+extern const float FPS;
 
-extern SDL_Color FLOOR_COLOR;
+extern const SDL_Color FLOOR_COLOR;
 
 // Player
 
-extern glm::vec2 PLAYER_POS;
-extern float PLAYER_ANGLE;
-extern float PLAYER_SPEED;
-extern float PLAYER_ROT_SPEED;
-extern int PLAYER_SIZE_SCALE;
+extern const glm::vec2 PLAYER_POS;
+extern const float PLAYER_ANGLE;
+extern const float PLAYER_SPEED;
+extern const float PLAYER_ROT_SPEED;
+extern const int PLAYER_SIZE_SCALE;
 
-extern float MOUSE_SENSTIVITY;
-extern int MOUSE_MAX_REL;
-extern int MOUSE_BORDER_LEFT;
-extern int MOUSE_BORDER_RIGHT;
+extern const float MOUSE_SENSTIVITY;
+extern const int MOUSE_MAX_REL;
+extern const int MOUSE_BORDER_LEFT;
+extern const int MOUSE_BORDER_RIGHT;
 
 // Raycasting
 
-extern float FOV;
-extern float HALF_FOV;
-extern int NUM_RAYS;
-extern int HALF_NUM_RAYS;
-extern float DELTA_ANGLE;
-extern int MAX_DEPTH;
+extern const float FOV;
+extern const float HALF_FOV;
+extern const int NUM_RAYS;
+extern const int HALF_NUM_RAYS;
+extern const float DELTA_ANGLE;
+extern const int MAX_DEPTH;
 
 // Texture
-extern int TEXTURE_SIZE;
-extern int HALF_TEXTURE_SIZE;
+extern const int TEXTURE_SIZE;
+extern const int HALF_TEXTURE_SIZE;
 
 
-extern float SCREEN_DIST;
-extern int SCALE;
+extern const float SCREEN_DIST;
+extern const int SCALE;
+
+// Texture Key Mapping
+extern const char WALL_1;
+extern const char WALL_2;
+extern const char WALL_3;
+extern const char WALL_4;
+extern const char WALL_5;
+
+extern const char SKY;
+
 
 // Color
 

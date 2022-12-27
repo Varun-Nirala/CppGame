@@ -19,13 +19,11 @@ public:
 	void draw();
 
 	void loadWallTextures();
-	void loadWallTextures(int w, int h);
 
 	const Texture* getTexture(char textureKey) const;
 	Texture* getTexture(char textureKey);
 
-	static Texture* createTexture(Game *pGame, const std::string& path, int w, int h);
-	static Texture* createTexture(Game* pGame, const std::string& path);
+	static Texture* createTexture(Game* pGame, const std::string& path, int w, int h);
 
 private:
 	void renderGameObjects();
@@ -34,8 +32,6 @@ private:
 private:
 	Game									*m_pGame{};
 	std::unordered_map<char, Texture *>		m_textureMap;
-	Texture									m_bgTexture;
 	int										m_skyTextureOffset{};
 };
-
 #endif //!__OBJECT_RENDERER_H__

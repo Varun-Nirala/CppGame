@@ -13,14 +13,6 @@ public:
 	~Texture() { clear(); };
 	explicit Texture(Game* pGame);
 
-	Texture(const Texture& obj);
-	Texture(Texture&& obj) noexcept;
-
-	Texture& operator=(const Texture& obj);
-	Texture& operator=(Texture&& obj) noexcept;
-
-	void setGamePtr(Game* pGame) { m_pGame = pGame; }
-
 	int width() const { return m_width; }
 	int height() const { return m_height; }
 
@@ -28,18 +20,11 @@ public:
 	SDL_Texture* texture() { return m_pTexture; }
 
 	bool loadTexture(const std::string& path);
-
 	bool loadTexture(const std::string& path, int w, int h);
 
-	Texture subTexture(int posX, int posY, int w, int h) const;
-
-	void scale(int w, int h);
-
 	void clear();
-
 private:
 	SDL_Texture* copyTexture(SDL_Texture* pTexture, int w, int h) const;
-
 	bool scaleTexture(int w, int h);
 
 private:

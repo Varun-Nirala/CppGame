@@ -65,6 +65,8 @@ bool Game::init()
 
 	m_objectRenderer.init();
 
+	m_pScreenSurface = SDL_GetWindowSurface(m_pWindow);
+
 	return true;
 }
 
@@ -116,6 +118,7 @@ void Game::quit()
 	
 	m_pWindow = nullptr;
 	m_pRenderer = nullptr;
+	m_pScreenSurface = nullptr;
 }
 
 void Game::checkEvents()
