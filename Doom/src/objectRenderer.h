@@ -23,6 +23,7 @@ public:
 	const Texture* getTexture(char textureKey) const;
 	Texture* getTexture(char textureKey);
 
+	static Texture* createTexture(Game* pGame, const std::string& path);
 	static Texture* createTexture(Game* pGame, const std::string& path, int w, int h);
 
 private:

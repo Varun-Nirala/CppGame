@@ -56,7 +56,7 @@ struct RaycastingResult
 
 struct TextureObject
 {
-	char			textureKey;
+	Texture			*pTexture{};
 	float			depth{};
 	SDL_Rect		srcRect{};
 	SDL_Rect		dstRect{};

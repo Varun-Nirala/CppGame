@@ -8,6 +8,7 @@ Game::Game()
 	, m_player(this)
 	, m_raycasting(this)
 	, m_objectRenderer(this)
+	, m_spriteObject(this)
 {
 }
 
@@ -67,6 +68,10 @@ bool Game::init()
 
 	m_pScreenSurface = SDL_GetWindowSurface(m_pWindow);
 
+	m_spriteObject.init(R"(.\resources\sprites\static_sprites\candlebra.png)", { 10.5f, 3.5f });
+
+	SDL_WarpMouseInWindow(m_pWindow, HALF_WIDTH, HALF_HEIGHT);
+
 	return true;
 }
 
@@ -75,8 +80,12 @@ void Game::update(float dt)
 	const std::string title = "DOOM   FPS : " + std::to_string(1000.0f / dt);
 	SDL_SetWindowTitle(m_pWindow, title.c_str());
 
-	m_player.update(dt);
-	m_raycasting.update(dt);
+	if (!m_bPauseGame)
+	{
+		m_player.update(dt);
+		m_raycasting.update(dt);
+		m_spriteObject.update(dt);
+	}
 }
 
 void Game::run(bool bRunOnMaxFPS)
@@ -129,9 +138,14 @@ void Game::checkEvents()
 
 	while (SDL_PollEvent(&event))
 	{
-		if (event.type == SDL_QUIT || event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+		if (event.type == SDL_QUIT || event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
 		{
 			m_bQuitGame = true;
+			break;
+		}
+		else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_p)
+		{
+			m_bPauseGame = !m_bPauseGame;
 			break;
 		}
 		else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
@@ -160,7 +174,6 @@ void Game::runControlledFPS()
 		while (!m_bQuitGame && accumulator >= m_timePerFrameInMs)
 		{
 			checkEvents();
-
 			update(m_timePerFrameInMs);
 			draw();
 			accumulator -= m_timePerFrameInMs;

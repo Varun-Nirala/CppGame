@@ -169,7 +169,7 @@ void Raycasting::fillObjectsToRender()
 		const RaycastingResult& res = m_results[ray];
 
 		m_objectsToRender[ray].depth = res.depth;
-		m_objectsToRender[ray].textureKey = res.textureKey;
+		m_objectsToRender[ray].pTexture = m_pGame->objectRenderer().getTexture(res.textureKey);
 
 		if (res.projectionHeight < HEIGHT)
 		{

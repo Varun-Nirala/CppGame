@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "objectRenderer.h"
 
 #include "game.h"
@@ -10,7 +12,7 @@ ObjectRenderer::ObjectRenderer(Game *pGame)
 void ObjectRenderer::init()
 {
     loadWallTextures();
-    m_textureMap[SKY] = createTexture(m_pGame, R"(.\resources\textures\sky.png)", TEXTURE_SIZE, TEXTURE_SIZE);
+    m_textureMap[SKY] = createTexture(m_pGame, R"(.\resources\textures\sky.png)", WIDTH, HALF_HEIGHT);
 }
 
 void ObjectRenderer::draw()
@@ -52,42 +54,46 @@ Texture* ObjectRenderer::getTexture(char textureKey)
 
 void ObjectRenderer::renderGameObjects()
 {
-    for (TextureObject& obj : m_pGame->raycasting().getObjectsToRender())
+    std::vector<TextureObject>& vec = m_pGame->raycasting().getObjectsToRender();
+
+    std::sort(vec.begin(), vec.end(), 
+        [](const TextureObject &lhs, const TextureObject &rhs) 
+        {
+            return lhs.depth > rhs.depth;
+        });
+
+    for (TextureObject& obj : vec)
     {
-        SDL_RenderCopy(m_pGame->renderer(), m_textureMap[obj.textureKey]->texture(), &obj.srcRect, &obj.dstRect);
+        SDL_RenderCopy(m_pGame->renderer(), obj.pTexture->texture(), &obj.srcRect, &obj.dstRect);
     }
 }
 
 void ObjectRenderer::drawBackground()
 {
     Texture* skyTexture = m_textureMap[SKY];
+
     // Sky
     m_skyTextureOffset = int(m_skyTextureOffset + 4.5f * m_pGame->player().relative()) % WIDTH;
 
-    SDL_Rect dstRect = { -m_skyTextureOffset, 0, WIDTH, HEIGHT };
+    const SDL_Rect dstRect = { -m_skyTextureOffset, 0, WIDTH, HEIGHT / 2 };
     SDL_RenderCopy(m_pGame->renderer(), skyTexture->texture(), nullptr, &dstRect);
 
-    dstRect = { -m_skyTextureOffset + WIDTH, 0, WIDTH, HEIGHT };
-    SDL_RenderCopy(m_pGame->renderer(), skyTexture->texture(), nullptr, &dstRect);
-
-    // Floor
-    SDL_Rect rect;
-    rect.x = 0;
-    rect.y = HALF_HEIGHT;
-    rect.w = WIDTH;
-    rect.h = HEIGHT;
-
-    SDL_SetRenderDrawColor(m_pGame->renderer(), FLOOR_COLOR.r, FLOOR_COLOR.g, FLOOR_COLOR.b, FLOOR_COLOR.a);
-
-    bool bFilledRectange = true;
-    if (bFilledRectange)
+    if (m_skyTextureOffset > 0)
     {
-        SDL_RenderFillRect(m_pGame->renderer(), &rect);
+        const SDL_Rect dstRect1 = { -m_skyTextureOffset + WIDTH, 0, WIDTH, HEIGHT / 2 };
+        SDL_RenderCopy(m_pGame->renderer(), skyTexture->texture(), nullptr, &dstRect1);
     }
     else
     {
-        SDL_RenderDrawRect(m_pGame->renderer(), &rect);
+        const SDL_Rect dstRect1 = { -(m_skyTextureOffset + WIDTH), 0, WIDTH, HEIGHT / 2 };
+        SDL_RenderCopy(m_pGame->renderer(), skyTexture->texture(), nullptr, &dstRect1);
     }
+
+    // Floor
+    const SDL_Rect rect = { 0, HALF_HEIGHT, WIDTH, HEIGHT };
+
+    SDL_SetRenderDrawColor(m_pGame->renderer(), FLOOR_COLOR.r, FLOOR_COLOR.g, FLOOR_COLOR.b, FLOOR_COLOR.a);
+    SDL_RenderFillRect(m_pGame->renderer(), &rect);
 }
 
 Texture* ObjectRenderer::createTexture(Game* pGame, const std::string& path, int w, int h)
@@ -95,6 +101,19 @@ Texture* ObjectRenderer::createTexture(Game* pGame, const std::string& path, int
     Texture* texture = new Texture(pGame);
 
     if (!texture->loadTexture(path.c_str(), w, h))
+    {
+        ns_Util::Logger::LOG_ERROR("Unable to create texture from ", path, "! SDL_image Error : ", IMG_GetError(), '\n');
+        assert(false);
+    }
+
+    return texture;
+}
+
+Texture* ObjectRenderer::createTexture(Game* pGame, const std::string& path)
+{
+    Texture* texture = new Texture(pGame);
+
+    if (!texture->loadTexture(path.c_str()))
     {
         ns_Util::Logger::LOG_ERROR("Unable to create texture from ", path, "! SDL_image Error : ", IMG_GetError(), '\n');
         assert(false);

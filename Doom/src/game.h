@@ -15,6 +15,8 @@
 #include "raycasting.h"
 #include "objectRenderer.h"
 
+#include "spriteObject.h"
+
 class Game
 {
 public:
@@ -65,6 +67,7 @@ private:
 	std::vector<SDL_Event>	m_mouseEvents;
 
 	bool					m_bQuitGame{ false };
+	bool					m_bPauseGame{ false };
 
 	const float				m_timePerFrameInMs{ 1000.0f / FPS };
 
@@ -73,6 +76,8 @@ private:
 	Player					m_player;
 	Raycasting				m_raycasting;
 	ObjectRenderer			m_objectRenderer;
+
+	SpriteObject			m_spriteObject;
 };
 
 #endif // !__GAME_H__

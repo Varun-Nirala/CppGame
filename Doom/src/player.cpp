@@ -51,17 +51,17 @@ void Player::movement(float dt)
 					break;
 
 				case SDLK_s:
-					dx -= speedCos;
-					dy -= speedSin;
+					dx += -speedCos;
+					dy += -speedSin;
 					break;
 
 				case SDLK_a:
 					dx += speedSin;
-					dy -= speedCos;
+					dy += -speedCos;
 					break;
 
 				case SDLK_d:
-					dx -= speedSin;
+					dx += -speedSin;
 					dy += speedCos;
 					break;
 
@@ -74,14 +74,16 @@ void Player::movement(float dt)
 					break;
 				*/
 			}
+			checlWallCollision(dt, dx, dy);
 		}
 	}
 
-	checlWallCollision(dt, dx, dy);
+	m_angle = std::fmod(m_angle, TAU);
 }
 
 void Player::mouseControl(float dt)
 {
+	m_playerRelative = 0;
 	int x{};
 	int y{};
 
@@ -125,25 +127,26 @@ void Player::mouseControl(float dt)
 				break;
 		}
 	}
-
-	while (m_angle >= TAU)
-	{
-		m_angle -= TAU;
-	}
 }
 
 bool Player::checkWall(int x, int y)
 {
-	if (m_pGame->map().isValid(x, y) && m_pGame->map()[y][x] != EMPTY_CELL)
+	if (!m_pGame->map().isValid(y, x))
 	{
 		return true;
 	}
+
+	if (m_pGame->map()[y][x] != EMPTY_CELL)
+	{
+		return true;
+	}
+
 	return false;
 }
 
 void Player::checlWallCollision(float dt, float dx, float dy)
 {
-	float scale = PLAYER_SIZE_SCALE / dt;
+	const float scale = PLAYER_SIZE_SCALE / dt;
 	if (!checkWall(int(m_position.x + dx * scale), int(m_position.y)))
 	{
 		m_position.x += dx;

@@ -60,7 +60,7 @@ extern const char WALL_5					= '5';
 
 extern const char SKY						= 'S';
 
-extern const float SCREEN_DIST				= HALF_WIDTH / glm::tan(HALF_FOV);
+extern const float SCREEN_DIST				= HALF_WIDTH / std::tan(HALF_FOV);
 extern const int SCALE						= WIDTH / NUM_RAYS;
 
 // Color
