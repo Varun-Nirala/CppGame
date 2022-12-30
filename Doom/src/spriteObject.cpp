@@ -12,9 +12,11 @@ SpriteObject::SpriteObject(Game* pGame)
 {
 }
 
-void SpriteObject::init(const std::string& path, const glm::vec2& pos)
+void SpriteObject::init(const std::string& path, const glm::vec2& pos, float scale, float shift)
 {
 	m_position = pos;
+	m_spriteScale = scale;
+	m_spriteHeightShift = shift;
 
 	m_textureObject.pTexture = ObjectRenderer::createTexture(m_pGame, path);
 
@@ -30,7 +32,7 @@ void SpriteObject::update(float dt)
 
 void SpriteObject::calculateSpritePosition(float screenX, float normalDistance)
 {
-	const float projection = SCREEN_DIST / normalDistance;
+	const float projection = SCREEN_DIST / normalDistance * m_spriteScale;
 
 	const float projWidth = projection * m_imageRatio;
 	const float projHeight = projection;
@@ -39,7 +41,9 @@ void SpriteObject::calculateSpritePosition(float screenX, float normalDistance)
 
 	const float spriteHalfWidth = projWidth / 2.0f;
 
-	const glm::vec2 pos = { screenX - spriteHalfWidth, HALF_HEIGHT - projHeight / 2.0f };
+	const float heightShift = projHeight * m_spriteHeightShift;
+
+	const glm::vec2 pos = { screenX - spriteHalfWidth, HALF_HEIGHT - projHeight / 2.0f + heightShift };
 
 	m_textureObject.depth = normalDistance;
 
@@ -53,14 +57,7 @@ void SpriteObject::calculateSpritePosition(float screenX, float normalDistance)
 	m_textureObject.dstRect.w = (int)projWidth;
 	m_textureObject.dstRect.h = (int)projHeight;
 
-	if (m_pGame->raycasting().getObjectsToRender().size() == NUM_RAYS)
-	{
-		m_pGame->raycasting().getObjectsToRender().push_back(m_textureObject);
-	}
-	else
-	{
-		m_pGame->raycasting().getObjectsToRender()[NUM_RAYS] = m_textureObject;
-	}
+	m_pGame->raycasting().push_back(m_textureObject);
 }
 
 void SpriteObject::fillObjectToRender()

@@ -8,7 +8,7 @@ Game::Game()
 	, m_player(this)
 	, m_raycasting(this)
 	, m_objectRenderer(this)
-	, m_spriteObject(this)
+	, m_objectHandler(this)
 {
 }
 
@@ -66,11 +66,9 @@ bool Game::init()
 
 	m_objectRenderer.init();
 
-	m_pScreenSurface = SDL_GetWindowSurface(m_pWindow);
-
-	m_spriteObject.init(R"(.\resources\sprites\static_sprites\candlebra.png)", { 10.5f, 3.5f });
-
 	SDL_WarpMouseInWindow(m_pWindow, HALF_WIDTH, HALF_HEIGHT);
+
+	m_objectHandler.init();
 
 	return true;
 }
@@ -84,7 +82,7 @@ void Game::update(float dt)
 	{
 		m_player.update(dt);
 		m_raycasting.update(dt);
-		m_spriteObject.update(dt);
+		m_objectHandler.update(dt);
 	}
 }
 
@@ -127,7 +125,6 @@ void Game::quit()
 	
 	m_pWindow = nullptr;
 	m_pRenderer = nullptr;
-	m_pScreenSurface = nullptr;
 }
 
 void Game::checkEvents()

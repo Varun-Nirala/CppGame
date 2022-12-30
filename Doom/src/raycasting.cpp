@@ -162,6 +162,19 @@ void Raycasting::draw()
 	//drawWalls();
 }
 
+void Raycasting::push_back(const TextureObject& textureObject)
+{
+	if (m_nextEmptySpaceForObjectToRender == m_objectsToRender.size())
+	{
+		m_objectsToRender.push_back(textureObject);
+		++m_nextEmptySpaceForObjectToRender;
+	}
+	else
+	{
+		m_objectsToRender[m_nextEmptySpaceForObjectToRender++] = textureObject;
+	}
+}
+
 void Raycasting::fillObjectsToRender()
 {
 	for (int ray = 0; ray < NUM_RAYS; ++ray)
@@ -198,6 +211,7 @@ void Raycasting::fillObjectsToRender()
 			m_objectsToRender[ray].dstRect.h = HEIGHT;
 		}
 	}
+	m_nextEmptySpaceForObjectToRender = NUM_RAYS;
 }
 
 void Raycasting::drawRays()

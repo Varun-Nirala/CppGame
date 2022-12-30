@@ -24,6 +24,7 @@ public:
 	const std::vector<TextureObject>& getObjectsToRender() const { return m_objectsToRender; }
 	std::vector<TextureObject>& getObjectsToRender() { return m_objectsToRender; }
 
+	void push_back(const TextureObject& textureObject);
 private:
 	void fillObjectsToRender();
 
@@ -37,6 +38,7 @@ private:
 	std::vector<RaycastingResult>	m_results;
 
 	std::vector<TextureObject>		m_objectsToRender;
+	int								m_nextEmptySpaceForObjectToRender{};
 };
 
 #endif //!__RAYCASTING_H__

@@ -16,6 +16,9 @@
 #include "objectRenderer.h"
 
 #include "spriteObject.h"
+#include "animatedSpriteObject.h"
+
+#include "objectHandler.h"
 
 class Game
 {
@@ -38,7 +41,6 @@ public:
 
 	SDL_Window* window() const { return m_pWindow; }
 	SDL_Renderer* renderer() const { return m_pRenderer; }
-	SDL_Surface* screenSurface() const { return m_pScreenSurface; }
 	const std::vector<SDL_Event>& keyboardEvents() const { return m_keyboardEvents; }
 	const std::vector<SDL_Event>& mouseEvents() const { return m_mouseEvents; }
 	const Map& map() const { return m_map; }
@@ -60,7 +62,6 @@ private:
 private:
 	SDL_Window				*m_pWindow{};
 	SDL_Renderer			*m_pRenderer{};
-	SDL_Surface				*m_pScreenSurface{};
 
 	SDL_Color				m_clearColor{ convert(kCOLOR_BLACK) };
 	std::vector<SDL_Event>	m_keyboardEvents;
@@ -77,7 +78,7 @@ private:
 	Raycasting				m_raycasting;
 	ObjectRenderer			m_objectRenderer;
 
-	SpriteObject			m_spriteObject;
+	ObjectHandler			m_objectHandler;
 };
 
 #endif // !__GAME_H__
