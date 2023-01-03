@@ -25,7 +25,12 @@ public:
 	void setAngle(float angle) { m_angle = angle; }
 
 	int relative() const { return m_playerRelative; }
+
+	void setShot(bool val) { m_bShot = val; }
+	bool isShot() const { return m_bShot; }
 private:
+	void singleFire();
+
 	void movement(float dt);
 	void mouseControl(float dt);
 
@@ -41,6 +46,8 @@ private:
 	glm::vec2		m_position{};
 	float			m_angle{};
 	int				m_playerRelative{};
+
+	bool			m_bShot{ false };
 };
 
 #endif // !__PLAYER_H__

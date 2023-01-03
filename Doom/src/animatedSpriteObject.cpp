@@ -19,11 +19,14 @@ void AnimatedSpriteObject::init(const std::string& folderPath, const glm::vec2& 
 		if (entry.path().extension() == ".png")
 		{
 			const std::string str = entry.path().generic_string();
+			++m_numberOfImages;
+
 			if (bFirstImage)
 			{
 				SpriteObject::init(str, pos, scale, shift);
 				bFirstImage = false;
 			}
+
 			m_animationTextures.push_back(ObjectRenderer::createTexture(m_pGame, str));
 		}
 	}
@@ -36,6 +39,11 @@ void AnimatedSpriteObject::update(float dt)
 {
 	SpriteObject::update(dt);
 	checkAnimationTime(dt);
+}
+
+void AnimatedSpriteObject::draw()
+{
+	SpriteObject::draw();
 	animateSprite();
 }
 

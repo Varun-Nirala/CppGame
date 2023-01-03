@@ -10,13 +10,18 @@ class AnimatedSpriteObject : public SpriteObject
 public:
 	explicit AnimatedSpriteObject(Game* pGame);
 
-	void init(const std::string& folderPath, const glm::vec2& pos, float scale, float shift, int animationTime);
+	void init(const std::string& folderPath, const glm::vec2& pos = { 11.5f, 3.5f }, float scale = 0.8f, float shift = 0.16f, int animationTime = 120);
 	void update(float dt) override;
-private:
+	void draw() override;
+
+	int numberOfImages() const { return m_numberOfImages; }
+
+protected:
 	void animateSprite();
 	void checkAnimationTime(float dt);
 
-private:
+protected:
+	int							m_numberOfImages{};
 	int							m_animationTime{};
 	std::deque<Texture *>		m_animationTextures;
 	float						m_animationPrevTime{};

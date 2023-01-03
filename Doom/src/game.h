@@ -20,6 +20,10 @@
 
 #include "objectHandler.h"
 
+#include "weapon.h"
+
+#include "sound.h"
+
 class Game
 {
 public:
@@ -55,6 +59,11 @@ public:
 	const Player& player() const { return m_player; }
 	Player& player() { return m_player; }
 
+	const Weapon& weapon() const { return m_weapon; }
+	Weapon& weapon() { return m_weapon; }
+
+	const Sound* shotSound() const { return m_pShotSound; }
+	Sound* shotSound() { return m_pShotSound; }
 private:
 	void runControlledFPS();
 	void runMaxFPS();
@@ -79,6 +88,9 @@ private:
 	ObjectRenderer			m_objectRenderer;
 
 	ObjectHandler			m_objectHandler;
+	
+	Weapon					m_weapon;
+	Sound					*m_pShotSound{};
 };
 
 #endif // !__GAME_H__

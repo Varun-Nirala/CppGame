@@ -16,9 +16,11 @@ class SpriteObject
 public:
 	explicit SpriteObject(Game* pGame);
 
-	void init(const std::string& path, const glm::vec2& pos, float scale, float shift);
+	void init(const std::string& path, const glm::vec2& pos = { 10.5f, 3.5f }, float scale = 0.7f, float shift = 0.27f);
 	virtual void update(float dt);
-private:
+	virtual void draw() {}
+
+protected:
 	void calculateSpritePosition(float screenX, float normalDistance);
 	void fillObjectToRender();
 

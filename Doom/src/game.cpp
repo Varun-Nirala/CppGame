@@ -3,12 +3,15 @@
 #include "common/constants.h"
 #include "common/logger.h"
 
+#include <SDL_mixer.h>
+
 Game::Game()
 	: m_map(this)
 	, m_player(this)
 	, m_raycasting(this)
 	, m_objectRenderer(this)
 	, m_objectHandler(this)
+	, m_weapon(this)
 {
 }
 
@@ -16,7 +19,7 @@ bool Game::init()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		ns_Util::Logger::LOG_ERROR("Error initializing SDL : ", SDL_GetError(), '\n');
+		ns_Util::Logger::LOG_ERROR("Error initialising SDL : ", SDL_GetError(), '\n');
 		assert(false);
 		return false;
 	}
@@ -26,7 +29,7 @@ bool Game::init()
 
 	if ((flags & initedFlags) != flags)
 	{
-		ns_Util::Logger::LOG_ERROR("Error initializing SDL_Image : ", SDL_GetError(), '\n');
+		ns_Util::Logger::LOG_ERROR("Error initialising SDL_Image : ", SDL_GetError(), '\n');
 		assert(false);
 		return false;
 	}
@@ -57,7 +60,14 @@ bool Game::init()
 
 	if (TTF_Init() < 0)
 	{
-		ns_Util::Logger::LOG_ERROR("Error initializingg SDL_ttf : ", TTF_GetError(), '\n');
+		ns_Util::Logger::LOG_ERROR("Error initialising SDL_ttf : ", TTF_GetError(), '\n');
+		assert(false);
+		return false;
+	}
+
+	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+	{
+		ns_Util::Logger::LOG_ERROR("Error initialising SDL_mixer!\n");
 		assert(false);
 		return false;
 	}
@@ -69,6 +79,12 @@ bool Game::init()
 	SDL_WarpMouseInWindow(m_pWindow, HALF_WIDTH, HALF_HEIGHT);
 
 	m_objectHandler.init();
+
+	m_weapon.init(R"(.\resources\sprites\weapon\shotgun)", { 11.5f, 3.5f }, 0.4f, 0.16f, 90);
+
+	m_pShotSound = new SoundEffect(this);
+
+	m_pShotSound->init(R"(.\resources\sound\shotgun.wav)");
 
 	return true;
 }
@@ -83,6 +99,7 @@ void Game::update(float dt)
 		m_player.update(dt);
 		m_raycasting.update(dt);
 		m_objectHandler.update(dt);
+		m_weapon.update(dt);
 	}
 }
 
@@ -110,6 +127,8 @@ void Game::draw()
 	//m_player.draw();
 	m_raycasting.draw();
 	m_objectRenderer.draw();
+	m_objectHandler.draw();
+	m_weapon.draw();
 
 	postDraw();
 }
@@ -121,6 +140,7 @@ void Game::quit()
 	
 	IMG_Quit();
 	TTF_Quit();
+	Mix_CloseAudio();
 	SDL_Quit();
 	
 	m_pWindow = nullptr;

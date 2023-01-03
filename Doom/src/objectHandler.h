@@ -18,6 +18,8 @@ public:
 
 	void update(float dt);
 
+	void draw();
+
 private:
 	Game									*m_pGame{};
 	std::vector<SpriteObject*>				m_sprites;

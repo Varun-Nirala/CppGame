@@ -72,3 +72,11 @@ void ObjectHandler::update(float dt)
 		pSprite->update(dt);
 	}
 }
+
+void ObjectHandler::draw()
+{
+	for (SpriteObject* pSprite : m_sprites)
+	{
+		pSprite->draw();
+	}
+}

@@ -13,6 +13,7 @@ void Player::update(float dt)
 {
 	movement(dt);
 	mouseControl(dt);
+	singleFire();
 }
 
 void Player::draw()
@@ -24,6 +25,22 @@ void Player::draw()
 glm::vec2 Player::mapPosition()
 {
 	return m_position;
+}
+
+void Player::singleFire()
+{
+	for (const SDL_Event& event : m_pGame->mouseEvents())
+	{
+		if (!m_bShot 
+			&& event.type == SDL_MOUSEBUTTONDOWN 
+			&& event.button.button == SDL_BUTTON_LEFT
+			&& !m_pGame->weapon().reloading())
+		{
+			m_pGame->shotSound()->play();
+			m_bShot = true;
+			m_pGame->weapon().setReloading(true);
+		}
+	}
 }
 
 void Player::movement(float dt)
