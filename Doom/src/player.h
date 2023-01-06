@@ -14,7 +14,7 @@ public:
 
 	void draw();
 
-	glm::vec2 mapPosition();
+	glm::ivec2 mapPosition();
 
 	const glm::vec2& position() const { return m_position; }
 	glm::vec2& position() { return m_position; }

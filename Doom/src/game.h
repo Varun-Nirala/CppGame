@@ -24,6 +24,19 @@
 
 #include "sound.h"
 
+enum SoundIndex
+{
+	SHOTGUN,
+	
+	NPC_PAIN,
+	NPC_DEATH,
+	NPC_SHOT,
+
+	PLAYER_PAIN,
+
+	MAX_SOUNDS
+};
+
 class Game
 {
 public:
@@ -62,35 +75,35 @@ public:
 	const Weapon& weapon() const { return m_weapon; }
 	Weapon& weapon() { return m_weapon; }
 
-	const Sound* shotSound() const { return m_pShotSound; }
-	Sound* shotSound() { return m_pShotSound; }
+	const Sound* getSound(SoundIndex id) const { return m_soundEffects[id]; }
+	Sound* getSound(SoundIndex id) { return m_soundEffects[id]; }
 private:
 	void runControlledFPS();
 	void runMaxFPS();
 
 private:
-	SDL_Window				*m_pWindow{};
-	SDL_Renderer			*m_pRenderer{};
+	SDL_Window					*m_pWindow{};
+	SDL_Renderer				*m_pRenderer{};
 
-	SDL_Color				m_clearColor{ convert(kCOLOR_BLACK) };
-	std::vector<SDL_Event>	m_keyboardEvents;
-	std::vector<SDL_Event>	m_mouseEvents;
+	SDL_Color					m_clearColor{ convert(kCOLOR_BLACK) };
+	std::vector<SDL_Event>		m_keyboardEvents;
+	std::vector<SDL_Event>		m_mouseEvents;
 
-	bool					m_bQuitGame{ false };
-	bool					m_bPauseGame{ false };
+	bool						m_bQuitGame{ false };
+	bool						m_bPauseGame{ false };
 
-	const float				m_timePerFrameInMs{ 1000.0f / FPS };
+	const float					m_timePerFrameInMs{ 1000.0f / FPS };
 
-	Map						m_map;
+	Map							m_map;
 
-	Player					m_player;
-	Raycasting				m_raycasting;
-	ObjectRenderer			m_objectRenderer;
+	Player						m_player;
+	Raycasting					m_raycasting;
+	ObjectRenderer				m_objectRenderer;
 
-	ObjectHandler			m_objectHandler;
+	ObjectHandler				m_objectHandler;
 	
-	Weapon					m_weapon;
-	Sound					*m_pShotSound{};
+	Weapon						m_weapon;
+	std::vector<SoundEffect*>	m_soundEffects;
 };
 
 #endif // !__GAME_H__

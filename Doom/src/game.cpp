@@ -82,9 +82,15 @@ bool Game::init()
 
 	m_weapon.init(R"(.\resources\sprites\weapon\shotgun)", { 11.5f, 3.5f }, 0.4f, 0.16f, 90);
 
-	m_pShotSound = new SoundEffect(this);
+	m_soundEffects.resize(SoundIndex::MAX_SOUNDS);
 
-	m_pShotSound->init(R"(.\resources\sound\shotgun.wav)");
+	m_soundEffects[SoundIndex::SHOTGUN] = new SoundEffect(R"(.\resources\sound\shotgun.wav)");
+	
+	m_soundEffects[SoundIndex::NPC_PAIN] = new SoundEffect(R"(.\resources\sound\npc_pain.wav)");
+	m_soundEffects[SoundIndex::NPC_DEATH] = new SoundEffect(R"(.\resources\sound\npc_death.wav)");
+	m_soundEffects[SoundIndex::NPC_SHOT] = new SoundEffect(R"(.\resources\sound\npc_attack.wav)");
+
+	m_soundEffects[SoundIndex::PLAYER_PAIN] = new SoundEffect(R"(.\resources\sound\player_pain.wav)");
 
 	return true;
 }
@@ -123,11 +129,11 @@ void Game::draw()
 {
 	preDraw();
 
-	//m_map.draw();
-	//m_player.draw();
+	m_map.draw();
+	m_player.draw();
 	m_raycasting.draw();
-	m_objectRenderer.draw();
 	m_objectHandler.draw();
+	m_objectRenderer.draw();
 	m_weapon.draw();
 
 	postDraw();

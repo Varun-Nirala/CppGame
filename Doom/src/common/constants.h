@@ -3,6 +3,11 @@
 #include <glm/glm.hpp>
 #include <SDL.h>
 
+#if 0
+	#define SHOW_IN_BLUEPRINT
+	#define SHOW_FOV_RAYCAST
+#endif
+
 #define EMPTY_CELL '_'
 
 SDL_Color convert(const glm::vec3& color);

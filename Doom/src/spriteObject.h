@@ -20,8 +20,11 @@ public:
 	virtual void update(float dt);
 	virtual void draw() {}
 
+	float spriteHalfWidth() const { return m_spriteHalfWidth; }
+	float screenX() const { return m_screenX; }
+	float thetaAngle() const { return m_thetaAngle; }
 protected:
-	void calculateSpritePosition(float screenX, float normalDistance);
+	void calculateSpritePosition(float normalDistance);
 	void fillObjectToRender();
 
 protected:
@@ -33,6 +36,9 @@ protected:
 	float			m_imageRatio{};
 	float			m_spriteScale{};
 	float			m_spriteHeightShift{};
+	float			m_spriteHalfWidth{};
+	float			m_screenX{};
+	float			m_thetaAngle{};
 };
 
 #endif //!__SPRITE_OBJECT_H__

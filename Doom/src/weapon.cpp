@@ -28,8 +28,10 @@ void Weapon::update(float dt)
 
 void Weapon::draw()
 {
+#ifndef SHOW_IN_BLUEPRINT
 	SDL_RenderCopy(m_pGame->renderer(), m_textureObject.pTexture->texture(), &m_textureObject.srcRect, &m_textureObject.dstRect);
 	animateShot();
+#endif
 }
 
 void Weapon::animateShot()

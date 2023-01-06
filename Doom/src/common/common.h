@@ -1,6 +1,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
+#include <random>
 #include "../texture.h"
 
 struct Line
@@ -61,5 +62,16 @@ struct TextureObject
 	SDL_Rect		srcRect{};
 	SDL_Rect		dstRect{};
 };
+
+// Inclusive range [min, max]
+static inline int getRandomNumber(int min, int max)
+{
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+
+	std::uniform_int_distribution<> distrib(min, max);
+
+	return distrib(gen);
+}
 
 #endif //!__COMMON_H__

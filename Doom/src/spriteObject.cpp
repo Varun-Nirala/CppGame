@@ -30,7 +30,7 @@ void SpriteObject::update(float dt)
 	fillObjectToRender();
 }
 
-void SpriteObject::calculateSpritePosition(float screenX, float normalDistance)
+void SpriteObject::calculateSpritePosition(float normalDistance)
 {
 	const float projection = SCREEN_DIST / normalDistance * m_spriteScale;
 
@@ -39,11 +39,11 @@ void SpriteObject::calculateSpritePosition(float screenX, float normalDistance)
 
 	// Scale image to projWidth and projHeight
 
-	const float spriteHalfWidth = projWidth / 2.0f;
+	m_spriteHalfWidth = projWidth / 2.0f;
 
 	const float heightShift = projHeight * m_spriteHeightShift;
 
-	const glm::vec2 pos = { screenX - spriteHalfWidth, HALF_HEIGHT - projHeight / 2.0f + heightShift };
+	const glm::vec2 pos = { m_screenX - m_spriteHalfWidth, HALF_HEIGHT - projHeight / 2.0f + heightShift };
 
 	m_textureObject.depth = normalDistance;
 
@@ -67,9 +67,9 @@ void SpriteObject::fillObjectToRender()
 	const float dx = m_position.x - p.position().x;
 	const float dy = m_position.y - p.position().y;
 
-	const float theta = std::atan2(dy, dx);
+	m_thetaAngle = std::atan2(dy, dx);
 
-	float deltaAngle = theta - p.angle();
+	float deltaAngle = m_thetaAngle - p.angle();
 
 	if ((dx < 0.0f && dy < 0.0f) || (dx > 0.0f && p.angle() > M_PI))
 	{
@@ -78,11 +78,11 @@ void SpriteObject::fillObjectToRender()
 
 	const float deltaRays = deltaAngle / DELTA_ANGLE;
 
-	const float screenX = (HALF_NUM_RAYS + deltaRays) * SCALE;
+	m_screenX = (HALF_NUM_RAYS + deltaRays) * SCALE;
 
 	const float distance = std::hypotf(dx, dy);
 	const float normalDistance = distance * std::cosf(deltaAngle);
 
-	if (-m_imageHalfWidth < screenX && screenX < (WIDTH + m_imageHalfWidth) && normalDistance > 0.5f)
-		calculateSpritePosition(screenX, normalDistance);
+	if (-m_imageHalfWidth < m_screenX && m_screenX < (WIDTH + m_imageHalfWidth) && normalDistance > 0.5f)
+		calculateSpritePosition(normalDistance);
 }

@@ -40,6 +40,7 @@ bool Map::isValid(int r, int c) const
 
 void Map::draw()
 {
+#ifdef SHOW_IN_BLUEPRINT
 	const SDL_Color color{ convert(kCOLOR_DARK_GRAY) };
 
 	for (int r = 0, maxRows = (int)rows(); r < maxRows; ++r)
@@ -52,6 +53,7 @@ void Map::draw()
 			}
 		}
 	}
+#endif
 }
 
 void Map::drawRectanlge(int posX, int posY, int w, int h, bool bFilledRectange, const SDL_Color &color)

@@ -4,12 +4,17 @@
 
 SoundEffect::~SoundEffect()
 {
-	Mix_FreeChunk(m_pSoundChunk);
-	m_pSoundChunk = nullptr;
+	clear();
+}
+
+SoundEffect::SoundEffect(const std::string& path)
+{
+	init(path);
 }
 
 void SoundEffect::init(const std::string &path)
 {
+	clear();
 	m_pSoundChunk = Mix_LoadWAV(path.c_str());
 	if (!m_pSoundChunk)
 	{
@@ -29,14 +34,28 @@ void SoundEffect::play(int loopCount)
 	}
 }
 
+void SoundEffect::clear()
+{
+	if (m_pSoundChunk)
+	{
+		Mix_FreeChunk(m_pSoundChunk);
+		m_pSoundChunk = nullptr;
+	}
+}
+
 Music::~Music()
 {
-	Mix_FreeMusic(m_pMusic);
-	m_pMusic = nullptr;
+	clear();
+}
+
+Music::Music(const std::string& path)
+{
+	init(path);
 }
 
 void Music::init(const std::string& path)
 {
+	clear();
 	m_pMusic = Mix_LoadMUS(path.c_str());
 	if (!m_pMusic)
 	{
@@ -78,4 +97,13 @@ void Music::resume()
 void Music::stop()
 {
 	Mix_HaltMusic();
+}
+
+void Music::clear()
+{
+	if (m_pMusic)
+	{
+		Mix_FreeMusic(m_pMusic);
+		m_pMusic = nullptr;
+	}
 }

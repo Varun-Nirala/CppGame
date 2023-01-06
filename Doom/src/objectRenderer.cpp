@@ -17,8 +17,10 @@ void ObjectRenderer::init()
 
 void ObjectRenderer::draw()
 {
+#ifndef SHOW_IN_BLUEPRINT
     drawBackground();
     renderGameObjects();
+#endif
 }
 
 void ObjectRenderer::loadWallTextures()

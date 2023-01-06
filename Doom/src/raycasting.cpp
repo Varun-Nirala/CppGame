@@ -16,8 +16,8 @@ void Raycasting::raycast()
 	const float px = m_pGame->player().position().x;
 	const float py = m_pGame->player().position().y;
 
-	const int map_x = (int)m_pGame->player().mapPosition().x;
-	const int map_y = (int)m_pGame->player().mapPosition().y;
+	const int map_x = m_pGame->player().mapPosition().x;
+	const int map_y = m_pGame->player().mapPosition().y;
 
 	float rayAngle = m_pGame->player().angle() - HALF_FOV + 0.0001f;
 
@@ -52,9 +52,11 @@ void Raycasting::raycast()
 
 		for (int d = 0; d < MAX_DEPTH; ++d)
 		{
-			if (m_pGame->map().isValid((int)yHor, (int)xHor) && m_pGame->map()[(int)yHor][(int)xHor] != EMPTY_CELL)
+			const int tileHorz_x = (int)xHor;
+			const int tileHorz_y = (int)yHor;
+			if (m_pGame->map().isValid(tileHorz_y, tileHorz_x) && m_pGame->map()[tileHorz_y][tileHorz_x] != EMPTY_CELL)
 			{
-				textureHor = m_pGame->map()[(int)yHor][(int)xHor];
+				textureHor = m_pGame->map()[tileHorz_y][tileHorz_x];
 				break;
 			}
 
@@ -86,9 +88,11 @@ void Raycasting::raycast()
 
 		for (int d = 0; d < MAX_DEPTH; ++d)
 		{
-			if (m_pGame->map().isValid((int)yVert, (int)xVert) && m_pGame->map()[(int)yVert][(int)xVert] != EMPTY_CELL)
+			const int tileVert_x = (int)xVert;
+			const int tileVert_y = (int)yVert;
+			if (m_pGame->map().isValid(tileVert_y, tileVert_x) && m_pGame->map()[tileVert_y][tileVert_x] != EMPTY_CELL)
 			{
-				textureVert = m_pGame->map()[(int)yVert][(int)xVert];
+				textureVert = m_pGame->map()[tileVert_y][tileVert_x];
 				break;
 			}
 
@@ -158,7 +162,9 @@ void Raycasting::update(float dt)
 
 void Raycasting::draw()
 {
-	//drawRays();
+#if defined(SHOW_IN_BLUEPRINT) && defined (SHOW_FOV_RAYCAST)
+	drawRays();
+#endif
 	//drawWalls();
 }
 

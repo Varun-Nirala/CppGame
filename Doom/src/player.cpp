@@ -18,13 +18,15 @@ void Player::update(float dt)
 
 void Player::draw()
 {
+#ifdef SHOW_IN_BLUEPRINT
 	drawLineOfSight();
 	drawPlayer();
+#endif
 }
 
-glm::vec2 Player::mapPosition()
+glm::ivec2 Player::mapPosition()
 {
-	return m_position;
+	return glm::ivec2{ m_position };
 }
 
 void Player::singleFire()
@@ -36,7 +38,7 @@ void Player::singleFire()
 			&& event.button.button == SDL_BUTTON_LEFT
 			&& !m_pGame->weapon().reloading())
 		{
-			m_pGame->shotSound()->play();
+			m_pGame->getSound(SoundIndex::SHOTGUN)->play();
 			m_bShot = true;
 			m_pGame->weapon().setReloading(true);
 		}

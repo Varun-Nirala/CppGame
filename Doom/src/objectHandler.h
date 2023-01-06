@@ -3,9 +3,10 @@
 
 #include <vector>
 
+class Game;
 class SpriteObject;
 class AnimatedSpriteObject;
-class Game;
+class NPC;
 
 class ObjectHandler
 {
@@ -15,6 +16,7 @@ public:
 	void init();
 
 	void addSprite(SpriteObject* pSpriteObject) { m_sprites.push_back(pSpriteObject); }
+	void addNPC(NPC* pNPC) { m_npcs.push_back(pNPC); }
 
 	void update(float dt);
 
@@ -23,6 +25,7 @@ public:
 private:
 	Game									*m_pGame{};
 	std::vector<SpriteObject*>				m_sprites;
+	std::vector<NPC*>						m_npcs;
 };
 
 #endif //!__OBJECT_HANDLER_H__
