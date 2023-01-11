@@ -22,7 +22,8 @@ public:
 	size_t rows() const { return m_map.size(); }
 	size_t cols() const { return m_map[0].size(); }
 
-	bool isValid(int r, int c) const;
+	// x = horizontal axis, y = vertical axis
+	bool isValid(int y, int x) const;
 
 	void draw();
 

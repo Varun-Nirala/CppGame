@@ -5,9 +5,12 @@
 int main()
 {
 	Game game;
+
 	game.init();
 
-	game.run(false);
+	bool bRunOnMaxFPS{ false };
+
+	game.run(bRunOnMaxFPS);
 
 	return 0;
 }

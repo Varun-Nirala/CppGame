@@ -24,7 +24,7 @@ void Player::draw()
 #endif
 }
 
-glm::ivec2 Player::mapPosition()
+glm::ivec2 Player::mapPosition() const
 {
 	return glm::ivec2{ m_position };
 }
@@ -93,7 +93,7 @@ void Player::movement(float dt)
 					break;
 				*/
 			}
-			checlWallCollision(dt, dx, dy);
+			checkWallCollision(dt, dy, dx);
 		}
 	}
 
@@ -148,7 +148,7 @@ void Player::mouseControl(float dt)
 	}
 }
 
-bool Player::checkWall(int x, int y)
+bool Player::checkWall(int y, int x)
 {
 	if (!m_pGame->map().isValid(y, x))
 	{
@@ -163,15 +163,15 @@ bool Player::checkWall(int x, int y)
 	return false;
 }
 
-void Player::checlWallCollision(float dt, float dx, float dy)
+void Player::checkWallCollision(float dt, float dy, float dx)
 {
 	const float scale = PLAYER_SIZE_SCALE / dt;
-	if (!checkWall(int(m_position.x + dx * scale), int(m_position.y)))
+	if (!checkWall(int(m_position.y), int(m_position.x + dx * scale)))
 	{
 		m_position.x += dx;
 	}
 
-	if (!checkWall(int(m_position.x), int(m_position.y + dy * scale)))
+	if (!checkWall(int(m_position.y + dy * scale), int(m_position.x)))
 	{
 		m_position.y += dy;
 	}

@@ -33,9 +33,9 @@ Map::Map(Game* pGame, const GridMap& map)
 {
 }
 
-bool Map::isValid(int r, int c) const
+bool Map::isValid(int y, int x) const
 {
-	return r >= 0 && r < m_map.size() && c >= 0 && c < m_map[0].size();
+	return y >= 0 && y < m_map.size() && x >= 0 && x < m_map[0].size();
 }
 
 void Map::draw()
@@ -43,13 +43,13 @@ void Map::draw()
 #ifdef SHOW_IN_BLUEPRINT
 	const SDL_Color color{ convert(kCOLOR_DARK_GRAY) };
 
-	for (int r = 0, maxRows = (int)rows(); r < maxRows; ++r)
+	for (int y = 0, maxRows = (int)rows(); y < maxRows; ++y)		// horizontal axis
 	{
-		for (int c = 0, maxCols = (int)cols(); c < maxCols; ++c)
+		for (int x = 0, maxCols = (int)cols(); x < maxCols; ++x)	// vertical axis
 		{
-			if (m_map[r][c] != EMPTY_CELL)
+			if (m_map[y][x] != EMPTY_CELL)
 			{
-				drawRectanlge(c * 100, r * 100, 100, 100, false, color);
+				drawRectanlge(x * 100, y * 100, 100, 100, false, color);
 			}
 		}
 	}

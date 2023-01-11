@@ -22,6 +22,8 @@
 
 #include "weapon.h"
 
+#include "pathfinding.h"
+
 #include "sound.h"
 
 enum SoundIndex
@@ -77,6 +79,9 @@ public:
 
 	const Sound* getSound(SoundIndex id) const { return m_soundEffects[id]; }
 	Sound* getSound(SoundIndex id) { return m_soundEffects[id]; }
+
+	const Pathfinding& pathfinding() const { return m_pathfinding; }
+	Pathfinding& pathfinding() { return m_pathfinding; }
 private:
 	void runControlledFPS();
 	void runMaxFPS();
@@ -104,6 +109,8 @@ private:
 	
 	Weapon						m_weapon;
 	std::vector<SoundEffect*>	m_soundEffects;
+
+	Pathfinding					m_pathfinding;
 };
 
 #endif // !__GAME_H__

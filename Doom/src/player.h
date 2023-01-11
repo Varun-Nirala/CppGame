@@ -14,7 +14,7 @@ public:
 
 	void draw();
 
-	glm::ivec2 mapPosition();
+	glm::ivec2 mapPosition() const;
 
 	const glm::vec2& position() const { return m_position; }
 	glm::vec2& position() { return m_position; }
@@ -34,9 +34,9 @@ private:
 	void movement(float dt);
 	void mouseControl(float dt);
 
-	bool checkWall(int x, int y);
+	bool checkWall(int y, int x);
 
-	void checlWallCollision(float dt, float dx, float dy);
+	void checkWallCollision(float dt, float dy, float dx);
 
 	void drawLineOfSight();
 	void drawPlayer();

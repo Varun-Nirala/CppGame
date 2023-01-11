@@ -35,6 +35,8 @@ void NPC::init(const std::string& folderPath, const glm::vec2& pos, float scale,
 	m_animationTextures.clear();
 	AnimatedSpriteObject::init(folderPath + "soldier\\idle", pos, scale, shift, animationTime);
 	m_animations[IDLE] = m_animationTextures;
+
+	m_nextPos = m_position;
 }
 
 void NPC::update(float dt)
@@ -49,17 +51,18 @@ void NPC::draw()
 #ifdef SHOW_IN_BLUEPRINT
 	drawNPC();
 	drawRay();
+	drawNextPositionBlock();
 #endif
 }
 
-glm::ivec2 NPC::mapPos()
+glm::ivec2 NPC::mapPosition() const
 {
 	return glm::ivec2{ m_position };
 }
 
 bool NPC::raycastPlayerNPC()
 {
-	if (m_pGame->player().mapPosition() == mapPos())
+	if (m_pGame->player().mapPosition() == mapPosition())
 	{
 		return true;
 	}
@@ -105,7 +108,7 @@ bool NPC::raycastPlayerNPC()
 	{
 		const int tileHorz_x = (int)xHor;
 		const int tileHorz_y = (int)yHor;
-		if (tileHorz_x == mapPos().x && tileHorz_y == mapPos().y)
+		if (tileHorz_x == mapPosition().x && tileHorz_y == mapPosition().y)
 		{
 			playerDist_h = depthHor;
 			break;
@@ -145,7 +148,7 @@ bool NPC::raycastPlayerNPC()
 	{
 		const int tileVert_x = (int)xVert;
 		const int tileVert_y = (int)yVert;
-		if (tileVert_x == mapPos().x && tileVert_y == mapPos().y)
+		if (tileVert_x == mapPosition().x && tileVert_y == mapPosition().y)
 		{
 			playerDist_v = depthVert;
 			break;
@@ -171,12 +174,76 @@ bool NPC::raycastPlayerNPC()
 	return false;
 }
 
+void NPC::movement()
+{
+	//m_nextPos = { m_pGame->player().mapPosition() };
+	m_nextPos = m_pGame->pathfinding().getPath(mapPosition(), m_pGame->player().mapPosition());
+
+	const int nextX = m_nextPos.x;
+	const int nextY = m_nextPos.y;
+
+	const float angle = std::atan2(nextY + 0.5f - m_position.y, nextX + 0.5f - m_position.x);
+
+	const float dx = std::cosf(angle) * m_speed;
+	const float dy = std::sinf(angle) * m_speed;
+
+	checkWallCollision(dy, dx);
+}
+
+bool NPC::checkWall(int y, int x)
+{
+	if (!m_pGame->map().isValid(y, x))
+	{
+		return true;
+	}
+
+	if (m_pGame->map()[y][x] != EMPTY_CELL)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void NPC::checkWallCollision(float dy, float dx)
+{
+	if (!checkWall(int(m_position.y), int(m_position.x + dx * m_size)))
+	{
+		m_position.x += dx;
+	}
+
+	if (!checkWall(int(m_position.y + dy * m_size), int(m_position.x)))
+	{
+		m_position.y += dy;
+	}
+}
+
 void NPC::checkHealth()
 {
 	if (m_health < 1)
 	{
 		m_bAlive = false;
 		m_pGame->getSound(SoundIndex::NPC_DEATH)->play();
+	}
+}
+
+void NPC::animateIdle()
+{
+	if (m_currentAction != IDLE)
+	{
+		m_currentAction = IDLE;
+		m_animationTextures = m_animations[IDLE];
+		m_textureObject.pTexture = m_animationTextures.front();
+	}
+}
+
+void NPC::animateWalk()
+{
+	if (m_currentAction != WALK)
+	{
+		m_currentAction = WALK;
+		m_animationTextures = m_animations[WALK];
+		m_textureObject.pTexture = m_animationTextures.front();
 	}
 }
 
@@ -191,16 +258,6 @@ void NPC::animatePain()
 	if (m_bAnimationTrigger)
 	{
 		m_bPain = false;
-	}
-}
-
-void NPC::animateIdle()
-{
-	if (m_currentAction != IDLE)
-	{
-		m_currentAction = IDLE;
-		m_animationTextures = m_animations[IDLE];
-		m_textureObject.pTexture = m_animationTextures.front();
 	}
 }
 
@@ -226,7 +283,26 @@ void NPC::run()
 	{
 		m_bRaycastValue = raycastPlayerNPC();
 		checkHit();
-		m_bPain ? animatePain() : animateIdle();
+
+		if (m_bPain)
+		{
+			animatePain();
+		}
+		else if (m_bRaycastValue)
+		{
+			m_bPlayerSearchTrigger = true;
+			animateWalk();
+			movement();
+		}
+		else if (m_bPlayerSearchTrigger)
+		{
+			animateWalk();
+			movement();
+		}
+		else
+		{
+			animateIdle();
+		}
 	}
 	else
 	{
@@ -252,11 +328,10 @@ void NPC::checkHit()
 
 void NPC::drawRay()
 {
-	SDL_Color c = convert(kCOLOR_ORANGE);
-	SDL_SetRenderDrawColor(m_pGame->renderer(), c.r, c.g, c.b, c.a);
-
 	if (m_bRaycastValue)
 	{
+		const SDL_Color c = convert(kCOLOR_ORANGE);
+		SDL_SetRenderDrawColor(m_pGame->renderer(), c.r, c.g, c.b, c.a);
 		SDL_RenderDrawLine(m_pGame->renderer(), int(100 * m_pGame->player().position().x), int(100 * m_pGame->player().position().y)
 		, int(100 * m_position.x), int(100 * m_position.y));
 	}
@@ -264,7 +339,7 @@ void NPC::drawRay()
 
 void NPC::drawNPC()
 {
-	SDL_Color c = convert(kCOLOR_RED);
+	const SDL_Color c = convert(kCOLOR_RED);
 
 	SDL_SetRenderDrawColor(m_pGame->renderer(), c.r, c.g, c.b, c.a);
 
@@ -274,6 +349,20 @@ void NPC::drawNPC()
 	rect.h = 10;
 	rect.x = int(m_position.x * 100 - rect.w / 2.0f);
 	rect.y = int(m_position.y * 100 - rect.h / 2.0f);
+
+	SDL_RenderFillRect(m_pGame->renderer(), &rect);
+}
+
+void NPC::drawNextPositionBlock()
+{
+	SDL_Color c = convert(kCOLOR_BLUE);
+	SDL_SetRenderDrawColor(m_pGame->renderer(), c.r, c.g, c.b, c.a);
+
+	SDL_Rect rect;
+	rect.w = 100;
+	rect.h = 100;
+	rect.x = m_nextPos.x * 100;
+	rect.y = m_nextPos.y * 100;
 
 	SDL_RenderFillRect(m_pGame->renderer(), &rect);
 }

@@ -233,8 +233,6 @@ void Raycasting::drawRays()
 
 void Raycasting::drawWalls()
 {
-	SDL_Color c = convert(kCOLOR_WHITE);
-	
 	for (const Rectangle &rect : m_rectangles)
 	{
 		SDL_SetRenderDrawColor(m_pGame->renderer(), rect.color.r, rect.color.g, rect.color.b, rect.color.a);

@@ -12,6 +12,7 @@ Game::Game()
 	, m_objectRenderer(this)
 	, m_objectHandler(this)
 	, m_weapon(this)
+	, m_pathfinding(this)
 {
 }
 

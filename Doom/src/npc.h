@@ -16,24 +16,30 @@ enum Action
 class NPC : public AnimatedSpriteObject
 {
 public:
-	NPC(Game* pGame);
+	explicit NPC(Game* pGame);
 
 	void init(const std::string& folderPath, const glm::vec2& pos = { 10.5f, 5.5f }, float scale = 0.6f, float shift = 0.38f, int animationTime = 180);
 	void update(float dt) override;
 	void draw() override;
 
-	glm::ivec2 mapPos();
+	glm::ivec2 mapPosition() const;
 
 	bool raycastPlayerNPC();
 private:
+	void movement();
+	bool checkWall(int y, int x);
+	void checkWallCollision(float dy, float dx);
+
 	void checkHealth();
-	void animatePain();
 	void animateIdle();
+	void animateWalk();
+	void animatePain();
 	void animateDeath();
 	void run();
 	void checkHit();
 	void drawRay();
 	void drawNPC();
+	void drawNextPositionBlock();
 private:
 	std::unordered_map<Action, std::deque<Texture*>>	m_animations;
 	int													m_attackDist{ getRandomNumber(3, 6) };
@@ -49,6 +55,9 @@ private:
 	bool												m_bRaycastValue{ false };
 
 	int													m_frameCounter{};
+	bool												m_bPlayerSearchTrigger{ false };
+
+	glm::ivec2											m_nextPos{};
 };
 
 #endif //!__NPC_H__
