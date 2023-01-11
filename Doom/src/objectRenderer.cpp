@@ -100,7 +100,7 @@ void ObjectRenderer::drawBackground()
 
 Texture* ObjectRenderer::createTexture(Game* pGame, const std::string& path, int w, int h)
 {
-    Texture* texture = new Texture(pGame);
+    Texture* texture = Texture::createTexture(pGame);
 
     if (!texture->loadTexture(path.c_str(), w, h))
     {
@@ -113,7 +113,7 @@ Texture* ObjectRenderer::createTexture(Game* pGame, const std::string& path, int
 
 Texture* ObjectRenderer::createTexture(Game* pGame, const std::string& path)
 {
-    Texture* texture = new Texture(pGame);
+    Texture* texture = Texture::createTexture(pGame);
 
     if (!texture->loadTexture(path.c_str()))
     {

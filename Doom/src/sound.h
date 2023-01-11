@@ -26,6 +26,11 @@ public:
 class SoundEffect : public Sound
 {
 public:
+	static SoundEffect* createSoundEffect(const std::string& path)
+	{
+		return new SoundEffect(path);
+	}
+
 	~SoundEffect();
 	SoundEffect() = default;
 	SoundEffect(const std::string& path);
@@ -39,6 +44,11 @@ private:
 class Music : public Sound
 {
 public:
+	static Music* createMusic(const std::string& path)
+	{
+		return new Music(path);
+	}
+
 	~Music();
 	Music() = default;
 	Music(const std::string& path);

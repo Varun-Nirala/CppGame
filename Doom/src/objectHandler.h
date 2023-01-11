@@ -11,6 +11,7 @@ class NPC;
 class ObjectHandler
 {
 public:
+	~ObjectHandler() { clear(); }
 	explicit ObjectHandler(Game* pGame);
 
 	void init();
@@ -21,6 +22,8 @@ public:
 	void update(float dt);
 
 	void draw();
+private:
+	void clear();
 
 private:
 	Game									*m_pGame{};

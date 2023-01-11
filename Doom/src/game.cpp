@@ -9,10 +9,10 @@ Game::Game()
 	: m_map(this)
 	, m_player(this)
 	, m_raycasting(this)
-	, m_objectRenderer(this)
-	, m_objectHandler(this)
 	, m_weapon(this)
 	, m_pathfinding(this)
+	, m_objectHandler(this)
+	, m_objectRenderer(this)
 {
 }
 
@@ -74,10 +74,10 @@ bool Game::init()
 	}
 	
 	SDL_ShowCursor(SDL_DISABLE);
+	SDL_WarpMouseInWindow(m_pWindow, HALF_WIDTH, HALF_HEIGHT);
+
 
 	m_objectRenderer.init();
-
-	SDL_WarpMouseInWindow(m_pWindow, HALF_WIDTH, HALF_HEIGHT);
 
 	m_objectHandler.init();
 
@@ -85,13 +85,13 @@ bool Game::init()
 
 	m_soundEffects.resize(SoundIndex::MAX_SOUNDS);
 
-	m_soundEffects[SoundIndex::SHOTGUN] = new SoundEffect(R"(.\resources\sound\shotgun.wav)");
+	m_soundEffects[SoundIndex::SHOTGUN] = SoundEffect::createSoundEffect(R"(.\resources\sound\shotgun.wav)");
 	
-	m_soundEffects[SoundIndex::NPC_PAIN] = new SoundEffect(R"(.\resources\sound\npc_pain.wav)");
-	m_soundEffects[SoundIndex::NPC_DEATH] = new SoundEffect(R"(.\resources\sound\npc_death.wav)");
-	m_soundEffects[SoundIndex::NPC_SHOT] = new SoundEffect(R"(.\resources\sound\npc_attack.wav)");
+	m_soundEffects[SoundIndex::NPC_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_pain.wav)");
+	m_soundEffects[SoundIndex::NPC_DEATH] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_death.wav)");
+	m_soundEffects[SoundIndex::NPC_SHOT] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_attack.wav)");
 
-	m_soundEffects[SoundIndex::PLAYER_PAIN] = new SoundEffect(R"(.\resources\sound\player_pain.wav)");
+	m_soundEffects[SoundIndex::PLAYER_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\player_pain.wav)");
 
 	return true;
 }
@@ -142,6 +142,12 @@ void Game::draw()
 
 void Game::quit()
 {
+	for (SoundEffect* pSoundEffect : m_soundEffects)
+	{
+		delete pSoundEffect;
+	}
+	m_soundEffects.clear();
+
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 	

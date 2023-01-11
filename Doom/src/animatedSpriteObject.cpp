@@ -69,3 +69,13 @@ void AnimatedSpriteObject::checkAnimationTime(float dt)
 		m_bAnimationTrigger = true;
 	}
 }
+
+void AnimatedSpriteObject::clear()
+{
+	while (!m_animationTextures.empty())
+	{
+		delete m_animationTextures.front();
+		m_animationTextures.pop_front();
+	}
+	m_textureObject.pTexture = nullptr;
+}

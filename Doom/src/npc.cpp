@@ -366,3 +366,21 @@ void NPC::drawNextPositionBlock()
 
 	SDL_RenderFillRect(m_pGame->renderer(), &rect);
 }
+
+void NPC::clear()
+{
+	for (auto& p : m_animations)
+	{
+		auto& deq = p.second;
+		while (!deq.empty())
+		{
+			delete deq.front();
+			deq.pop_front();
+		}
+	}
+
+	m_animations.clear();
+
+	// clear the base class dequqe, as we have allready deallocated all memory
+	m_animationTextures.clear();
+}

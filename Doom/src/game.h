@@ -103,6 +103,7 @@ private:
 
 	Player						m_player;
 	Raycasting					m_raycasting;
+
 	ObjectRenderer				m_objectRenderer;
 
 	ObjectHandler				m_objectHandler;

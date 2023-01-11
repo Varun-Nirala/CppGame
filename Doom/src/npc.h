@@ -16,6 +16,12 @@ enum Action
 class NPC : public AnimatedSpriteObject
 {
 public:
+	static NPC* createNPC(Game* pGame)
+	{
+		return new NPC(pGame);
+	}
+
+	~NPC() { clear(); }
 	explicit NPC(Game* pGame);
 
 	void init(const std::string& folderPath, const glm::vec2& pos = { 10.5f, 5.5f }, float scale = 0.6f, float shift = 0.38f, int animationTime = 180);
@@ -40,6 +46,8 @@ private:
 	void drawRay();
 	void drawNPC();
 	void drawNextPositionBlock();
+
+	void clear();
 private:
 	std::unordered_map<Action, std::deque<Texture*>>	m_animations;
 	int													m_attackDist{ getRandomNumber(3, 6) };

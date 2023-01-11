@@ -8,6 +8,7 @@ class Game;
 class Weapon : public AnimatedSpriteObject
 {
 public:
+	~Weapon() { AnimatedSpriteObject::clear(); }
 	explicit Weapon(Game* pGame);
 
 	void init(const std::string& folderPath, const glm::vec2& pos = { 11.5f, 3.5f }, float scale = 0.8f, float shift = 0.16f, int animationTime = 120);

@@ -12,7 +12,7 @@ Texture::Texture(Game* pGame)
 bool Texture::loadTexture(const std::string& path)
 {
 	clear();
-	
+
 	m_pTexture = IMG_LoadTexture(m_pGame->renderer(), path.c_str());
 
 	if (!m_pTexture)
@@ -64,16 +64,6 @@ bool Texture::loadTexture(const std::string& path, int w, int h)
 	return true;
 }
 
-void Texture::clear()
-{
-	if (m_pTexture)
-	{
-		SDL_DestroyTexture(m_pTexture);
-		m_pTexture = nullptr;
-	}
-	m_width = m_height = 0;
-}
-
 SDL_Texture* Texture::copyTexture(SDL_Texture* pTexture, int w, int h) const
 {
 	SDL_Texture* newTexture = SDL_CreateTexture(m_pGame->renderer(), SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, w, h);
@@ -118,4 +108,14 @@ bool Texture::scaleTexture(int w, int h)
 	m_height = h;
 
 	return true;
+}
+
+void Texture::clear()
+{
+	if (m_pTexture)
+	{
+		SDL_DestroyTexture(m_pTexture);
+		m_pTexture = nullptr;
+	}
+	m_width = m_height = 0;
 }

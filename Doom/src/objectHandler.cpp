@@ -16,58 +16,58 @@ void ObjectHandler::init()
 	const std::string npcSpritePath = R"(.\resources\sprites\npc\)";
 
 	//candlebra.png
-	SpriteObject* spriteObject = new SpriteObject(m_pGame);
+	SpriteObject* spriteObject = SpriteObject::createSpriteObject(m_pGame);
 	spriteObject->init(staticSpritePath + "candlebra.png", { 10.5f, 3.5f }, 0.7f, 0.27f);
 	addSprite(spriteObject);
 
 	//green_light
-	AnimatedSpriteObject* animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	AnimatedSpriteObject* animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "green_light", { 11.5f, 3.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "green_light", { 1.5f, 1.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "green_light", { 1.5f, 7.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "green_light", { 5.5f, 3.25f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "green_light", { 5.5f, 4.75f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "green_light", { 7.5f, 2.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "green_light", { 7.5f, 5.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "green_light", { 14.5f, 1.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
 	//red_light
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "red_light", { 14.5f, 7.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "red_light", { 12.5f, 7.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 	
-	animatedSpriteObject = new AnimatedSpriteObject(m_pGame);
+	animatedSpriteObject = AnimatedSpriteObject::createAnimatedSpriteObject(m_pGame);
 	animatedSpriteObject->init(animatedSpritePath + "red_light", { 9.5f, 7.5f }, 0.8f, 0.16f, 120);
 	addSprite(animatedSpriteObject);
 
 	//npc
-	NPC* npcObject = new NPC(m_pGame);
+	NPC* npcObject = NPC::createNPC(m_pGame);
 	npcObject->init(npcSpritePath);
 	addNPC(npcObject);
 }
@@ -97,4 +97,14 @@ void ObjectHandler::draw()
 	{
 		pNPC->draw();
 	}
+}
+
+void ObjectHandler::clear()
+{
+	std::for_each(m_sprites.begin(), m_sprites.end(), [](SpriteObject* pObj) { delete pObj; });
+
+	std::for_each(m_npcs.begin(), m_npcs.end(), [](NPC* pObj) { delete pObj; });
+
+	m_sprites.clear();
+	m_npcs.clear();
 }

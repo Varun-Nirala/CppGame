@@ -86,3 +86,9 @@ void SpriteObject::fillObjectToRender()
 	if (-m_imageHalfWidth < m_screenX && m_screenX < (WIDTH + m_imageHalfWidth) && normalDistance > 0.5f)
 		calculateSpritePosition(normalDistance);
 }
+
+void SpriteObject::clear()
+{
+	delete m_textureObject.pTexture;
+	m_textureObject.pTexture = nullptr;
+}

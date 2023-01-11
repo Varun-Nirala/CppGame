@@ -14,6 +14,12 @@ class Game;
 class SpriteObject
 {
 public:
+	static SpriteObject* createSpriteObject(Game* pGame)
+	{
+		return new SpriteObject(pGame);
+	}
+
+	virtual ~SpriteObject() { clear(); }
 	explicit SpriteObject(Game* pGame);
 
 	void init(const std::string& path, const glm::vec2& pos = { 10.5f, 3.5f }, float scale = 0.7f, float shift = 0.27f);
@@ -23,9 +29,11 @@ public:
 	float spriteHalfWidth() const { return m_spriteHalfWidth; }
 	float screenX() const { return m_screenX; }
 	float thetaAngle() const { return m_thetaAngle; }
+
 protected:
 	void calculateSpritePosition(float normalDistance);
 	void fillObjectToRender();
+	void clear();
 
 protected:
 	Game			*m_pGame{};
