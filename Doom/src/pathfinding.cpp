@@ -28,8 +28,19 @@ glm::ivec2 Pathfinding::getPath(glm::ivec2 start, glm::ivec2 goal)
 		return start;
 	}
 
-	VecOfPoint visited = bfs(start, goal);
-	return visited.back();
+	std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> visited = bfs(start, goal);
+
+	VecOfPoint path;
+
+	path.push_back(goal);
+
+	glm::ivec2 currNode = goal;
+	while (currNode != start)
+	{
+		path.push_back(currNode);
+		currNode = visited[currNode];
+	}
+	return path.back();
 }
 
 void Pathfinding::getGraph()
@@ -67,8 +78,7 @@ Pathfinding::VecOfPoint Pathfinding::getNextNodes(int y, int x)
 	}
 	return res;
 }
-
-Pathfinding::VecOfPoint Pathfinding::bfs(glm::ivec2 start, glm::ivec2 goal)
+std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> Pathfinding::bfs(glm::ivec2 start, glm::ivec2 goal)
 {
 	std::queue<glm::ivec2> que;
 
@@ -76,17 +86,19 @@ Pathfinding::VecOfPoint Pathfinding::bfs(glm::ivec2 start, glm::ivec2 goal)
 
 	std::vector<std::vector<bool>> visited(HEIGHT, std::vector<bool>(WIDTH, false));
 	
-	VecOfPoint res;
+	visited[start.y][start.x] = true;
+
+	std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> res;
 
 	while (!que.empty())
 	{
-		const glm::ivec2 curr = que.front();
+		const glm::ivec2 currNode = que.front();
 		que.pop();
 
-		if (curr == goal)
+		if (currNode == goal)
 			break;
 
-		const VecOfPoint& nextNodes = m_graph[curr.y][curr.x];
+		const VecOfPoint& nextNodes = m_graph[currNode.y][currNode.x];
 
 		for (const glm::ivec2 &nextNode : nextNodes)
 		{
@@ -95,7 +107,7 @@ Pathfinding::VecOfPoint Pathfinding::bfs(glm::ivec2 start, glm::ivec2 goal)
 				que.push(nextNode);
 				visited[nextNode.y][nextNode.x] = true;
 
-				res.push_back(nextNode);
+				res[nextNode] = currNode;
 			}
 		}
 	}

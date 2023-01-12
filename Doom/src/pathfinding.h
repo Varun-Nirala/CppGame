@@ -12,6 +12,21 @@
 
 class Game;
 
+inline bool operator==(const glm::ivec2& val1, const glm::ivec2& val2)
+{
+	return val1.x == val2.x && val1.y == val2.y;
+}
+
+struct HashFunc
+{
+	size_t operator()(const glm::ivec2& val) const
+	{
+		size_t hash = val.x * 100000;
+		hash += val.y;
+		return hash;
+	}
+};
+
 class Pathfinding
 {
 	using VecOfPoint = std::vector<glm::ivec2>;
@@ -23,7 +38,7 @@ private:
 	void getGraph();
 	VecOfPoint getNextNodes(int y, int x);
 
-	VecOfPoint bfs(glm::ivec2 start, glm::ivec2 goal);
+	std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> bfs(glm::ivec2 start, glm::ivec2 goal);
 private:
 	Game									*m_pGame{};
 	VecOfPoint								m_ways;

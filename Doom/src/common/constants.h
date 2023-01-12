@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <SDL.h>
 
-#if 0
+#if 1
 	#define SHOW_IN_BLUEPRINT
 #endif
 
