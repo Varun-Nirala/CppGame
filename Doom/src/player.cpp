@@ -2,11 +2,10 @@
 #include "game.h"
 
 #include "common/logger.h"
+#include "common/constants.h"
 
 Player::Player(Game *pGame)
 	: m_pGame(pGame)
-	, m_position(PLAYER_POS)
-	, m_angle(PLAYER_ANGLE)
 {}
 
 void Player::update(float dt)
@@ -27,6 +26,23 @@ void Player::draw()
 glm::ivec2 Player::mapPosition() const
 {
 	return glm::ivec2{ m_position };
+}
+
+void Player::reset()
+{
+	m_position = PLAYER_POS;
+	m_angle = PLAYER_ANGLE;
+	m_health = PLAYER_MAX_HEALTH;
+	m_bShot = false;
+	m_playerRelative = 0;
+}
+
+void Player::getDamage(int damage)
+{
+	m_health -= damage;
+	m_pGame->objectRenderer().setPlayPlayerDamage();
+	m_pGame->getSound(PLAYER_PAIN)->play();
+	checkGameOver();
 }
 
 void Player::singleFire()
@@ -174,6 +190,14 @@ void Player::checkWallCollision(float dt, float dy, float dx)
 	if (!checkWall(int(m_position.y + dy * scale), int(m_position.x)))
 	{
 		m_position.y += dy;
+	}
+}
+
+void Player::checkGameOver()
+{
+	if (m_health < 1)
+	{
+		m_pGame->objectRenderer().setGameOver();
 	}
 }
 

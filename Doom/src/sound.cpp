@@ -26,7 +26,8 @@ void SoundEffect::init(const std::string &path)
 
 void SoundEffect::play(int loopCount)
 {
-	if (Mix_PlayChannel(-1, m_pSoundChunk, loopCount) < 0)
+	const int channel = Mix_PlayChannel(1, m_pSoundChunk, loopCount);
+	if (channel < 0)
 	{
 		ns_Util::Logger::LOG_ERROR("Error playing sound effect!\n");
 		assert(false);

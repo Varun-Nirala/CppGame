@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <SDL.h>
 
-#if 1
+#if 0
 	#define SHOW_IN_BLUEPRINT
 #endif
 
@@ -35,6 +35,7 @@ extern const float PLAYER_ANGLE;
 extern const float PLAYER_SPEED;
 extern const float PLAYER_ROT_SPEED;
 extern const int PLAYER_SIZE_SCALE;
+extern const int PLAYER_MAX_HEALTH;
 
 extern const float MOUSE_SENSTIVITY;
 extern const int MOUSE_MAX_REL;
@@ -66,6 +67,8 @@ extern const char WALL_4;
 extern const char WALL_5;
 
 extern const char SKY;
+extern const char BLOOD_SCREEN;
+extern const char GAME_OVER;
 
 
 // Color

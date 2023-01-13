@@ -4,8 +4,9 @@
 
 #include "common/logger.h"
 
-Texture::Texture(Game* pGame)
+Texture::Texture(Game* pGame, SDL_BlendMode blendMode)
 	: m_pGame(pGame)
+	, m_blendMode(blendMode)
 {
 }
 
@@ -30,7 +31,7 @@ bool Texture::loadTexture(const std::string& path)
 		assert(false);
 		return false;
 	}
-
+	SDL_SetTextureBlendMode(m_pTexture, m_blendMode);
 	return true;
 }
 
@@ -60,7 +61,7 @@ bool Texture::loadTexture(const std::string& path, int w, int h)
 	{
 		scaleTexture(w, h);
 	}
-
+	SDL_SetTextureBlendMode(m_pTexture, m_blendMode);
 	return true;
 }
 

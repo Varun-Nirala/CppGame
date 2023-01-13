@@ -18,7 +18,7 @@ void SpriteObject::init(const std::string& path, const glm::vec2& pos, float sca
 	m_spriteScale = scale;
 	m_spriteHeightShift = shift;
 
-	m_textureObject.pTexture = ObjectRenderer::createTexture(m_pGame, path);
+	m_textureObject.pTexture = ObjectRenderer::createTexture(m_pGame, path, SDL_BLENDMODE_BLEND);
 
 	m_imageHalfWidth = m_textureObject.pTexture->width() / 2;
 	m_imageRatio = m_textureObject.pTexture->width() / (float)m_textureObject.pTexture->height();
@@ -80,8 +80,8 @@ void SpriteObject::fillObjectToRender()
 
 	m_screenX = (HALF_NUM_RAYS + deltaRays) * SCALE;
 
-	const float distance = std::hypotf(dx, dy);
-	const float normalDistance = distance * std::cosf(deltaAngle);
+	m_distance = std::hypotf(dx, dy);
+	const float normalDistance = m_distance * std::cosf(deltaAngle);
 
 	if (-m_imageHalfWidth < m_screenX && m_screenX < (WIDTH + m_imageHalfWidth) && normalDistance > 0.5f)
 		calculateSpritePosition(normalDistance);

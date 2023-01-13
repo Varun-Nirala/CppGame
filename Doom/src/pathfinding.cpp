@@ -28,17 +28,17 @@ glm::ivec2 Pathfinding::getPath(glm::ivec2 start, glm::ivec2 goal)
 		return start;
 	}
 
-	std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> visited = bfs(start, goal);
+	const std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> visited = bfs(start, goal);
 
 	VecOfPoint path;
 
 	path.push_back(goal);
 
 	glm::ivec2 currNode = goal;
-	while (currNode != start)
+	while (currNode != start && visited.count(currNode))
 	{
 		path.push_back(currNode);
-		currNode = visited[currNode];
+		currNode = visited.at(currNode);
 	}
 	return path.back();
 }
@@ -84,11 +84,11 @@ std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> Pathfinding::bfs(glm::ivec2
 
 	que.push(start);
 
+	std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> res;
+
 	std::vector<std::vector<bool>> visited(HEIGHT, std::vector<bool>(WIDTH, false));
 	
 	visited[start.y][start.x] = true;
-
-	std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> res;
 
 	while (!que.empty())
 	{
@@ -102,7 +102,7 @@ std::unordered_map<glm::ivec2, glm::ivec2, HashFunc> Pathfinding::bfs(glm::ivec2
 
 		for (const glm::ivec2 &nextNode : nextNodes)
 		{
-			if (!visited[nextNode.y][nextNode.x])
+			if (!visited[nextNode.y][nextNode.x] && m_pGame->objectHandler().isNotInNPCpos(nextNode))
 			{
 				que.push(nextNode);
 				visited[nextNode.y][nextNode.x] = true;

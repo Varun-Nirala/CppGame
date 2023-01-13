@@ -174,20 +174,35 @@ bool NPC::raycastPlayerNPC()
 	return false;
 }
 
+void NPC::attack()
+{
+	if (m_bAnimationTrigger)
+	{
+		m_pGame->getSound(NPC_SHOT)->play();
+
+		if (getRandomNumber(0, 100) <= m_accuracy)
+		{
+			m_pGame->player().getDamage(m_attackDamage);
+		}
+	}
+}
+
 void NPC::movement()
 {
-	//m_nextPos = { m_pGame->player().mapPosition() };
 	m_nextPos = m_pGame->pathfinding().getPath(mapPosition(), m_pGame->player().mapPosition());
 
 	const int nextX = m_nextPos.x;
 	const int nextY = m_nextPos.y;
 
-	const float angle = std::atan2(nextY + 0.5f - m_position.y, nextX + 0.5f - m_position.x);
+	if (m_pGame->objectHandler().isNotInNPCpos(m_nextPos))
+	{
+		const float angle = std::atan2(nextY + 0.5f - m_position.y, nextX + 0.5f - m_position.x);
 
-	const float dx = std::cosf(angle) * m_speed;
-	const float dy = std::sinf(angle) * m_speed;
+		const float dx = std::cosf(angle) * m_speed;
+		const float dy = std::sinf(angle) * m_speed;
 
-	checkWallCollision(dy, dx);
+		checkWallCollision(dy, dx);
+	}
 }
 
 bool NPC::checkWall(int y, int x)
@@ -247,6 +262,16 @@ void NPC::animateWalk()
 	}
 }
 
+void NPC::animateAttack()
+{
+	if (m_currentAction != ATTACK)
+	{
+		m_currentAction = ATTACK;
+		m_animationTextures = m_animations[ATTACK];
+		m_textureObject.pTexture = m_animationTextures.front();
+	}
+}
+
 void NPC::animatePain()
 {
 	if (m_currentAction != PAIN)
@@ -291,8 +316,17 @@ void NPC::run()
 		else if (m_bRaycastValue)
 		{
 			m_bPlayerSearchTrigger = true;
-			animateWalk();
-			movement();
+
+			if (m_distance < m_attackDist)
+			{
+				animateAttack();
+				attack();
+			}
+			else
+			{
+				animateWalk();
+				movement();
+			}
 		}
 		else if (m_bPlayerSearchTrigger)
 		{

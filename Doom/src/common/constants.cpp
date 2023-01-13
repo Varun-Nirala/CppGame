@@ -31,6 +31,7 @@ extern const float PLAYER_ANGLE				= 0.0f;
 extern const float PLAYER_SPEED				= 0.004f;
 extern const float PLAYER_ROT_SPEED			= 0.002f;
 extern const int PLAYER_SIZE_SCALE			= 60;
+extern const int PLAYER_MAX_HEALTH			= 100;
 
 extern const float MOUSE_SENSTIVITY			= 0.0002f;
 extern const int MOUSE_MAX_REL				= 40;
@@ -59,6 +60,8 @@ extern const char WALL_4					= '4';
 extern const char WALL_5					= '5';
 
 extern const char SKY						= 'S';
+extern const char BLOOD_SCREEN				= 'B';
+extern const char GAME_OVER					= 'G';
 
 extern const float SCREEN_DIST				= HALF_WIDTH / std::tan(HALF_FOV);
 extern const int SCALE						= WIDTH / NUM_RAYS;

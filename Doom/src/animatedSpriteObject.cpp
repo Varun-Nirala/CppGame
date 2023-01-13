@@ -27,7 +27,7 @@ void AnimatedSpriteObject::init(const std::string& folderPath, const glm::vec2& 
 				bFirstImage = false;
 			}
 
-			m_animationTextures.push_back(ObjectRenderer::createTexture(m_pGame, str));
+			m_animationTextures.push_back(ObjectRenderer::createTexture(m_pGame, str, SDL_BLENDMODE_BLEND));
 		}
 	}
 

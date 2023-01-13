@@ -11,6 +11,7 @@ ObjectHandler::ObjectHandler(Game* pGame)
 
 void ObjectHandler::init()
 {
+	clear();
 	const std::string staticSpritePath = R"(.\resources\sprites\static_sprites\)";
 	const std::string animatedSpritePath = R"(.\resources\sprites\animated_sprites\)";
 	const std::string npcSpritePath = R"(.\resources\sprites\npc\)";
@@ -70,10 +71,28 @@ void ObjectHandler::init()
 	NPC* npcObject = NPC::createNPC(m_pGame);
 	npcObject->init(npcSpritePath);
 	addNPC(npcObject);
+
+	npcObject = NPC::createNPC(m_pGame);
+	npcObject->init(npcSpritePath, { 11.5f, 4.5f });
+	addNPC(npcObject);
+}
+
+void ObjectHandler::reset()
+{
+	init();
 }
 
 void ObjectHandler::update(float dt)
 {
+	m_npcPositions.clear();
+	for (NPC* pNPC : m_npcs)
+	{
+		if (pNPC->alive())
+		{
+			m_npcPositions.insert(pNPC->mapPosition());
+		}
+	}
+
 	for (SpriteObject* pSprite : m_sprites)
 	{
 		pSprite->update(dt);
@@ -107,4 +126,16 @@ void ObjectHandler::clear()
 
 	m_sprites.clear();
 	m_npcs.clear();
+}
+
+bool ObjectHandler::isNotInNPCpos(const glm::ivec2& pos) const
+{
+	for (const glm::ivec2& p : m_npcPositions)
+	{
+		if (p == pos)
+		{
+			return false;
+		}
+	}
+	return true;
 }

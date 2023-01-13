@@ -31,6 +31,10 @@ public:
 	glm::ivec2 mapPosition() const;
 
 	bool raycastPlayerNPC();
+
+	void attack();
+
+	bool alive() const { return m_bAlive; }
 private:
 	void movement();
 	bool checkWall(int y, int x);
@@ -39,6 +43,7 @@ private:
 	void checkHealth();
 	void animateIdle();
 	void animateWalk();
+	void animateAttack();
 	void animatePain();
 	void animateDeath();
 	void run();
@@ -55,7 +60,7 @@ private:
 	int													m_size{ 10 };
 	int													m_health{ 100 };
 	int													m_attackDamage{ 10 };
-	float												m_accuracy{ 0.15f };
+	int													m_accuracy{ 15 };
 	bool												m_bAlive{ true };
 	bool												m_bPain{ false };
 	Action												m_currentAction { IDLE };

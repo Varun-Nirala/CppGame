@@ -76,7 +76,6 @@ bool Game::init()
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_WarpMouseInWindow(m_pWindow, HALF_WIDTH, HALF_HEIGHT);
 
-
 	m_objectRenderer.init();
 
 	m_objectHandler.init();
@@ -187,6 +186,13 @@ void Game::checkEvents()
 			m_mouseEvents.push_back(event);
 		}
 	}
+}
+
+void Game::startNewGame()
+{
+	m_player.reset();
+	m_objectHandler.reset();
+	m_objectRenderer.reset();
 }
 
 void Game::runControlledFPS()

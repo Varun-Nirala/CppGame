@@ -29,6 +29,7 @@ public:
 	float spriteHalfWidth() const { return m_spriteHalfWidth; }
 	float screenX() const { return m_screenX; }
 	float thetaAngle() const { return m_thetaAngle; }
+	float distance() const { return m_distance; }
 
 protected:
 	void calculateSpritePosition(float normalDistance);
@@ -47,6 +48,7 @@ protected:
 	float			m_spriteHalfWidth{};
 	float			m_screenX{};
 	float			m_thetaAngle{};
+	float			m_distance{};
 };
 
 #endif //!__SPRITE_OBJECT_H__

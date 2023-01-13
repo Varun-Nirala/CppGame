@@ -12,13 +12,13 @@ class Game;
 class Texture
 {
 public:
-	static Texture* createTexture(Game *pGame)
+	static Texture* createTexture(Game *pGame, SDL_BlendMode blendMode = SDL_BLENDMODE_NONE)
 	{
-		return new Texture(pGame);
+		return new Texture(pGame, blendMode);
 	}
 
 	~Texture() { clear(); };
-	explicit Texture(Game* pGame);
+	explicit Texture(Game* pGame, SDL_BlendMode blendMode);
 
 	int width() const { return m_width; }
 	int height() const { return m_height; }
@@ -42,6 +42,7 @@ private:
 	int				m_height{};
 
 	SDL_Texture		*m_pTexture{};
+	SDL_BlendMode	m_blendMode{ SDL_BLENDMODE_NONE };
 };
 
 #endif //!__TEXTURE_H__

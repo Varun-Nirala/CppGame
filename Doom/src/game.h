@@ -58,6 +58,8 @@ public:
 
 	void checkEvents();
 
+	void startNewGame();
+
 	SDL_Window* window() const { return m_pWindow; }
 	SDL_Renderer* renderer() const { return m_pRenderer; }
 	const std::vector<SDL_Event>& keyboardEvents() const { return m_keyboardEvents; }
@@ -70,6 +72,9 @@ public:
 
 	const ObjectRenderer& objectRenderer() const { return m_objectRenderer; }
 	ObjectRenderer& objectRenderer() { return m_objectRenderer; }
+
+	const ObjectHandler& objectHandler() const { return m_objectHandler; }
+	ObjectHandler& objectHandler() { return m_objectHandler; }
 
 	const Player& player() const { return m_player; }
 	Player& player() { return m_player; }

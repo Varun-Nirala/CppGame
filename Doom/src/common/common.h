@@ -1,6 +1,8 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
+#include <glm/glm.hpp>
+
 #include <random>
 #include "../texture.h"
 
@@ -73,5 +75,20 @@ static inline int getRandomNumber(int min, int max)
 
 	return distrib(gen);
 }
+
+inline bool operator==(const glm::ivec2& val1, const glm::ivec2& val2)
+{
+	return val1.x == val2.x && val1.y == val2.y;
+}
+
+struct HashFunc
+{
+	size_t operator()(const glm::ivec2& val) const
+	{
+		size_t hash = val.x * 100000;
+		hash += val.y;
+		return hash;
+	}
+};
 
 #endif //!__COMMON_H__
