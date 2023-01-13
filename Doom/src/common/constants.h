@@ -26,6 +26,8 @@ extern const int HALF_WIDTH;
 extern const int HALF_HEIGHT;
 extern const float FPS;
 
+extern const int INITIAL_NPC_COUNT;
+
 extern const SDL_Color FLOOR_COLOR;
 
 // Player
@@ -69,7 +71,7 @@ extern const char WALL_5;
 extern const char SKY;
 extern const char BLOOD_SCREEN;
 extern const char GAME_OVER;
-
+extern const char VICTORY;
 
 // Color
 

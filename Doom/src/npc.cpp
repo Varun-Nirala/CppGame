@@ -1,39 +1,42 @@
 #include "npc.h"
 #include "game.h"
 
+int NPC::m_staticID = 0;
+
 NPC::NPC(Game* pGame)
 	: AnimatedSpriteObject(pGame)
+	, m_id(m_staticID++)
 {
 }
 
 void NPC::init(const std::string& folderPath, const glm::vec2& pos, float scale, float shift, int animationTime)
 {
 	// Attack
-	AnimatedSpriteObject::init(folderPath + "soldier\\attack", pos, scale, shift, animationTime);
+	AnimatedSpriteObject::init(folderPath + "attack", pos, scale, shift, animationTime);
 	m_animations[ATTACK] = m_animationTextures;
 
 	// Death
 	m_numberOfImages = 0;
 	m_animationTextures.clear();
-	AnimatedSpriteObject::init(folderPath + "soldier\\death", pos, scale, shift, animationTime);
+	AnimatedSpriteObject::init(folderPath + "death", pos, scale, shift, animationTime);
 	m_animations[DEATH] = m_animationTextures;
 
 	// pain
 	m_numberOfImages = 0;
 	m_animationTextures.clear();
-	AnimatedSpriteObject::init(folderPath + "soldier\\pain", pos, scale, shift, animationTime);
+	AnimatedSpriteObject::init(folderPath + "pain", pos, scale, shift, animationTime);
 	m_animations[PAIN] = m_animationTextures;
 
 	// Walk
 	m_numberOfImages = 0;
 	m_animationTextures.clear();
-	AnimatedSpriteObject::init(folderPath + "soldier\\walk", pos, scale, shift, animationTime);
+	AnimatedSpriteObject::init(folderPath + "walk", pos, scale, shift, animationTime);
 	m_animations[WALK] = m_animationTextures;
 
 	// Idle
 	m_numberOfImages = 0;
 	m_animationTextures.clear();
-	AnimatedSpriteObject::init(folderPath + "soldier\\idle", pos, scale, shift, animationTime);
+	AnimatedSpriteObject::init(folderPath + "idle", pos, scale, shift, animationTime);
 	m_animations[IDLE] = m_animationTextures;
 
 	m_nextPos = m_position;
@@ -296,6 +299,8 @@ void NPC::animateDeath()
 			{
 				m_currentAction = DEATH;
 				m_animationTextures = m_animations[DEATH];
+				m_pGame->player().incrememtKillCount();
+				ns_Util::Logger::LOG_MSG("Killed NPC id : ", m_id, '\n');
 			}
 			++m_frameCounter;
 		}
@@ -417,4 +422,30 @@ void NPC::clear()
 
 	// clear the base class dequqe, as we have allready deallocated all memory
 	m_animationTextures.clear();
+}
+
+
+void SoldierNPC::init(const std::string& folderPath, const glm::vec2& pos, float scale, float shift, int animationTime)
+{
+	NPC::init(folderPath, pos, scale, shift, animationTime);
+}
+
+void CacoDemonNPC::init(const std::string& folderPath, const glm::vec2& pos, float scale, float shift, int animationTime)
+{
+	NPC::init(folderPath, pos, scale, shift, animationTime);
+	m_attackDist = 1;
+	m_health = 150;
+	m_attackDamage = 25;
+	m_speed = 0.05f;
+	m_accuracy = 35;
+}
+
+void CyberDemonNPC::init(const std::string& folderPath, const glm::vec2& pos, float scale, float shift, int animationTime)
+{
+	NPC::init(folderPath, pos, scale, shift, animationTime);
+	m_attackDist = 6;
+	m_health = 200;
+	m_attackDamage = 15;
+	m_speed = 0.055f;
+	m_accuracy = 25;
 }

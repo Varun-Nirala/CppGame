@@ -58,6 +58,9 @@ public:
 
 	void checkEvents();
 
+	void setGameOver() { m_bGameOver = true; }
+	void setGameWon() { setGameOver(); m_bVictory = true; }
+
 	void startNewGame();
 
 	SDL_Window* window() const { return m_pWindow; }
@@ -117,6 +120,9 @@ private:
 	std::vector<SoundEffect*>	m_soundEffects;
 
 	Pathfinding					m_pathfinding;
+
+	bool						m_bGameOver{ false };
+	bool						m_bVictory{ false };
 };
 
 #endif // !__GAME_H__

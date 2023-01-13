@@ -122,7 +122,25 @@ void Game::preDraw()
 
 void Game::postDraw()
 {
-	SDL_RenderPresent(m_pRenderer);
+	if (m_bGameOver)
+	{
+		//preDraw();
+		if (m_bVictory)
+		{
+			m_objectRenderer.drawVictory();
+		}
+		else
+		{
+			m_objectRenderer.drawGameOver();
+		}
+		SDL_RenderPresent(m_pRenderer);
+		SDL_Delay(2000);
+		startNewGame();
+	}
+	else
+	{
+		SDL_RenderPresent(m_pRenderer);
+	}
 }
 
 void Game::draw()
@@ -193,6 +211,8 @@ void Game::startNewGame()
 	m_player.reset();
 	m_objectHandler.reset();
 	m_objectRenderer.reset();
+	m_bGameOver = false;
+	m_bVictory = false;
 }
 
 void Game::runControlledFPS()

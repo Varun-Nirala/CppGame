@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include <vector>
 
+#include <glm/glm.hpp>
+
 class Game;
 class Map
 {
@@ -24,6 +26,13 @@ public:
 
 	// x = horizontal axis, y = vertical axis
 	bool isValid(int y, int x) const;
+	bool isValid(const glm::vec2 pos) const;
+	bool isValid(const glm::ivec2 pos) const;
+
+	bool isEmpty(int y, int x) const;
+	bool isEmpty(const glm::vec2 pos) const;
+	bool isEmpty(const glm::ivec2 pos) const;
+
 
 	void draw();
 

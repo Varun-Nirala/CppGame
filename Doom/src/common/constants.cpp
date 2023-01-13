@@ -22,6 +22,8 @@ extern const int HALF_WIDTH					= WIDTH / 2;
 extern const int HALF_HEIGHT				= HEIGHT / 2;
 extern const float FPS						= 60.0f;
 
+extern const int INITIAL_NPC_COUNT			= 20;
+
 extern const SDL_Color FLOOR_COLOR			= { 30, 30, 30, 255 };
 
 // Player
@@ -62,6 +64,7 @@ extern const char WALL_5					= '5';
 extern const char SKY						= 'S';
 extern const char BLOOD_SCREEN				= 'B';
 extern const char GAME_OVER					= 'G';
+extern const char VICTORY					= 'V';
 
 extern const float SCREEN_DIST				= HALF_WIDTH / std::tan(HALF_FOV);
 extern const int SCALE						= WIDTH / NUM_RAYS;

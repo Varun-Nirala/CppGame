@@ -7,11 +7,19 @@
 #include <glm/glm.hpp>
 
 #include "common/common.h"
+#include "common/constants.h"
 
 class Game;
 class SpriteObject;
 class AnimatedSpriteObject;
 class NPC;
+
+enum NPC_TYPE
+{
+	SOLDIER,
+	COCODEMON,
+	CYBERDEMON,
+};
 
 class ObjectHandler
 {
@@ -31,7 +39,13 @@ public:
 	void draw();
 
 	bool isNotInNPCpos(const glm::ivec2& pos) const;
+
 private:
+	void checkWin();
+	void spawnNPC();
+	NPC_TYPE getRandomNPCType() const;
+	glm::vec2 getRandomPosition() const;
+	bool isInRestrictedArea(const glm::vec2 &pos) const;
 	void clear();
 
 private:
@@ -40,6 +54,9 @@ private:
 	std::vector<NPC*>							m_npcs;
 
 	std::unordered_set<glm::ivec2, HashFunc>	m_npcPositions;
+
+	int											m_npcCount{ INITIAL_NPC_COUNT };
+	std::vector<glm::vec2>						m_restrictedArea{};
 };
 
 #endif //!__OBJECT_HANDLER_H__

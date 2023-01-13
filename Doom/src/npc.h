@@ -24,7 +24,12 @@ public:
 	~NPC() { clear(); }
 	explicit NPC(Game* pGame);
 
-	void init(const std::string& folderPath, const glm::vec2& pos = { 10.5f, 5.5f }, float scale = 0.6f, float shift = 0.38f, int animationTime = 180);
+	void init(const std::string& folderPath,
+		const glm::vec2& pos,
+		float scale,
+		float shift,
+		int animationTime);
+
 	void update(float dt) override;
 	void draw() override;
 
@@ -35,7 +40,8 @@ public:
 	void attack();
 
 	bool alive() const { return m_bAlive; }
-private:
+
+protected:
 	void movement();
 	bool checkWall(int y, int x);
 	void checkWallCollision(float dy, float dx);
@@ -53,7 +59,8 @@ private:
 	void drawNextPositionBlock();
 
 	void clear();
-private:
+
+protected:
 	std::unordered_map<Action, std::deque<Texture*>>	m_animations;
 	int													m_attackDist{ getRandomNumber(3, 6) };
 	float												m_speed{ 0.03f };
@@ -71,6 +78,64 @@ private:
 	bool												m_bPlayerSearchTrigger{ false };
 
 	glm::ivec2											m_nextPos{};
+	const int											m_id{};
+	static int											m_staticID;
 };
 
+class SoldierNPC : public NPC
+{
+public:
+	static SoldierNPC* createSoldierNPC(Game* pGame)
+	{
+		return new SoldierNPC(pGame);
+	}
+
+	explicit SoldierNPC(Game* pGame)
+		: NPC(pGame)
+	{}
+
+	void init(const std::string& folderPath = R"(.\resources\sprites\npc\soldier\)",
+		const glm::vec2& pos = { 10.5f, 5.5f },
+		float scale = 0.6f,
+		float shift = 0.38f,
+		int animationTime = 180);
+};
+
+class CacoDemonNPC : public NPC
+{
+public:
+	static CacoDemonNPC* createCacoDemonNPC(Game* pGame)
+	{
+		return new CacoDemonNPC(pGame);
+	}
+
+	explicit CacoDemonNPC(Game* pGame)
+		: NPC(pGame)
+	{}
+
+	void init(const std::string& folderPath = R"(.\resources\sprites\npc\caco_demon\)",
+		const glm::vec2& pos = { 10.5f, 6.5f },
+		float scale = 0.7f,
+		float shift = 0.27f,
+		int animationTime = 250);
+};
+
+class CyberDemonNPC : public NPC
+{
+public:
+	static CyberDemonNPC* createCyberDemonNPC(Game* pGame)
+	{
+		return new CyberDemonNPC(pGame);
+	}
+
+	explicit CyberDemonNPC(Game* pGame)
+		: NPC(pGame)
+	{}
+
+	void init(const std::string& folderPath = R"(.\resources\sprites\npc\cyber_demon\)",
+		const glm::vec2& pos = { 11.5f, 6.0f },
+		float scale = 1.0f,
+		float shift = 0.04f,
+		int animationTime = 210);
+};
 #endif //!__NPC_H__

@@ -25,7 +25,8 @@ public:
 	const Texture* getTexture(char textureKey) const;
 	Texture* getTexture(char textureKey);
 
-	void setGameOver();
+	void drawGameOver();
+	void drawVictory();
 
 	void setPlayPlayerDamage() { m_bPlayPlayerDamage = true; }
 
@@ -34,10 +35,9 @@ public:
 
 private:
 	void renderGameObjects();
-	void drawPlayerHealth();
+	void drawPlayerHealthAndKillCount();
 	void drawBackground();
 	void playPlayerDamage();
-	void drawGameOver();
 	void clear();
 private:
 	Game									*m_pGame{};
@@ -47,8 +47,6 @@ private:
 
 	int										m_digitSize{ 90 };
 	std::unordered_map<char, Texture*>		m_digitTextureMap;
-
-	bool									m_bGameOver{ false };
 
 };
 #endif //!__OBJECT_RENDERER_H__

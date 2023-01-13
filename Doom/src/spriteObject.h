@@ -31,6 +31,8 @@ public:
 	float thetaAngle() const { return m_thetaAngle; }
 	float distance() const { return m_distance; }
 
+	void setPosition(const glm::vec2& pos) { m_position = pos; }
+
 protected:
 	void calculateSpritePosition(float normalDistance);
 	void fillObjectToRender();

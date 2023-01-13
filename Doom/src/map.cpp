@@ -38,6 +38,31 @@ bool Map::isValid(int y, int x) const
 	return y >= 0 && y < m_map.size() && x >= 0 && x < m_map[0].size();
 }
 
+bool Map::isValid(const glm::vec2 pos) const
+{
+	return isValid((int)pos.y, (int)pos.x);
+}
+
+bool Map::isValid(const glm::ivec2 pos) const
+{
+	return isValid(pos.y, pos.x);
+}
+
+bool Map::isEmpty(int y, int x) const
+{
+	return isValid(y, x) && m_map[y][x] == EMPTY_CELL;
+}
+
+bool Map::isEmpty(const glm::vec2 pos) const
+{
+	return isEmpty((int)pos.y, (int)pos.x);
+}
+
+bool Map::isEmpty(const glm::ivec2 pos) const
+{
+	return isEmpty(pos.y, pos.x);
+}
+
 void Map::draw()
 {
 #ifdef SHOW_IN_BLUEPRINT
@@ -47,7 +72,7 @@ void Map::draw()
 	{
 		for (int x = 0, maxCols = (int)cols(); x < maxCols; ++x)	// vertical axis
 		{
-			if (m_map[y][x] != EMPTY_CELL)
+			if (!isEmpty(y, x))
 			{
 				drawRectanlge(x * 100, y * 100, 100, 100, false, color);
 			}

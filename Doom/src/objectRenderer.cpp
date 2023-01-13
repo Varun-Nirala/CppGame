@@ -16,6 +16,10 @@ void ObjectRenderer::init()
     m_textureMap[SKY] = createTexture(m_pGame, R"(.\resources\textures\sky.png)", WIDTH, HALF_HEIGHT, SDL_BLENDMODE_NONE);
     m_textureMap[BLOOD_SCREEN] = createTexture(m_pGame, R"(.\resources\textures\blood_screen.png)", WIDTH, HEIGHT, SDL_BLENDMODE_NONE);
     m_textureMap[GAME_OVER] = createTexture(m_pGame, R"(.\resources\textures\game_over.png)", WIDTH, HEIGHT, SDL_BLENDMODE_BLEND);
+    m_textureMap[VICTORY] = createTexture(m_pGame, R"(.\resources\textures\win.png)", WIDTH, HEIGHT, SDL_BLENDMODE_NONE);
+
+    // control opacity of end game screen
+    SDL_SetTextureAlphaMod(m_textureMap[GAME_OVER]->texture(), 200);
 
     // digits [Text]
     std::string texturePath = R"(.\resources\textures\digits\#.png)";
@@ -42,11 +46,13 @@ void ObjectRenderer::draw()
 #endif
     if (m_bPlayPlayerDamage)
     {
-        playPlayerDamage();
+        if (m_pGame->player().health() > 0)
+        {
+            playPlayerDamage();
+        }
         m_bPlayPlayerDamage = false;
     }
-    drawPlayerHealth();
-    drawGameOver();
+    drawPlayerHealthAndKillCount();
 }
 
 void ObjectRenderer::reset()
@@ -85,9 +91,16 @@ Texture* ObjectRenderer::getTexture(char textureKey)
     return m_textureMap[textureKey];
 }
 
-void ObjectRenderer::setGameOver()
+void ObjectRenderer::drawGameOver()
 {
-    m_bGameOver = true;
+    const SDL_Rect dstRect = { 0, 0, WIDTH, HEIGHT };
+    SDL_RenderCopy(m_pGame->renderer(), m_textureMap[GAME_OVER]->texture(), nullptr, &dstRect);
+}
+
+void ObjectRenderer::drawVictory()
+{
+    const SDL_Rect dstRect = { 0, 0, WIDTH, HEIGHT };
+    SDL_RenderCopy(m_pGame->renderer(), m_textureMap[VICTORY]->texture(), nullptr, &dstRect);
 }
 
 void ObjectRenderer::renderGameObjects()
@@ -106,17 +119,30 @@ void ObjectRenderer::renderGameObjects()
     }
 }
 
-void ObjectRenderer::drawPlayerHealth()
+void ObjectRenderer::drawPlayerHealthAndKillCount()
 {
-    const std::string health = std::to_string(m_pGame->player().health());
     int i;
-    for (i = 0; i < (int)health.size(); ++i)
     {
+        const std::string health = std::to_string(m_pGame->player().health());
+        for (i = 0; i < (int)health.size(); ++i)
+        {
+            const SDL_Rect dstRect = { i * m_digitSize, 0, m_digitSize, m_digitSize };
+            SDL_RenderCopy(m_pGame->renderer(), m_digitTextureMap[health[i]]->texture(), nullptr, &dstRect);
+        }
         const SDL_Rect dstRect = { i * m_digitSize, 0, m_digitSize, m_digitSize };
-        SDL_RenderCopy(m_pGame->renderer(), m_digitTextureMap[health[i]]->texture(), nullptr, &dstRect);
+        SDL_RenderCopy(m_pGame->renderer(), m_digitTextureMap['%']->texture(), nullptr, &dstRect);
     }
-    const SDL_Rect dstRect = { i * m_digitSize, 0, m_digitSize, m_digitSize };
-    SDL_RenderCopy(m_pGame->renderer(), m_digitTextureMap['%']->texture(), nullptr, &dstRect);
+
+    {
+        i += 2;
+        const std::string killCount = std::to_string(m_pGame->player().killCount());
+        int j;
+        for (j = 0; j < (int)killCount.size(); ++j)
+        {
+            const SDL_Rect dstRect = { (i + j) * m_digitSize, 0, m_digitSize, m_digitSize };
+            SDL_RenderCopy(m_pGame->renderer(), m_digitTextureMap[killCount[j]]->texture(), nullptr, &dstRect);
+        }
+    }
 }
 
 void ObjectRenderer::drawBackground()
@@ -178,18 +204,6 @@ void ObjectRenderer::playPlayerDamage()
     const SDL_Rect dstRect = { 0, 0, WIDTH, HEIGHT };
     SDL_RenderCopy(m_pGame->renderer(), m_textureMap[BLOOD_SCREEN]->texture(), nullptr, &dstRect);
     m_pGame->getSound(PLAYER_PAIN)->play();
-}
-
-void ObjectRenderer::drawGameOver()
-{
-    if (m_bGameOver)
-    {
-        const SDL_Rect dstRect = { 0, 0, WIDTH, HEIGHT };
-        SDL_RenderCopy(m_pGame->renderer(), m_textureMap[GAME_OVER]->texture(), nullptr, &dstRect);
-        SDL_Delay(1500);
-        m_pGame->startNewGame();
-        m_bGameOver = false;
-    }
 }
 
 void ObjectRenderer::clear()

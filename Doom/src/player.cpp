@@ -13,6 +13,7 @@ void Player::update(float dt)
 	movement(dt);
 	mouseControl(dt);
 	singleFire();
+	recoverHealth(dt);
 }
 
 void Player::draw()
@@ -39,7 +40,10 @@ void Player::reset()
 
 void Player::getDamage(int damage)
 {
-	m_health -= damage;
+	if (m_health >= damage)
+	{
+		m_health -= damage;
+	}
 	m_pGame->objectRenderer().setPlayPlayerDamage();
 	m_pGame->getSound(PLAYER_PAIN)->play();
 	checkGameOver();
@@ -193,12 +197,31 @@ void Player::checkWallCollision(float dt, float dy, float dx)
 	}
 }
 
+void Player::recoverHealth(float dt)
+{
+	if (m_health < PLAYER_MAX_HEALTH && checkHealthRecoveryDelay(dt))
+	{
+		++m_health;
+	}
+}
+
 void Player::checkGameOver()
 {
 	if (m_health < 1)
 	{
-		m_pGame->objectRenderer().setGameOver();
+		m_pGame->setGameOver();
 	}
+}
+
+bool Player::checkHealthRecoveryDelay(float dt)
+{
+	m_prevTime += dt;
+	if (m_prevTime >= m_healthRecoveryDelay)
+	{
+		m_prevTime = 0;
+		return true;
+	}
+	return false;
 }
 
 void Player::drawLineOfSight()

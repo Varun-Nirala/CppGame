@@ -35,6 +35,9 @@ public:
 	void getDamage(int damage);
 
 	int health() const { return m_health; }
+
+	void incrememtKillCount() { m_killCount++; }
+	int killCount() const { return m_killCount; }
 private:
 	void singleFire();
 
@@ -44,8 +47,10 @@ private:
 	bool checkWall(int y, int x);
 
 	void checkWallCollision(float dt, float dy, float dx);
+	void recoverHealth(float dt);
 
 	void checkGameOver();
+	bool checkHealthRecoveryDelay(float dt);
 
 	void drawLineOfSight();
 	void drawPlayer();
@@ -58,6 +63,10 @@ private:
 
 	bool			m_bShot{ false };
 	int				m_health{ PLAYER_MAX_HEALTH };
+	int				m_healthRecoveryDelay{ 700 };
+	float			m_prevTime{};
+
+	int				m_killCount{};
 };
 
 #endif // !__PLAYER_H__
