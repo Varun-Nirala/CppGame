@@ -2,17 +2,19 @@
 
 #include "common/logger.h"
 
+#include <algorithm>
+
 SoundEffect::~SoundEffect()
 {
 	clear();
 }
 
-SoundEffect::SoundEffect(const std::string& path)
+SoundEffect::SoundEffect(const std::string& path, int volume)
 {
-	init(path);
+	init(path, volume);
 }
 
-void SoundEffect::init(const std::string &path)
+void SoundEffect::init(const std::string &path, int volume)
 {
 	clear();
 	m_pSoundChunk = Mix_LoadWAV(path.c_str());
@@ -22,17 +24,42 @@ void SoundEffect::init(const std::string &path)
 		assert(false);
 		return;
 	}
+	setVolume(volume);
 }
 
 void SoundEffect::play(int loopCount)
 {
-	const int channel = Mix_PlayChannel(1, m_pSoundChunk, loopCount);
-	if (channel < 0)
+	m_channel = Mix_PlayChannel(1, m_pSoundChunk, loopCount);
+	if (m_channel < 0)
 	{
 		ns_Util::Logger::LOG_ERROR("Error playing sound effect!\n");
 		assert(false);
 		return;
 	}
+}
+
+void SoundEffect::incrementVolume()
+{
+	m_volume = std::clamp(m_volume + 5, 0, MIX_MAX_VOLUME);
+	Mix_Volume(m_channel, m_volume);
+}
+
+void SoundEffect::decrementVolume()
+{
+	m_volume = std::clamp(m_volume - 5, 0, MIX_MAX_VOLUME);
+	Mix_Volume(m_channel, m_volume);
+}
+
+int SoundEffect::getCurrentVolume()
+{
+	m_volume = Mix_Volume(m_channel, -1);
+	return m_volume;
+}
+
+void SoundEffect::setVolume(int val)
+{
+	m_volume = std::clamp(val, 0, MIX_MAX_VOLUME);
+	Mix_Volume(m_channel, m_volume);
 }
 
 void SoundEffect::clear()
@@ -41,6 +68,7 @@ void SoundEffect::clear()
 	{
 		Mix_FreeChunk(m_pSoundChunk);
 		m_pSoundChunk = nullptr;
+		m_channel = 0;
 	}
 }
 
@@ -49,12 +77,12 @@ Music::~Music()
 	clear();
 }
 
-Music::Music(const std::string& path)
+Music::Music(const std::string& path, int volume)
 {
-	init(path);
+	init(path, volume);
 }
 
-void Music::init(const std::string& path)
+void Music::init(const std::string& path, int volume)
 {
 	clear();
 	m_pMusic = Mix_LoadMUS(path.c_str());
@@ -64,6 +92,7 @@ void Music::init(const std::string& path)
 		assert(false);
 		return;
 	}
+	setVolume(volume);
 }
 
 void Music::play(int loopCount)
@@ -98,6 +127,30 @@ void Music::resume()
 void Music::stop()
 {
 	Mix_HaltMusic();
+}
+
+void Music::incrementVolume()
+{
+	m_volume = std::clamp(m_volume + 5, 0, MIX_MAX_VOLUME);
+	Mix_VolumeMusic(m_volume);
+}
+
+void Music::decrementVolume()
+{
+	m_volume = std::clamp(m_volume - 5, 0, MIX_MAX_VOLUME);
+	Mix_VolumeMusic(m_volume);
+}
+
+int Music::getCurrentVolume()
+{
+	m_volume = Mix_VolumeMusic(-1);
+	return m_volume;
+}
+
+void Music::setVolume(int val)
+{
+	m_volume = std::clamp(val, 0, MIX_MAX_VOLUME);
+	Mix_VolumeMusic(m_volume);
 }
 
 void Music::clear()

@@ -117,12 +117,14 @@ private:
 	ObjectHandler				m_objectHandler;
 	
 	Weapon						m_weapon;
-	std::vector<SoundEffect*>	m_soundEffects;
 
 	Pathfinding					m_pathfinding;
 
 	bool						m_bGameOver{ false };
 	bool						m_bVictory{ false };
+
+	std::vector<SoundEffect*>	m_soundEffects;
+	Music						m_themeMusic;
 };
 
 #endif // !__GAME_H__

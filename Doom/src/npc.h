@@ -64,7 +64,7 @@ protected:
 	std::unordered_map<Action, std::deque<Texture*>>	m_animations;
 	int													m_attackDist{ getRandomNumber(3, 6) };
 	float												m_speed{ 0.03f };
-	int													m_size{ 10 };
+	int													m_size{ 20 };
 	int													m_health{ 100 };
 	int													m_attackDamage{ 10 };
 	int													m_accuracy{ 15 };

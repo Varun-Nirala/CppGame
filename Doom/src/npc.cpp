@@ -444,7 +444,7 @@ void CyberDemonNPC::init(const std::string& folderPath, const glm::vec2& pos, fl
 {
 	NPC::init(folderPath, pos, scale, shift, animationTime);
 	m_attackDist = 6;
-	m_health = 200;
+	m_health = 350;
 	m_attackDamage = 15;
 	m_speed = 0.055f;
 	m_accuracy = 25;

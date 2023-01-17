@@ -84,13 +84,17 @@ bool Game::init()
 
 	m_soundEffects.resize(SoundIndex::MAX_SOUNDS);
 
-	m_soundEffects[SoundIndex::SHOTGUN] = SoundEffect::createSoundEffect(R"(.\resources\sound\shotgun.wav)");
+	m_soundEffects[SoundIndex::SHOTGUN] = SoundEffect::createSoundEffect(R"(.\resources\sound\shotgun.wav)", 25);
 	
-	m_soundEffects[SoundIndex::NPC_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_pain.wav)");
-	m_soundEffects[SoundIndex::NPC_DEATH] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_death.wav)");
-	m_soundEffects[SoundIndex::NPC_SHOT] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_attack.wav)");
+	m_soundEffects[SoundIndex::NPC_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_pain.wav)", 25);
+	m_soundEffects[SoundIndex::NPC_DEATH] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_death.wav)", 25);
+	m_soundEffects[SoundIndex::NPC_SHOT] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_attack.wav)", 25);
 
-	m_soundEffects[SoundIndex::PLAYER_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\player_pain.wav)");
+	m_soundEffects[SoundIndex::PLAYER_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\player_pain.wav)", 25);
+
+	m_themeMusic.init(R"(.\resources\sound\theme.mp3)", 20);
+
+	m_themeMusic.play(-1);
 
 	return true;
 }
