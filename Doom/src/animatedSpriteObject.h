@@ -20,12 +20,13 @@ public:
 	void update(float dt) override;
 	void draw() override;
 
+	bool animationTriggered() const { return m_bAnimationTrigger; }
 	int numberOfImages() const { return m_numberOfImages; }
 
-protected:
 	void animateSprite();
 	void checkAnimationTime(float dt);
 
+protected:
 	void clear();
 
 protected:

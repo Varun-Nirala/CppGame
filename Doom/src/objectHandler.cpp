@@ -149,7 +149,10 @@ void ObjectHandler::update(float dt)
 
 	for (NPC* pNPC : m_npcs)
 	{
-		pNPC->update(dt);
+		if (pNPC->alive())
+		{
+			pNPC->update(dt);
+		}
 	}
 
 	checkWin();
@@ -165,7 +168,10 @@ void ObjectHandler::draw()
 #endif
 	for (NPC* pNPC : m_npcs)
 	{
-		pNPC->draw();
+		if (pNPC->alive())
+		{
+			pNPC->draw();
+		}
 	}
 }
 

@@ -82,9 +82,6 @@ public:
 	const Player& player() const { return m_player; }
 	Player& player() { return m_player; }
 
-	const Weapon& weapon() const { return m_weapon; }
-	Weapon& weapon() { return m_weapon; }
-
 	const Sound* getSound(SoundIndex id) const { return m_soundEffects[id]; }
 	Sound* getSound(SoundIndex id) { return m_soundEffects[id]; }
 
@@ -115,8 +112,6 @@ private:
 	ObjectRenderer				m_objectRenderer;
 
 	ObjectHandler				m_objectHandler;
-	
-	Weapon						m_weapon;
 
 	Pathfinding					m_pathfinding;
 

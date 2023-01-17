@@ -5,16 +5,15 @@
 
 class Game;
 
-class Weapon : public AnimatedSpriteObject
+class Weapon
 {
 public:
-	~Weapon() { AnimatedSpriteObject::clear(); }
 	explicit Weapon(Game* pGame);
 
 	void init(const std::string& folderPath, const glm::vec2& pos = { 11.5f, 3.5f }, float scale = 0.8f, float shift = 0.16f, int animationTime = 120);
 
-	void update(float dt) override;
-	void draw() override;
+	void update(float dt);
+	void draw();
 
 	void setReloading(bool val) { m_bReloading = val; }
 	bool reloading() const { return m_bReloading; }
@@ -22,10 +21,13 @@ public:
 
 private:
 	void animateShot();
+
 private:
-	bool		m_bReloading{ false };
-	int			m_frameCounter{};
-	int			m_damage{ 50 };
+	Game					*m_pGame{};
+	bool					m_bReloading{ false };
+	int						m_frameCounter{};
+	int						m_damage{ 50 };
+	AnimatedSpriteObject	m_weaponAnimation;
 };
 
 #endif //!__WEAPON_H__

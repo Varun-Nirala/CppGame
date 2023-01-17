@@ -6,7 +6,14 @@
 
 Player::Player(Game *pGame)
 	: m_pGame(pGame)
-{}
+	, m_weapon(pGame)
+{
+}
+
+void Player::init()
+{
+	m_weapon.init(R"(.\resources\sprites\weapon\shotgun)", { 11.5f, 3.5f }, 0.4f, 0.16f, 90);
+}
 
 void Player::update(float dt)
 {
@@ -14,6 +21,7 @@ void Player::update(float dt)
 	mouseControl(dt);
 	singleFire();
 	recoverHealth(dt);
+	m_weapon.update(dt);
 }
 
 void Player::draw()
@@ -22,6 +30,7 @@ void Player::draw()
 	drawLineOfSight();
 	drawPlayer();
 #endif
+	m_weapon.draw();
 }
 
 glm::ivec2 Player::mapPosition() const
@@ -56,11 +65,11 @@ void Player::singleFire()
 		if (!m_bShot 
 			&& event.type == SDL_MOUSEBUTTONDOWN 
 			&& event.button.button == SDL_BUTTON_LEFT
-			&& !m_pGame->weapon().reloading())
+			&& !m_pGame->player().weapon().reloading())
 		{
 			m_pGame->getSound(SoundIndex::SHOTGUN)->play();
 			m_bShot = true;
-			m_pGame->weapon().setReloading(true);
+			m_pGame->player().weapon().setReloading(true);
 		}
 	}
 }
@@ -103,15 +112,6 @@ void Player::movement(float dt)
 					dx += -speedSin;
 					dy += speedCos;
 					break;
-
-				/*case SDLK_LEFT:
-					m_angle -= PLAYER_ROT_SPEED * dt;
-					break;
-
-				case SDLK_RIGHT:
-					m_angle += PLAYER_ROT_SPEED * dt;
-					break;
-				*/
 			}
 			checkWallCollision(dt, dy, dx);
 		}

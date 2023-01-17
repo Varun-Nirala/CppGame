@@ -9,7 +9,6 @@ Game::Game()
 	: m_map(this)
 	, m_player(this)
 	, m_raycasting(this)
-	, m_weapon(this)
 	, m_pathfinding(this)
 	, m_objectHandler(this)
 	, m_objectRenderer(this)
@@ -76,11 +75,11 @@ bool Game::init()
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_WarpMouseInWindow(m_pWindow, HALF_WIDTH, HALF_HEIGHT);
 
+	m_player.init();
+
 	m_objectRenderer.init();
 
 	m_objectHandler.init();
-
-	m_weapon.init(R"(.\resources\sprites\weapon\shotgun)", { 11.5f, 3.5f }, 0.4f, 0.16f, 90);
 
 	m_soundEffects.resize(SoundIndex::MAX_SOUNDS);
 
@@ -109,7 +108,6 @@ void Game::update(float dt)
 		m_player.update(dt);
 		m_raycasting.update(dt);
 		m_objectHandler.update(dt);
-		m_weapon.update(dt);
 	}
 }
 
@@ -152,11 +150,10 @@ void Game::draw()
 	preDraw();
 
 	m_map.draw();
-	m_player.draw();
 	m_raycasting.draw();
 	m_objectHandler.draw();
 	m_objectRenderer.draw();
-	m_weapon.draw();
+	m_player.draw();
 
 	postDraw();
 }

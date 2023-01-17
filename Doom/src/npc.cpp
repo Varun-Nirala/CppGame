@@ -245,44 +245,19 @@ void NPC::checkHealth()
 	}
 }
 
-void NPC::animateIdle()
+void NPC::animate(Action action)
 {
-	if (m_currentAction != IDLE)
+	if (m_currentAction != action)
 	{
-		m_currentAction = IDLE;
-		m_animationTextures = m_animations[IDLE];
-		m_textureObject.pTexture = m_animationTextures.front();
-	}
-}
-
-void NPC::animateWalk()
-{
-	if (m_currentAction != WALK)
-	{
-		m_currentAction = WALK;
-		m_animationTextures = m_animations[WALK];
-		m_textureObject.pTexture = m_animationTextures.front();
-	}
-}
-
-void NPC::animateAttack()
-{
-	if (m_currentAction != ATTACK)
-	{
-		m_currentAction = ATTACK;
-		m_animationTextures = m_animations[ATTACK];
+		m_currentAction = action;
+		m_animationTextures = m_animations[action];
 		m_textureObject.pTexture = m_animationTextures.front();
 	}
 }
 
 void NPC::animatePain()
 {
-	if (m_currentAction != PAIN)
-	{
-		m_currentAction = PAIN;
-		m_animationTextures = m_animations[PAIN];
-		m_textureObject.pTexture = m_animationTextures.front();
-	}
+	animate(PAIN);
 	if (m_bAnimationTrigger)
 	{
 		m_bPain = false;
@@ -324,23 +299,23 @@ void NPC::run()
 
 			if (m_distance < m_attackDist)
 			{
-				animateAttack();
+				animate(ATTACK);
 				attack();
 			}
 			else
 			{
-				animateWalk();
+				animate(WALK);
 				movement();
 			}
 		}
 		else if (m_bPlayerSearchTrigger)
 		{
-			animateWalk();
+			animate(WALK);
 			movement();
 		}
 		else
 		{
-			animateIdle();
+			animate(IDLE);
 		}
 	}
 	else
@@ -359,7 +334,7 @@ void NPC::checkHit()
 			m_pGame->getSound(SoundIndex::NPC_PAIN)->play();
 			m_pGame->player().setShot(false);
 			m_bPain = true;
-			m_health -= m_pGame->weapon().damage();
+			m_health -= m_pGame->player().weapon().damage();
 			checkHealth();
 		}
 	}

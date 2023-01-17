@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include "common/constants.h"
+#include "weapon.h"
 
 class Game;
 
@@ -11,6 +12,7 @@ class Player
 public:
 	explicit Player(Game* pGame);
 
+	void init();
 	void update(float dt);
 
 	void draw();
@@ -38,6 +40,9 @@ public:
 
 	void incrememtKillCount() { m_killCount++; }
 	int killCount() const { return m_killCount; }
+
+	const Weapon& weapon() const { return m_weapon; }
+	Weapon& weapon() { return m_weapon; }
 private:
 	void singleFire();
 
@@ -57,6 +62,7 @@ private:
 
 private:
 	Game			*m_pGame{};
+	Weapon			m_weapon;
 	glm::vec2		m_position{ PLAYER_POS };
 	float			m_angle{ PLAYER_ANGLE };
 	int				m_playerRelative{};

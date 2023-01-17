@@ -45,11 +45,10 @@ protected:
 	void movement();
 	bool checkWall(int y, int x);
 	void checkWallCollision(float dy, float dx);
-
 	void checkHealth();
-	void animateIdle();
-	void animateWalk();
-	void animateAttack();
+
+	void animate(Action action);
+
 	void animatePain();
 	void animateDeath();
 	void run();

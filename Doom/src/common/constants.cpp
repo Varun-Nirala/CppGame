@@ -22,7 +22,7 @@ extern const int HALF_WIDTH					= WIDTH / 2;
 extern const int HALF_HEIGHT				= HEIGHT / 2;
 extern const float FPS						= 60.0f;
 
-extern const int INITIAL_NPC_COUNT			= 20;
+extern const int INITIAL_NPC_COUNT			= 2;
 
 extern const SDL_Color FLOOR_COLOR			= { 30, 30, 30, 255 };
 
