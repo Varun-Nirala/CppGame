@@ -12,7 +12,7 @@ const std::vector<sf::Color> Tetromino::m_colors{ COLOR_I, COLOR_J, COLOR_L, COL
 Tetromino::Tetromino(ShapeID id)
 	: m_id(id)
 {
-	m_minos = create_minos(m_shapes[m_id]);
+	create_minos(m_shapes[m_id]);
 }
 
 void Tetromino::reset(ShapeID id)
@@ -20,63 +20,82 @@ void Tetromino::reset(ShapeID id)
 	if (m_id == id) return;
 
 	m_id = id;
-	m_minos = create_minos(m_shapes[id]);
+	create_minos(m_shapes[id]);
 }
 
 void Tetromino::clearOldCells(std::vector<std::vector<char>>& matrix)
 {
-	for (sf::Vector2i& pos : m_minos)
+	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
-		matrix[pos.x][pos.y] = 0;
+		for (int c = 0, cols = (int)m_boundingBox[r].size(); c < cols; ++c)
+		{
+			if (m_boundingBox[r][c])
+			{
+				matrix[m_position.y + r][m_position.x + c] = 0;
+			}
+		}
 	}
 }
 
 bool Tetromino::canMoveLeft(std::vector<std::vector<char>>& matrix)
 {
-	for (const sf::Vector2i& pos : m_minos)
+	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
-		if (pos.x <= 0)
+		const int currY = m_position.y + r;
+		for (int c = 0, cols = (int)m_boundingBox[r].size(); c < cols; ++c)
 		{
-			return false;
-		}
+			if (m_boundingBox[r][c])
+			{
+				const int currX = m_position.x + c;
 
-		if (matrix[pos.x - 1][pos.y])
-		{
-			return false;
+				if (currX - 1 < 0 || matrix[currY][currX - 1])
+				{
+					return false;
+				}
+			}
 		}
 	}
+
 	return true;
 }
 
 bool Tetromino::canMoveRight(std::vector<std::vector<char>>& matrix)
 {
-	for (const sf::Vector2i& pos : m_minos)
+	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
-		if (COLUMNS <= 1 + pos.x)
+		const int currY = m_position.y + r;
+		for (int c = 0, cols = (int)m_boundingBox[r].size(); c < cols; ++c)
 		{
-			return false;
-		}
+			if (m_boundingBox[r][c])
+			{
+				const int currX = m_position.x + c;
 
-		if (matrix[pos.x + 1][pos.y])
-		{
-			return false;
+				if (currX + 1 >= COLUMNS || matrix[currY][currX + 1])
+				{
+					return false;
+				}
+			}
 		}
 	}
+
 	return true;
 }
 
 bool Tetromino::canMoveDown(std::vector<std::vector<char>>& matrix)
 {
-	for (const sf::Vector2i& pos : m_minos)
+	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
-		if (ROWS <= 1 + pos.y)
+		const int currY = m_position.y + r;
+		for (int c = 0, cols = (int)m_boundingBox[r].size(); c < cols; ++c)
 		{
-			return false;
-		}
-
-		if (matrix[pos.x][pos.y + 1])
-		{
-			return false;
+			if (m_boundingBox[r][c])
+			{
+				const int currX = m_position.x + c;
+				if (currY + 1 >= ROWS || matrix[currY + 1][currX])
+				{
+					return false;
+				}
+			}
 		}
 	}
 	return true;
@@ -87,16 +106,18 @@ bool Tetromino::canRotateCW(std::vector<std::vector<char>>& matrix)
 	// TODO
 	if (m_id == ID_O) { return true; }
 
-	for (const sf::Vector2i& pos : m_minos)
-	{
-		if (ROWS <= 1 + pos.y)
-		{
-			return false;
-		}
+	std::vector<std::vector<bool>> temp = m_boundingBox;
 
-		if (matrix[pos.x][pos.y + 1])
+	rotateMatrix(temp);
+
+	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
+	{
+		for (int c = 0, cols = (int)m_boundingBox[r].size(); c < cols; ++c)
 		{
-			return false;
+			if (m_boundingBox[r][c] && matrix[r][c])
+			{
+				return false;
+			}
 		}
 	}
 	return true;
@@ -106,10 +127,7 @@ bool Tetromino::moveLeft(std::vector<std::vector<char>>& matrix)
 {
 	if (!canMoveLeft(matrix)) return false;
 
-	for (sf::Vector2i& pos : m_minos)
-	{
-		--pos.x;
-	}
+	--m_position.x;
 
 	return true;
 }
@@ -118,10 +136,7 @@ bool Tetromino::moveRight(std::vector<std::vector<char>>& matrix)
 {
 	if (!canMoveRight(matrix)) return false;
 
-	for (sf::Vector2i& pos : m_minos)
-	{
-		++pos.x;
-	}
+	++m_position.x;
 
 	return true;
 }
@@ -130,10 +145,7 @@ bool Tetromino::moveDown(std::vector<std::vector<char>>& matrix)
 {
 	if (!canMoveDown(matrix)) return false;
 
-	for (sf::Vector2i& pos : m_minos)
-	{
-		++pos.y;
-	}
+	++m_position.y;
 
 	return true;
 }
@@ -149,9 +161,17 @@ bool Tetromino::rotateCW(std::vector<std::vector<char>>& matrix)
 
 void Tetromino::updateNewCells(std::vector<std::vector<char>>& matrix)
 {
-	for (sf::Vector2i& pos : m_minos)
+	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
-		matrix[pos.x][pos.y] = (char)m_id;
+		const int currY = m_position.y + r;
+		for (int c = 0, cols = (int)m_boundingBox[r].size(); c < cols; ++c)
+		{
+			if (m_boundingBox[r][c])
+			{
+				const int currX = m_position.x + c;
+				matrix[currY][currX] = (char)m_id;
+			}
+		}
 	}
 }
 
@@ -159,11 +179,17 @@ void Tetromino::draw(sf::RenderWindow& window)
 {
 	sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
 
-	for (const sf::Vector2i& pos : m_minos)
+	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
-		cell.setPosition((float)CELL_SIZE * pos.x, (float)CELL_SIZE * pos.y);
-		cell.setFillColor(m_colors[m_id]);
-		window.draw(cell);
+		for (int c = 0, cols = (int)m_boundingBox[r].size(); c < cols; ++c)
+		{
+			if (m_boundingBox[r][c])
+			{
+				cell.setPosition((float)CELL_SIZE * (m_position.x + c), (float)CELL_SIZE * (m_position.y + r));
+				cell.setFillColor(m_colors[m_id]);
+				window.draw(cell);
+			}
+		}
 	}
 }
 
@@ -199,22 +225,13 @@ void Tetromino::rotateMatrix(std::vector<std::vector<bool>>& mat)
 	}
 }
 
-std::vector<sf::Vector2i> Tetromino::create_minos(char shape)
+void Tetromino::create_minos(char shape)
 {
-	std::vector<sf::Vector2i> minos(4);
+	m_position = { COLUMNS / 2 - 2, 0 };
 	switch (shape)
 	{
 		case SHAPE_I:
-			minos[0].x = COLUMNS / 2 - 2;
-			minos[0].y = 0;
-			minos[1].x = COLUMNS / 2 - 1;
-			minos[1].y = 0;
-			minos[2].x = COLUMNS / 2;
-			minos[2].y = 0;
-			minos[3].x = COLUMNS / 2 + 1;
-			minos[3].y = 0;
-
-			m_vecForRotation = {
+			m_boundingBox = {
 				{ false, false, false, false },
 				{ true, true, true, true },
 				{ false, false, false, false },
@@ -223,16 +240,7 @@ std::vector<sf::Vector2i> Tetromino::create_minos(char shape)
 			break;
 
 		case SHAPE_J:
-			minos[0].x = COLUMNS / 2 - 1;
-			minos[0].y = 0;
-			minos[1].x = COLUMNS / 2 - 1;
-			minos[1].y = 1;
-			minos[2].x = COLUMNS / 2;
-			minos[2].y = 1;
-			minos[3].x = COLUMNS / 2 + 1;
-			minos[3].y = 1;
-
-			m_vecForRotation = {
+			m_boundingBox = {
 				{ true, false, false, false },
 				{ true, true, true, false },
 				{ false, false, false, false },
@@ -241,16 +249,7 @@ std::vector<sf::Vector2i> Tetromino::create_minos(char shape)
 			break;
 
 		case SHAPE_L:
-			minos[0].x = COLUMNS / 2 - 1;
-			minos[0].y = 1;
-			minos[1].x = COLUMNS / 2;
-			minos[1].y = 1;
-			minos[2].x = COLUMNS / 2 + 1;
-			minos[2].y = 1;
-			minos[3].x = COLUMNS / 2 + 1;
-			minos[3].y = 0;
-
-			m_vecForRotation = {
+			m_boundingBox = {
 				{ false, false, true, false },
 				{ true, true, true, false },
 				{ false, false, false, false },
@@ -259,17 +258,8 @@ std::vector<sf::Vector2i> Tetromino::create_minos(char shape)
 			break;
 
 		case SHAPE_O:
-			minos[0].x = COLUMNS / 2 - 1;
-			minos[0].y = 0;
-			minos[1].x = COLUMNS / 2;
-			minos[1].y = 0;
-			minos[2].x = COLUMNS / 2;
-			minos[2].y = 1;
-			minos[3].x = COLUMNS / 2 - 1;
-			minos[3].y = 1;
-
-			m_vecForRotation = {
-				{ false, false, false, true },
+			m_boundingBox = {
+				{ false, false, false, false },
 				{ false, true, true, false },
 				{ false, true, true, false },
 				{ false, false, false, false }
@@ -277,16 +267,7 @@ std::vector<sf::Vector2i> Tetromino::create_minos(char shape)
 			break;
 
 		case SHAPE_S:
-			minos[0].x = COLUMNS / 2 + 1;
-			minos[0].y = 0;
-			minos[1].x = COLUMNS / 2;
-			minos[1].y = 0;
-			minos[2].x = COLUMNS / 2;
-			minos[2].y = 1;
-			minos[3].x = COLUMNS / 2 - 1;
-			minos[3].y = 1;
-
-			m_vecForRotation = {
+			m_boundingBox = {
 				{ false, true, true, false },
 				{ true, true, false, false },
 				{ false, false, false, false },
@@ -295,17 +276,8 @@ std::vector<sf::Vector2i> Tetromino::create_minos(char shape)
 			break;
 
 		case SHAPE_T:
-			minos[0].x = COLUMNS / 2 - 1;
-			minos[0].y = 0;
-			minos[1].x = COLUMNS / 2;
-			minos[1].y = 0;
-			minos[2].x = COLUMNS / 2 + 1;
-			minos[2].y = 0;
-			minos[3].x = COLUMNS / 2;
-			minos[3].y = 1;
-
-			m_vecForRotation = {
-				{ false, true, false, true },
+			m_boundingBox = {
+				{ false, true, false, false },
 				{ true, true, true, false },
 				{ false, false, false, false },
 				{ false, false, false, false }
@@ -313,16 +285,7 @@ std::vector<sf::Vector2i> Tetromino::create_minos(char shape)
 			break;
 
 		case SHAPE_Z:
-			minos[0].x = COLUMNS / 2 - 1;
-			minos[0].y = 0;
-			minos[1].x = COLUMNS / 2;
-			minos[1].y = 0;
-			minos[2].x = COLUMNS / 2;
-			minos[2].y = 1;
-			minos[3].x = COLUMNS / 2 + 1;
-			minos[3].y = 1;
-
-			m_vecForRotation = {
+			m_boundingBox = {
 				{ true, true, false, false },
 				{ false, true, true, false },
 				{ false, false, false, false },
@@ -335,5 +298,4 @@ std::vector<sf::Vector2i> Tetromino::create_minos(char shape)
 			assert(false);
 			break;
 	}
-	return minos;
 }

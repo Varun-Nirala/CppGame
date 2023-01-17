@@ -37,9 +37,6 @@ public:
 
 	char getShape() const { return m_shapes[m_id]; }
 
-	std::vector<sf::Vector2i>& getMinos() { return m_minos; }
-	const std::vector<sf::Vector2i>& getMinos() const { return m_minos; }
-
 	const sf::Color& getColor() const { return m_colors[m_id]; }
 
 	static int getNumberOfShapes() { return (int)m_shapes.size(); }
@@ -47,16 +44,16 @@ public:
 	static const char getShape(int index) { return m_shapes[index]; }
 private:
 	void rotateMatrix(std::vector<std::vector<bool>> &mat);
-	std::vector<sf::Vector2i> create_minos(char shape);
+	void create_minos(char shape);
 
 private:
-	std::vector<sf::Vector2i>			m_minos;
-	std::vector<std::vector<bool>>		m_vecForRotation;
-	ShapeID								m_id{};
-	int									m_rotationAngle{};
+	sf::Vector2i							m_position;
+	std::vector<std::vector<bool>>			m_boundingBox;
+	ShapeID									m_id{};
+	int										m_rotationAngle{};
 
-	static const std::vector<char>		m_shapes;
-	static const std::vector<sf::Color>	m_colors;
+	static const std::vector<char>			m_shapes;
+	static const std::vector<sf::Color>		m_colors;
 };
 
 #endif //!__TETROMINO_H__

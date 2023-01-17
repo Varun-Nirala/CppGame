@@ -14,7 +14,7 @@ void render(sf::RenderWindow &window, Tetromino& tetromino, std::vector<std::vec
 
 int main()
 {
-	std::vector<std::vector<char>> matrix(COLUMNS, std::vector<char>(ROWS, 0));
+	std::vector<std::vector<char>> matrix(ROWS, std::vector<char>(COLUMNS, 0));
 
 	sf::RenderWindow window(sf::VideoMode(CELL_SIZE * COLUMNS * SCREEN_RESIZE, CELL_SIZE * ROWS * SCREEN_RESIZE), "Tetris", sf::Style::Close);
 	window.setView(sf::View(sf::FloatRect(0, 0, CELL_SIZE * COLUMNS, CELL_SIZE * ROWS)));
@@ -165,25 +165,23 @@ void render(sf::RenderWindow& window, Tetromino& tetromino, std::vector<std::vec
 
 	window.clear();
 
-	for (char a = 0; a < COLUMNS; ++a)
+	for (char y = 0; y < ROWS; ++y)
 	{
-		for (char b = 0; b < ROWS; ++b)
+		for (char x = 0; x < COLUMNS; ++x)
 		{
-			if (matrix[a][b] == 0)
+			cell.setPosition((float)CELL_SIZE * x, (float)CELL_SIZE * y);
+
+			if (matrix[y][x])
 			{
-				cell.setPosition((float)CELL_SIZE * a, (float)CELL_SIZE * b);
-				cell.setFillColor(COLOR_EMPTY_CELL);
-				window.draw(cell);
+				cell.setFillColor(Tetromino::getColor(matrix[y][x]));
 			}
 			else
 			{
-				cell.setPosition((float)CELL_SIZE * a, (float)CELL_SIZE * b);
-				cell.setFillColor(Tetromino::getColor(matrix[a][b]));
-				window.draw(cell);
+				cell.setFillColor(COLOR_EMPTY_CELL);
 			}
+			window.draw(cell);
 		}
 	}
-
 	tetromino.draw(window);
 	window.display();
 }
