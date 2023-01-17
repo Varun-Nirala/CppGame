@@ -81,17 +81,7 @@ bool Game::init()
 
 	m_objectHandler.init();
 
-	m_soundEffects.resize(SoundIndex::MAX_SOUNDS);
-
-	m_soundEffects[SoundIndex::SHOTGUN] = SoundEffect::createSoundEffect(R"(.\resources\sound\shotgun.wav)", 25);
-	
-	m_soundEffects[SoundIndex::NPC_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_pain.wav)", 25);
-	m_soundEffects[SoundIndex::NPC_DEATH] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_death.wav)", 25);
-	m_soundEffects[SoundIndex::NPC_SHOT] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_attack.wav)", 25);
-
-	m_soundEffects[SoundIndex::PLAYER_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\player_pain.wav)", 25);
-
-	m_themeMusic.init(R"(.\resources\sound\theme.mp3)", 20);
+	initGameSounds();
 
 	m_themeMusic.play(-1);
 
@@ -194,6 +184,14 @@ void Game::checkEvents()
 		else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_p)
 		{
 			m_bPauseGame = !m_bPauseGame;
+			if (m_bPauseGame)
+			{
+				m_themeMusic.pause();
+			}
+			else
+			{
+				m_themeMusic.resume();
+			}
 			break;
 		}
 		else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
@@ -214,6 +212,21 @@ void Game::startNewGame()
 	m_objectRenderer.reset();
 	m_bGameOver = false;
 	m_bVictory = false;
+}
+
+void Game::initGameSounds()
+{
+	m_soundEffects.resize(SoundIndex::MAX_SOUNDS);
+
+	m_soundEffects[SoundIndex::SHOTGUN] = SoundEffect::createSoundEffect(R"(.\resources\sound\shotgun.wav)", 25);
+
+	m_soundEffects[SoundIndex::NPC_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_pain.wav)", 25);
+	m_soundEffects[SoundIndex::NPC_DEATH] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_death.wav)", 25);
+	m_soundEffects[SoundIndex::NPC_SHOT] = SoundEffect::createSoundEffect(R"(.\resources\sound\npc_attack.wav)", 25);
+
+	m_soundEffects[SoundIndex::PLAYER_PAIN] = SoundEffect::createSoundEffect(R"(.\resources\sound\player_pain.wav)", 25);
+
+	m_themeMusic.init(R"(.\resources\sound\theme.mp3)", 20);
 }
 
 void Game::runControlledFPS()

@@ -87,7 +87,10 @@ public:
 
 	const Pathfinding& pathfinding() const { return m_pathfinding; }
 	Pathfinding& pathfinding() { return m_pathfinding; }
+
 private:
+	void initGameSounds();
+
 	void runControlledFPS();
 	void runMaxFPS();
 
