@@ -4,6 +4,7 @@
 #include "logger.h"
 
 #include <cassert>
+#include <algorithm>
 
 const std::vector<char> Tetromino::m_shapes{ SHAPE_I, SHAPE_J, SHAPE_L, SHAPE_O, SHAPE_S, SHAPE_T, SHAPE_Z };
 const std::vector<sf::Color> Tetromino::m_colors{ COLOR_I, COLOR_J, COLOR_L, COLOR_O, COLOR_S, COLOR_T, COLOR_Z };
@@ -143,9 +144,6 @@ bool Tetromino::rotateCW(std::vector<std::vector<char>>& matrix)
 
 	if (m_id == ID_O) { return true; }
 
-	
-
-
 	return true;
 }
 
@@ -180,7 +178,10 @@ void Tetromino::rotateMatrix(std::vector<std::vector<bool>>& mat)
 		{
 			if (i != j)
 			{
-				std::swap(mat[i][j], mat[j][i]);
+				// can't use swap as vector<bool> behave differently, just a simple swap
+				const bool temp = mat[i][j];
+				mat[i][j] = mat[j][i];
+				mat[j][i] = temp;
 			}
 		}
 	}
@@ -190,7 +191,10 @@ void Tetromino::rotateMatrix(std::vector<std::vector<bool>>& mat)
 	{
 		for (int k = 0; k < size; ++k)
 		{
-			std::swap(mat[k][i], mat[k][j]);
+			// can't use swap as vector<bool> behave differently, just a simple swap
+			const bool temp = mat[i][k];
+			mat[i][k] = mat[k][i];
+			mat[k][i] = temp;
 		}
 	}
 }

@@ -46,6 +46,11 @@ int main()
 			update(gameSpeed, action, tetromino, matrix);
 		}
 
+		if (bGamePaused)
+		{
+			timeSinceLastUpdate = sf::Time::Zero;
+		}
+
 		render(window, tetromino, matrix);
 	}
 
