@@ -3,7 +3,6 @@
 Game::Game()
 	: m_window{ sf::RenderWindow(sf::VideoMode(CELL_SIZE * COLUMNS * SCREEN_RESIZE, CELL_SIZE * ROWS * SCREEN_RESIZE), "Tetris", sf::Style::Close) }
 	, m_matrix{ std::vector<std::vector<char>>(ROWS, std::vector<char>(COLUMNS, EMPTY_CELL)) }
-	, m_tetromino( ID_I )
 	, m_actions(ACTION_MAX, false)
 {
 }
@@ -140,6 +139,18 @@ void Game::update()
 	if (!m_tetromino.moveDown(m_matrix))
 	{
 		m_tetromino.updateNewCells(m_matrix);
+
+		std::vector<int> filledRows = checkWinLines();
+
+		for (int r : filledRows)
+		{
+			for (int i = r - 1; i >= 0; --i)
+			{
+				m_matrix[i + 1] = m_matrix[i];
+			}
+			incrementScore();
+		}
+
 		const int id = getRandomNumber(0, Tetromino::getNumberOfShapes() - 1);
 		m_tetromino.reset(static_cast<ShapeID>(id));
 	}
@@ -169,6 +180,34 @@ void Game::render()
 			m_window.draw(cell);
 		}
 	}
-	m_tetromino.draw(m_window);
+	m_tetromino.render(m_window);
 	m_window.display();
+}
+
+void Game::incrementScore()
+{
+	m_score += SCORE_PER_LINE;
+}
+
+std::vector<int> Game::checkWinLines() const
+{
+	std::vector<int> res;
+
+	for (char y = ROWS - 1; y >= 0; --y)
+	{
+		bool bAllFilled{ true };
+		for (char x = 0; x < COLUMNS; ++x)
+		{
+			if (m_matrix[y][x] == EMPTY_CELL)
+			{
+				bAllFilled = false;
+				break;
+			}
+		}
+		if (bAllFilled)
+		{
+			res.push_back(y);
+		}
+	}
+	return res;
 }

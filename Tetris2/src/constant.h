@@ -8,6 +8,8 @@ constexpr int COLUMNS{ 10 };
 constexpr int ROWS{ 20 };
 constexpr int SCREEN_RESIZE{ 4 };
 
+constexpr int SCORE_PER_LINE{ 10 };
+
 enum Action
 {
 	LEFT,

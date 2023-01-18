@@ -21,10 +21,10 @@ public:
 
 	void clearOldCells(std::vector<std::vector<char>>& matrix);
 
-	bool canMoveLeft(std::vector<std::vector<char>>& matrix);
-	bool canMoveRight(std::vector<std::vector<char>>& matrix);
-	bool canMoveDown(std::vector<std::vector<char>>& matrix);
-	bool canRotateCW(std::vector<std::vector<char>>& matrix);
+	bool canMoveLeft(std::vector<std::vector<char>>& matrix) const;
+	bool canMoveRight(std::vector<std::vector<char>>& matrix) const;
+	bool canMoveDown(std::vector<std::vector<char>>& matrix) const;
+	bool canRotateCW(std::vector<std::vector<char>>& matrix) const;
 
 	bool moveLeft(std::vector<std::vector<char>>& matrix);
 	bool moveRight(std::vector<std::vector<char>>& matrix);
@@ -33,7 +33,7 @@ public:
 
 	void updateNewCells(std::vector<std::vector<char>>& matrix);
 
-	void draw(sf::RenderWindow& window);
+	void render(sf::RenderWindow& window) const;
 
 	char getShape() const { return m_shapes[m_id]; }
 
@@ -43,7 +43,7 @@ public:
 	static const sf::Color& getColor(int index) { return m_colors[index]; }
 	static const char getShape(int index) { return m_shapes[index]; }
 private:
-	void rotateMatrix(std::vector<std::vector<bool>> &mat);
+	void rotateMatrix(std::vector<std::vector<bool>> &mat) const;
 	void create_minos(char shape);
 
 private:

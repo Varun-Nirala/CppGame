@@ -1,11 +1,9 @@
 #include "tetromino.h"
-#include "constant.h"
 
 #include "helper.h"
 #include "logger.h"
 
 #include <cassert>
-#include <algorithm>
 
 const std::vector<char> Tetromino::m_shapes{ SHAPE_I, SHAPE_J, SHAPE_L, SHAPE_O, SHAPE_S, SHAPE_T, SHAPE_Z };
 const std::vector<sf::Color> Tetromino::m_colors{ COLOR_I, COLOR_J, COLOR_L, COLOR_O, COLOR_S, COLOR_T, COLOR_Z };
@@ -38,7 +36,7 @@ void Tetromino::clearOldCells(std::vector<std::vector<char>>& matrix)
 	}
 }
 
-bool Tetromino::canMoveLeft(std::vector<std::vector<char>>& matrix)
+bool Tetromino::canMoveLeft(std::vector<std::vector<char>>& matrix) const
 {
 	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
@@ -60,7 +58,7 @@ bool Tetromino::canMoveLeft(std::vector<std::vector<char>>& matrix)
 	return true;
 }
 
-bool Tetromino::canMoveRight(std::vector<std::vector<char>>& matrix)
+bool Tetromino::canMoveRight(std::vector<std::vector<char>>& matrix) const
 {
 	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
@@ -82,7 +80,7 @@ bool Tetromino::canMoveRight(std::vector<std::vector<char>>& matrix)
 	return true;
 }
 
-bool Tetromino::canMoveDown(std::vector<std::vector<char>>& matrix)
+bool Tetromino::canMoveDown(std::vector<std::vector<char>>& matrix) const
 {
 	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
@@ -102,7 +100,7 @@ bool Tetromino::canMoveDown(std::vector<std::vector<char>>& matrix)
 	return true;
 }
 
-bool Tetromino::canRotateCW(std::vector<std::vector<char>>& matrix)
+bool Tetromino::canRotateCW(std::vector<std::vector<char>>& matrix) const
 {
 	// TODO
 	if (m_id == ID_O) { return true; }
@@ -186,7 +184,7 @@ void Tetromino::updateNewCells(std::vector<std::vector<char>>& matrix)
 	}
 }
 
-void Tetromino::draw(sf::RenderWindow& window)
+void Tetromino::render(sf::RenderWindow& window) const
 {
 	sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
 
@@ -204,7 +202,7 @@ void Tetromino::draw(sf::RenderWindow& window)
 	}
 }
 
-void Tetromino::rotateMatrix(std::vector<std::vector<bool>>& mat)
+void Tetromino::rotateMatrix(std::vector<std::vector<bool>>& mat) const
 {
 	const int size = (int)mat.size();
 	// Rotate matrix right

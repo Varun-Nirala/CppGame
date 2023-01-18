@@ -27,6 +27,9 @@ private:
 	void update();
 	void render();
 
+	void incrementScore();
+	std::vector<int> checkWinLines() const;
+
 private:
 	sf::Clock							m_clock{};
 	sf::Time							m_timeSinceLastUpdate{};
@@ -37,12 +40,12 @@ private:
 
 	std::vector<bool>					m_actions;
 
-	Tetromino							m_tetromino;
+	Tetromino							m_tetromino{ ID_I };
 	
 	std::vector<std::vector<char>>		m_matrix;
 	bool								m_bGamePaused{ false };
 
-
+	int									m_score{};
 };
 
 #endif //!__GAME_H__
