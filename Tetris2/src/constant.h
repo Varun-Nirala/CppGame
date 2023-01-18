@@ -30,6 +30,8 @@ enum ShapeID
 	ID_GHOST
 };
 
+constexpr char EMPTY_CELL{ '#' };
+
 constexpr char SHAPE_I{ 'I' };
 constexpr char SHAPE_J{ 'J' };
 constexpr char SHAPE_L{ 'L' };

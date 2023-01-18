@@ -1,6 +1,7 @@
 #include "tetromino.h"
 #include "constant.h"
 
+#include "helper.h"
 #include "logger.h"
 
 #include <cassert>
@@ -13,14 +14,14 @@ Tetromino::Tetromino(ShapeID id)
 	: m_id(id)
 {
 	create_minos(m_shapes[m_id]);
+	ns_Util::Logger::LOG_MSG("Shape : ", m_shapes[m_id], '\n');
 }
 
 void Tetromino::reset(ShapeID id)
 {
-	if (m_id == id) return;
-
 	m_id = id;
 	create_minos(m_shapes[id]);
+	ns_Util::Logger::LOG_MSG("Shape : ", m_shapes[m_id], '\n');
 }
 
 void Tetromino::clearOldCells(std::vector<std::vector<char>>& matrix)
@@ -31,7 +32,7 @@ void Tetromino::clearOldCells(std::vector<std::vector<char>>& matrix)
 		{
 			if (m_boundingBox[r][c])
 			{
-				matrix[m_position.y + r][m_position.x + c] = 0;
+				matrix[m_position.y + r][m_position.x + c] = EMPTY_CELL;
 			}
 		}
 	}
@@ -48,7 +49,7 @@ bool Tetromino::canMoveLeft(std::vector<std::vector<char>>& matrix)
 			{
 				const int currX = m_position.x + c;
 
-				if (currX - 1 < 0 || matrix[currY][currX - 1])
+				if (currX - 1 < 0 || matrix[currY][currX - 1] != EMPTY_CELL)
 				{
 					return false;
 				}
@@ -70,7 +71,7 @@ bool Tetromino::canMoveRight(std::vector<std::vector<char>>& matrix)
 			{
 				const int currX = m_position.x + c;
 
-				if (currX + 1 >= COLUMNS || matrix[currY][currX + 1])
+				if (currX + 1 >= COLUMNS || matrix[currY][currX + 1] != EMPTY_CELL)
 				{
 					return false;
 				}
@@ -91,7 +92,7 @@ bool Tetromino::canMoveDown(std::vector<std::vector<char>>& matrix)
 			if (m_boundingBox[r][c])
 			{
 				const int currX = m_position.x + c;
-				if (currY + 1 >= ROWS || matrix[currY + 1][currX])
+				if (currY + 1 >= ROWS || matrix[currY + 1][currX] != EMPTY_CELL)
 				{
 					return false;
 				}
@@ -112,11 +113,17 @@ bool Tetromino::canRotateCW(std::vector<std::vector<char>>& matrix)
 
 	for (int r = 0, rows = (int)m_boundingBox.size(); r < rows; ++r)
 	{
+		const int currY = m_position.y + r;
 		for (int c = 0, cols = (int)m_boundingBox[r].size(); c < cols; ++c)
 		{
-			if (m_boundingBox[r][c] && matrix[r][c])
+			if (m_boundingBox[r][c])
 			{
-				return false;
+				const int currX = m_position.x + c;
+				if (currY + 1 >= ROWS || matrix[currY][currX] != EMPTY_CELL
+					|| currX < 0 || currX >= COLUMNS)
+				{
+					return false;
+				}
 			}
 		}
 	}
@@ -152,9 +159,13 @@ bool Tetromino::moveDown(std::vector<std::vector<char>>& matrix)
 
 bool Tetromino::rotateCW(std::vector<std::vector<char>>& matrix)
 {
+	if (m_id == ID_O) { return true; }
+
 	if (!canRotateCW(matrix)) return false;
 
-	if (m_id == ID_O) { return true; }
+	printVectorOfVector<bool>(m_boundingBox);
+	rotateMatrix(m_boundingBox);
+	printVectorOfVector<bool>(m_boundingBox);
 
 	return true;
 }
@@ -195,7 +206,7 @@ void Tetromino::draw(sf::RenderWindow& window)
 
 void Tetromino::rotateMatrix(std::vector<std::vector<bool>>& mat)
 {
-	int size = (int)mat.size();
+	const int size = (int)mat.size();
 	// Rotate matrix right
 	// 1. take transponse
 	for (int i = 0; i < size; ++i)
@@ -218,9 +229,9 @@ void Tetromino::rotateMatrix(std::vector<std::vector<bool>>& mat)
 		for (int k = 0; k < size; ++k)
 		{
 			// can't use swap as vector<bool> behave differently, just a simple swap
-			const bool temp = mat[i][k];
-			mat[i][k] = mat[k][i];
-			mat[k][i] = temp;
+			const bool temp = mat[k][i];
+			mat[k][i] = mat[k][j];
+			mat[k][j] = temp;
 		}
 	}
 }
