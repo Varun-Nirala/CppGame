@@ -1,148 +1,213 @@
-#include "Game.h"
-#include "Common.h"
-#include <vector>
+#include "game.h"
 
-namespace nsTetris
+Game::Game()
+	: m_window{ sf::RenderWindow(sf::VideoMode(CELL_SIZE * COLUMNS * SCREEN_RESIZE, CELL_SIZE * ROWS * SCREEN_RESIZE), "Tetris", sf::Style::Close) }
+	, m_matrix{ std::vector<std::vector<char>>(ROWS, std::vector<char>(COLUMNS, EMPTY_CELL)) }
+	, m_actions(ACTION_MAX, false)
 {
+}
+
 Game::~Game()
 {
-	closeGame();
+	teardown();
 }
 
-void Game::initialize(const sf::RenderWindow& window, int numOfHorizontalBlock, int numOfVerticalBlock)
+void Game::setup()
 {
-	m_nBlockHorizontally = numOfHorizontalBlock;
-	m_nBlockVertically = numOfVerticalBlock;
-	createBoundary(window, nsTetris::TetrisBlock::getSize(), nsTetris::TetrisBlock::getSize(), _kDEFAULT_THICKNESS);
-	setUpKeyboardHandle();
+	m_window.setView(sf::View(sf::FloatRect(0, 0, CELL_SIZE * COLUMNS, CELL_SIZE * ROWS)));
 }
 
-void Game::createBoundary(const sf::RenderWindow& window, int topBottomSpacing, int leftRightSpacing, int thickNess)
+void Game::teardown()
 {
-	int width = window.getSize().x;
-	int height = window.getSize().y;
-
-	topBottomSpacing -= thickNess;
-	leftRightSpacing -= thickNess;
-
-	m_topLeft.x = (float)leftRightSpacing;
-	m_topLeft.y = (float)topBottomSpacing;
-
-	m_bottomRight.x = m_topLeft.x + width - 2 * leftRightSpacing;
-	m_bottomRight.y = m_topLeft.y + height - 2 * topBottomSpacing;
-
-	sf::Vector2f horizontal( m_bottomRight.x - m_topLeft.x, (float)thickNess );
-	sf::Vector2f vertical( (float)thickNess, m_bottomRight.y - m_topLeft.y );
-
-	m_border[0].setSize(vertical);
-	m_border[1].setSize(vertical);
-
-	m_border[2].setSize(horizontal);
-	m_border[3].setSize(horizontal);
-
-	m_border[0].setPosition(m_topLeft);
-	m_border[1].setPosition(m_bottomRight.x, m_topLeft.y);
-
-	m_border[2].setPosition(m_topLeft);
-	m_border[3].setPosition(m_topLeft.x, m_bottomRight.y);
-
-	m_shapeStartPos.x = m_topLeft.x + thickNess;
-	m_shapeStartPos.y = m_topLeft.y + thickNess;
-
-	m_shapeStartPos.x += nsTetris::TetrisBlock::getSize() * (m_nBlockHorizontally - 1);
-	m_shapeStartPos.x /= 2;
-
-	nsTetris::TetrisBlock::setMinMaxX(m_topLeft.x, m_bottomRight.x);
-	nsTetris::TetrisBlock::setMinMaxY(m_topLeft.y, m_bottomRight.y);
 }
 
-void Game::update(const float elapsedSec)
+void Game::run()
 {
-	if (!m_currShape)
+	m_tetromino.reset(static_cast<ShapeID>(getRandomNumber(0, Tetromino::getNumberOfShapes() - 1)));
+
+	while (m_window.isOpen())
 	{
-		m_currShape = getRandShape();
-	}
-	m_currShape->update(elapsedSec);
-}
+		processEvents();
 
-void Game::render(sf::RenderWindow& window) const
-{
-	renderBoundary(window);
-	if (m_currShape)
-	{
-		m_currShape->render(window);
+		m_timeSinceLastUpdate += m_clock.restart();
+
+		while (!m_bGamePaused && m_timeSinceLastUpdate > m_gameSpeed)
+		{
+			m_timeSinceLastUpdate -= m_gameSpeed;
+			processEvents();
+			update();
+		}
+
+		if (m_bGamePaused)
+		{
+			m_timeSinceLastUpdate = sf::Time::Zero;
+		}
+
+		render();
 	}
 }
 
-void Game::handleInput(const sf::Event& currEvent)
+void Game::processEvents()
 {
-	if (m_currShape && m_commandMap.count(currEvent.key.code))
+	sf::Event event;
+	if (m_window.pollEvent(event))
 	{
-		m_commandMap[currEvent.key.code]->execute(*m_currShape);
+		switch (event.type)
+		{
+			case sf::Event::Closed:
+				m_window.close();
+				break;
+
+			case sf::Event::LostFocus:
+				m_bGamePaused = true;
+				break;
+
+			case sf::Event::GainedFocus:
+				m_bGamePaused = false;
+				break;
+
+			case sf::Event::KeyPressed:
+				switch (event.key.code)
+				{
+					case sf::Keyboard::Escape:
+						m_bGamePaused = !m_bGamePaused;
+						break;
+
+					case sf::Keyboard::A:
+					case sf::Keyboard::Left:
+						m_actions[LEFT] = true;
+						break;
+							
+					case sf::Keyboard::D:
+					case sf::Keyboard::Right:
+						m_actions[RIGHT] = true;
+						break;
+
+					case sf::Keyboard::S:
+					case sf::Keyboard::Down:
+						m_actions[DOWN] = true;
+						break;
+
+					case sf::Keyboard::Space:
+						m_actions[SPACE] = true;
+						break;
+				}
+				break;
+		}
 	}
 }
 
-void Game::renderBoundary(sf::RenderWindow& w) const
+void Game::update()
 {
-	for (auto &b : m_border)
+	if (m_actions[LEFT])
 	{
-		w.draw(b);
+		m_tetromino.clearOldCells(m_matrix);
+		m_tetromino.moveLeft(m_matrix);
+		m_tetromino.updateNewCells(m_matrix);
+
+		m_actions[LEFT] = false;
 	}
+
+	if (m_actions[RIGHT])
+	{
+		m_tetromino.clearOldCells(m_matrix);
+		m_tetromino.moveRight(m_matrix);
+		m_tetromino.updateNewCells(m_matrix);
+
+		m_actions[RIGHT] = false;
+	}
+
+	if (m_actions[DOWN])
+	{
+		m_tetromino.clearOldCells(m_matrix);
+		m_tetromino.moveDown(m_matrix);
+		m_tetromino.updateNewCells(m_matrix);
+
+		m_actions[DOWN] = false;
+	}
+
+	if (m_actions[SPACE])
+	{
+		m_tetromino.clearOldCells(m_matrix);
+		m_tetromino.rotateCW(m_matrix);
+		m_tetromino.updateNewCells(m_matrix);
+
+		m_actions[SPACE] = false;
+	}
+
+	m_tetromino.clearOldCells(m_matrix);
+	if (!m_tetromino.moveDown(m_matrix))
+	{
+		m_tetromino.updateNewCells(m_matrix);
+
+		std::vector<int> filledRows = checkWinLines();
+
+		for (int r : filledRows)
+		{
+			for (int i = r - 1; i >= 0; --i)
+			{
+				m_matrix[i + 1] = m_matrix[i];
+			}
+			incrementScore();
+		}
+
+		const int id = getRandomNumber(0, Tetromino::getNumberOfShapes() - 1);
+		m_tetromino.reset(static_cast<ShapeID>(id));
+	}
+	m_tetromino.updateNewCells(m_matrix);
 }
 
-TetrisShape* Game::getRandShape() const
+void Game::render()
 {
-	int randNum = getRandomNumber(0, kNUM_OF_SHAPES - 1);
-	TetrisShape* shape{};
-	sf::Vector2f dir(0, 1);
-	switch (randNum)
+	sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
+
+	m_window.clear();
+
+	for (char y = 0; y < ROWS; ++y)
 	{
-		case 0:
-			shape = new Shape_I(m_shapeStartPos, dir);
-			break;
-		case 1:
-			shape = new Shape_O(m_shapeStartPos, dir);
-			break;
-		case 2:
-			shape = new Shape_T(m_shapeStartPos, dir);
-			break;
-		case 3:
-			shape = new Shape_J(m_shapeStartPos, dir);
-			break;
-		case 4:
-			shape = new Shape_L(m_shapeStartPos, dir);
-			break;
-		case 5:
-			shape = new Shape_Z(m_shapeStartPos, dir);
-			break;
-		case 6:
-			shape = new Shape_S(m_shapeStartPos, dir);
-			break;
-		default:
-			break;
+		for (char x = 0; x < COLUMNS; ++x)
+		{
+			cell.setPosition((float)CELL_SIZE * x, (float)CELL_SIZE * y);
+
+			if (m_matrix[y][x] == EMPTY_CELL)
+			{
+				cell.setFillColor(COLOR_EMPTY_CELL);
+			}
+			else
+			{
+				cell.setFillColor(Tetromino::getColor(m_matrix[y][x]));
+			}
+			m_window.draw(cell);
+		}
 	}
-	if (shape)
-	{
-		shape->init();
-	}
-	else
-	{
-		assert(shape && "Unknown Rand");
-	}
-	return shape;
+	m_tetromino.render(m_window);
+	m_window.display();
 }
 
-void Game::setUpKeyboardHandle()
+void Game::incrementScore()
 {
-	m_commandMap[sf::Keyboard::Left] = std::make_unique<MoveLeftCmd>(MoveLeftCmd());
-	m_commandMap[sf::Keyboard::Right] = std::make_unique<MoveRightCmd>(MoveRightCmd());
-	m_commandMap[sf::Keyboard::Down] = std::make_unique<MoveDownCmd>(MoveDownCmd());
-	m_commandMap[sf::Keyboard::Up] = std::make_unique<ToggleShapeCmd>(ToggleShapeCmd());
+	m_score += SCORE_PER_LINE;
 }
 
-void Game::closeGame()
+std::vector<int> Game::checkWinLines() const
 {
-	delete m_currShape;
-	m_commandMap.clear();
-}
+	std::vector<int> res;
+
+	for (char y = ROWS - 1; y >= 0; --y)
+	{
+		bool bAllFilled{ true };
+		for (char x = 0; x < COLUMNS; ++x)
+		{
+			if (m_matrix[y][x] == EMPTY_CELL)
+			{
+				bAllFilled = false;
+				break;
+			}
+		}
+		if (bAllFilled)
+		{
+			res.push_back(y);
+		}
+	}
+	return res;
 }

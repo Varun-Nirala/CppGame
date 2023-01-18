@@ -49,3 +49,5 @@ add_executable(${PROJECT} ${SOURCES})
 target_link_libraries(${PROJECT} ${SFML_LIB})
 
 set_target_properties(${PROJECT} PROPERTIES VS_DEBUGGER_ENVIRONMENT "${MY_PATH}")
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT})

@@ -1,19 +1,14 @@
-#include <iostream>
-#include <fstream>
-#include <cstring>
-
-#include <SFML/Graphics.hpp>
-
-#include "TetrisBlock.h"
-#include "GameManager.h"
+#include "game.h"
 
 int main()
 {
-    int numOfHorizontalBlock = 20;
-    int numOfVerticalBlock = 35;
+	Game game;
 
-    nsTetris::GameManager gm(numOfHorizontalBlock, numOfVerticalBlock, "Tetris");
-    gm.startGame();
+	game.setup();
 
-    return 0;
+	game.run();
+
+	game.teardown();
+
+	return 0;
 }

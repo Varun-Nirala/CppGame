@@ -1,45 +1,51 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include <iostream>
 #include <vector>
-#include <array>
-#include <algorithm>
-#include <memory>
-#include <unordered_map>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include "TetrisShapes.h"
-#include "Command.h"
 
-namespace nsTetris
-{
+#include <SFML/Graphics.hpp>
+
+#include "constant.h"
+#include "tetromino.h"
+
+#include "helper.h"
+
 class Game
 {
-	public:
-		~Game();
-		void initialize(const sf::RenderWindow& window, int numOfHorizontalBlock, int numOfVerticalBlock);
-		void createBoundary(const sf::RenderWindow& window, int topBottomSpacing, int leftRightSpacing, int thickNess);
-		void update(const float elapsedSec);
-		void render(sf::RenderWindow& window) const;
+public:
+	Game();
+	~Game();
 
-		void handleInput(const sf::Event &currEvent);
+	void setup();
+	void teardown();
 
-	protected:
-		void closeGame();
-		void renderBoundary(sf::RenderWindow& window) const;
-		TetrisShape* getRandShape() const;
-		void setUpKeyboardHandle();
+	void run();
 
-	private:
-		sf::Vector2f														m_topLeft{};
-		sf::Vector2f														m_bottomRight{};
-		sf::Vector2f														m_shapeStartPos{};
-		int																	m_nBlockHorizontally{};
-		int																	m_nBlockVertically{};
-		TetrisShape*														m_currShape{};
-		std::vector<std::vector<TetrisBlock>>								m_tetrisGrid;
-		std::array<sf::RectangleShape, 4>									m_border;
-		std::unordered_map<sf::Keyboard::Key,std::unique_ptr<Command>>		m_commandMap;
+private:
+	void processEvents();
+	void update();
+	void render();
 
+	void incrementScore();
+	std::vector<int> checkWinLines() const;
+
+private:
+	sf::Clock							m_clock{};
+	sf::Time							m_timeSinceLastUpdate{};
+	const sf::Time						m_timePerFrame{ sf::seconds(1.0f / 60.0f) };
+	sf::Time							m_gameSpeed{ sf::seconds(1.0f) / 6.0f };
+
+	sf::RenderWindow					m_window;
+
+	std::vector<bool>					m_actions;
+
+	Tetromino							m_tetromino{ ID_I };
+	
+	std::vector<std::vector<char>>		m_matrix;
+	bool								m_bGamePaused{ false };
+
+	int									m_score{};
 };
-}
-#endif //__GAME_H__
+
+#endif //!__GAME_H__
