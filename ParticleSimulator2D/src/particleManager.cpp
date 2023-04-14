@@ -6,7 +6,7 @@
 #include <numeric>
 
 
-const glm::vec2 PARTICLE_SIZE = { 2.0f, 2.0f };
+const glm::vec2 PARTICLE_SIZE = { 3.0f, 3.0f };
 const glm::vec2 PARTICLE_SCALE = { 1.0f, 1.0f };
 
 GLuint VertexData::valuePerVertex() const
@@ -92,20 +92,21 @@ void ParticleManager::update(float elapsedDeltaTimeInSec)
 
 void ParticleManager::render()
 {
+	bindBuffers();
+	setProjectionUniform();
+	setColorUnifrom();
 	for (size_t i = 0, rows = m_grid.rows(); i < rows; ++i)
 	{
 		for (size_t j = 0, cols = m_grid.cols(); j < cols; ++j)
 		{
 			if (!m_grid.isEmpty(i, j))
 			{
-				//bindBuffers();
-				//setProjectionUniform();
-				//setColorUnifrom();
-				//setModelUnifrom(m_grid[i][j].particle);
-				//glDrawElements(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0);
+				setModelUnifrom(m_grid[i][j].particle);
+				glDrawElements(GL_TRIANGLES, (GLsizei)m_vertexData.indicesVector.size(), GL_UNSIGNED_INT, 0);
 			}
 		}
 	}
+	unbindBuffers();
 }
 
 void ParticleManager::setProjectionUniform()
