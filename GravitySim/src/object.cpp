@@ -5,7 +5,8 @@
 
 #include <cassert>
 
-Object::Object(float radius, sf::Color color, sf::Vector2f position)
+Object::Object(float radius, sf::Color color, sf::Vector2f position, float mass)
+	: m_mass(mass)
 {
 	m_circle.setFillColor(color);
 	m_circle.setPosition(position);
@@ -16,6 +17,7 @@ void Object::update(const sf::Time& elapsedTime)
 {
 	// Update the position of the objects
 	(void)elapsedTime;
+	setPosition(getPosition() + m_velocity);
 }
 
 
@@ -28,5 +30,8 @@ void Object::draw(sf::RenderWindow& window)
 
 void Object::print() const
 {
-	std::cout << getRadius() << ", (" << getPosX() << ", " << getPosY() << ")\n";
+	std::printf("Radius   : %f\n", getRadius());
+	std::printf("Mass     : %f\n", getMass());
+	std::printf("Position : %f, %f\n", getPositionX(), getPositionY());
+	std::printf("Velocity : %f, %f\n", getVelocityX(), getVelocitY());
 }

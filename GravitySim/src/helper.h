@@ -18,6 +18,16 @@ static inline int getRandomNumber(int min, int max)
 	return distrib(gen);
 }
 
+static inline float getRandomNumber(float min, float max)
+{
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+
+	std::uniform_real_distribution<> distrib(min, max);
+
+	return static_cast<float>(distrib(gen));
+}
+
 static inline std::chrono::time_point<std::chrono::steady_clock> getCurrentTime()
 {
 	return std::chrono::steady_clock::now();

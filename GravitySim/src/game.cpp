@@ -1,4 +1,5 @@
 #include "game.h"
+#include "gravity.h"
 #include "helper.h"
 
 Game::Game(std::string gameTitle, int width, int height)
@@ -96,6 +97,12 @@ void Game::processEvents()
 
 void Game::update(const sf::Time &elapsedTime)
 {
+	// Apply gravity to all the objects, from all other objects.
+	for (size_t i = 0; i < m_objects.size(); ++i)
+	{
+		Gravity::applyGravity(m_objects, i, elapsedTime);
+	}
+
 	// Update the position of the objects
 	std::for_each(m_objects.begin(), m_objects.end(), [&](Object* object) { object->update(elapsedTime); });
 }
@@ -112,9 +119,11 @@ void Game::render()
 Object* Game::createRandomObject(bool sameSizeObjects)
 {
 	int radius = sameSizeObjects ? 0 : Helper::getRandomNumber(m_objectSizeRange.first, m_objectSizeRange.second);
+	float mass = sameSizeObjects ? 0 : Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
+
 	sf::Color color = m_objectColorRange[Helper::getRandomNumber(0, (int)m_objectColorRange.size() - 1)];
 	float posX = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().x - radius));
 	float posY = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().y - radius));
 	// Code to create random objects
-	return new Object(static_cast<float>(radius), color, sf::Vector2f(posX, posY));
+	return new Object(static_cast<float>(radius), color, sf::Vector2f(posX, posY), mass);
 }

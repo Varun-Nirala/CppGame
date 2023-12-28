@@ -42,6 +42,7 @@ private:
 
 
 	std::pair<int, int>					m_objectSizeRange{ 1, 5 };
+	std::pair<float, float>				m_objectMassRange{ 0.1f, 5.0f };
 	std::array<sf::Color, 5>			m_objectColorRange{ sf::Color::White, sf::Color::Red, sf::Color::Green, sf::Color::Blue, sf::Color::Yellow };
 };
 
