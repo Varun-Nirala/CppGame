@@ -1,4 +1,5 @@
 #include "game.h"
+#include <bitset>
 
 int main()
 {
@@ -6,9 +7,14 @@ int main()
 	int height = 600;
 	std::string gameTitle = "Gravity Sim";
 
+	std::bitset<FLAG_SIZE> flags;
+	flags.set(SAME_RADIUS, false);
+	flags.set(SAME_MASS, false);
+
 	Game game(gameTitle, width, height);
 
-	game.setUpObjects(200, true);
+	int objectCount = 20;
+	game.setUpObjects(objectCount, flags);
 
 	game.run();
 

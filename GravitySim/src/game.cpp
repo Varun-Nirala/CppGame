@@ -8,7 +8,7 @@ Game::Game(std::string gameTitle, int width, int height)
 	m_window.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))));
 }
 
-void Game::setUpObjects(size_t count, bool sameSizeObjects)
+void Game::setUpObjects(size_t count, const std::bitset<FLAG_SIZE>& flags)
 {
 	// Clear the old objects.
 	std::for_each(m_objects.begin(), m_objects.end(), [&](Object* object) { delete object; });
@@ -16,14 +16,13 @@ void Game::setUpObjects(size_t count, bool sameSizeObjects)
 
 	m_objects.reserve(count);
 
-	// If we are using sameSizeObjects, we will create only one object and 
-	// set the radius of all the objects to the radius of this object.
-	m_objects.push_back(createRandomObject(false));
+	// We will create only one object with all random values.
+	m_objects.push_back(createRandomObject());
 
 	for (int i = 1; i < count; ++i)
 	{
-		m_objects.push_back(createRandomObject(sameSizeObjects));
-		m_objects.back()->setRadius(m_objects.front()->getRadius());
+		m_objects.push_back(createObject(flags));
+		m_objects.back()->setRadiusInMeter(m_objects.front()->getRadiusInMeter());
 	}
 }
 
@@ -35,22 +34,17 @@ void Game::run()
 
 		m_timeSinceLastUpdate += m_clock.restart();
 
-		while (!m_bGamePaused && m_timeSinceLastUpdate > m_gameSpeed)
+		while (!m_bGamePaused && m_timeSinceLastUpdate > m_timePerFrame)
 		{
-			m_timeSinceLastUpdate -= m_gameSpeed;
+			m_timeSinceLastUpdate -= m_timePerFrame;
 			processEvents();
 			update(m_timeSinceLastUpdate);
 		}
 
-		if (m_bGamePaused)
-		{
-			m_timeSinceLastUpdate = sf::Time::Zero;
-		}
-		else
+		if (!m_bGamePaused)
 		{
 			render();
 		}
-		
 	}
 }
 
@@ -116,10 +110,22 @@ void Game::render()
 	m_window.display();
 }
 
-Object* Game::createRandomObject(bool sameSizeObjects)
+Object* Game::createRandomObject()
 {
-	int radius = sameSizeObjects ? 0 : Helper::getRandomNumber(m_objectSizeRange.first, m_objectSizeRange.second);
-	float mass = sameSizeObjects ? 0 : Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
+	int radius = Helper::getRandomNumber(m_objectSizeRange.first, m_objectSizeRange.second);
+	float mass = Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
+
+	sf::Color color = m_objectColorRange[Helper::getRandomNumber(0, (int)m_objectColorRange.size() - 1)];
+	float posX = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().x - radius));
+	float posY = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().y - radius));
+	// Code to create random objects
+	return new Object(static_cast<float>(radius), color, sf::Vector2f(posX, posY), mass);
+}
+
+Object* Game::createObject(const std::bitset<FLAG_SIZE>& flags)
+{
+	int radius = flags.test(SAME_RADIUS) ? 0 : Helper::getRandomNumber(m_objectSizeRange.first, m_objectSizeRange.second);
+	float mass = flags.test(SAME_MASS) ? 0 : Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
 
 	sf::Color color = m_objectColorRange[Helper::getRandomNumber(0, (int)m_objectColorRange.size() - 1)];
 	float posX = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().x - radius));

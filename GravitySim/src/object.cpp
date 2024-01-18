@@ -30,8 +30,8 @@ void Object::draw(sf::RenderWindow& window)
 
 void Object::print() const
 {
-	std::printf("Radius   : %f\n", getRadius());
-	std::printf("Mass     : %f\n", getMass());
-	std::printf("Position : %f, %f\n", getPositionX(), getPositionY());
-	std::printf("Velocity : %f, %f\n", getVelocityX(), getVelocitY());
+	std::printf("Radius(meter)              : %f\n", getRadiusInMeter());
+	std::printf("Mass(kilogram)             : %f\n", getMassInKg());
+	std::printf("Position                   : %f, %f\n", getPositionX(), getPositionY());
+	std::printf("Velocity(meter per second) : %f, %f\n", getVelocityInMPSX(), getVelocityInMPSY());
 }

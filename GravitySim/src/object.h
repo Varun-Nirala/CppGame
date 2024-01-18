@@ -6,6 +6,9 @@
 
 #include "constant.h"
 
+// Mass in Kilograms.
+// Radius in Meters.
+// Velocity in Meter per second.
 class Object
 {
 public:
@@ -20,16 +23,16 @@ public:
 	void update(const sf::Time& elapsedTime);
 	void draw(sf::RenderWindow& window);
 
-	void setMass(float mass) { m_mass = mass; }
-	float getMass() const { return m_mass; }
+	void setMassInKg(float mass) { m_mass = mass; }
+	float getMassInKg() const { return m_mass; }
 
-	void setVelocity(sf::Vector2f vel) { m_velocity = vel; }
-	void setVelocity(float velX, float velY) { m_velocity.x = velX; m_velocity.y = velY; }
-	const sf::Vector2f& getVelocity() const { return m_velocity; }
-	float getVelocityX() const { return m_velocity.x; }
-	float getVelocitY() const { return m_velocity.y; }
+	void setVelocityInMPS(sf::Vector2f vel) { m_velocity = vel; }
+	void setVelocityInMPS(float velX, float velY) { m_velocity.x = velX; m_velocity.y = velY; }
+	const sf::Vector2f& getVelocityInMPS() const { return m_velocity; }
+	float getVelocityInMPSX() const { return m_velocity.x; }
+	float getVelocityInMPSY() const { return m_velocity.y; }
 
-	void addVelocity(sf::Vector2f vel) { m_velocity += vel; }
+	void addVelocityInMPS(sf::Vector2f vel) { m_velocity += vel; }
 
 	void setPosition(sf::Vector2f position) { m_circle.setPosition(position); }
 	void setPosition(float posX, float posY) { m_circle.setPosition(posX, posY); }
@@ -37,8 +40,8 @@ public:
 	float getPositionX() const { return m_circle.getPosition().x; }
 	float getPositionY() const { return m_circle.getPosition().y; }
 
-	void setRadius(float radius) { m_circle.setRadius(radius); }
-	const float getRadius() const { return m_circle.getRadius(); }
+	void setRadiusInMeter(float radius) { m_circle.setRadius(radius); }
+	const float getRadiusInMeter() const { return m_circle.getRadius(); }
 
 	void setFillColor(sf::Color color) { m_circle.setFillColor(color); }
 	const sf::Color& getColor() const { return m_circle.getFillColor(); }
@@ -47,8 +50,8 @@ public:
 
 private:
 	sf::CircleShape							m_circle;
-	sf::Vector2f							m_velocity{};
-	float									m_mass{ 1.0f };
+	sf::Vector2f							m_velocity{};		// In meter per second
+	float									m_mass{ 1.0f };		// In kg
 };
 
 #endif //!__TETROMINO_H__

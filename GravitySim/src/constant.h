@@ -3,12 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 
-constexpr int CELL_SIZE{ 8 };
-constexpr int COLUMNS{ 10 };
-constexpr int ROWS{ 20 };
-constexpr int SCREEN_RESIZE{ 4 };
+constexpr float FPS = 1.0f;
 
-constexpr int SCORE_PER_LINE{ 10 };
+constexpr int FLAG_SIZE = 2;
+constexpr int SAME_RADIUS = 0;
+constexpr int SAME_MASS = 1;
+
 
 const sf::Color COLOR_EMPTY_CELL{ 36, 36, 85 };		// BLUEISH
 const sf::Color COLOR_GHOST_CELL{ 73, 73, 85 };		// GRAY
