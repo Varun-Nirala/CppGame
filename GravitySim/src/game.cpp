@@ -99,6 +99,8 @@ void Game::update(const sf::Time &elapsedTime)
 
 	// Update the position of the objects
 	std::for_each(m_objects.begin(), m_objects.end(), [&](Object* object) { object->update(elapsedTime); });
+
+	printf("");
 }
 
 void Game::render()

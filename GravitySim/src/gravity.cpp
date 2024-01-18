@@ -1,9 +1,9 @@
 #include <SFML/Graphics.hpp>
 
-#include <iostream>
-
 #include "gravity.h"
 #include "object.h"
+#include "logger.h"
+#include "helper.h"
 
 float getMagnitude(const sf::Vector2f& v)
 {
@@ -30,11 +30,6 @@ sf::Vector2f normalize(const sf::Vector2f& v)
 	return normalize(v, getMagnitude(v));
 }
 
-void printSfVector(const sf::Vector2f& vec)
-{
-	std::cout << vec.x << ", " << vec.y << '\n';
-}
-
 // Apply gravity to all the objects in the vector w.r.t the object at srcObjectIndex.
 void Gravity::applyGravity(std::vector<Object*> vecObjects, size_t srcObjectIndex)
 {
@@ -54,13 +49,11 @@ void Gravity::applyGravity(std::vector<Object*> vecObjects, size_t srcObjectInde
 			
 			const float magnitude = getMagnitude(distanceVector);
 
-			std::cout << "Mag: " << magnitude << ", distanceVector: ";
-			printSfVector(distanceVector);
-
 			// Get the direction of the distance.
 			sf::Vector2f direction = normalize(distanceVector, magnitude);
-			std::cout << "DirectionVector: ";
-			printSfVector(direction);
+			Helper::printSfVector("DistanceVector: ", distanceVector);
+			Helper::printSfVector(", DirectionVector: ", direction);
+			ns_Util::Logger::LOG_MSG(", Mag: ", magnitude, '\n');
 
 			// Get the force of gravity.
 			const float force = static_cast<float>(Gravity::getGravitationalConstant() * srcObject->getMass() * vecObjects[i]->getMass()) / std::powf(magnitude, 2);
@@ -71,9 +64,8 @@ void Gravity::applyGravity(std::vector<Object*> vecObjects, size_t srcObjectInde
 			forceVector.x = std::cosf(theta) * force;
 			forceVector.y = std::sinf(theta) * force;
 
-			std::cout << "Force: " << force << ", Force Vector:";
-			printSfVector(forceVector);
-
+			Helper::printSfVector("ForceVector: ", forceVector);
+			ns_Util::Logger::LOG_MSG(", Force: ", force, '\n');
 			vecObjects[i]->addForce(forceVector);
 		}
 	}

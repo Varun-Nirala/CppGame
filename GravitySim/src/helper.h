@@ -8,6 +8,11 @@
 
 namespace Helper
 {
+static inline void printSfVector(std::string msg, const sf::Vector2f& vec)
+{
+	ns_Util::Logger::LOG_MSG(msg, vec.x, ", ", vec.y);
+}
+
 static inline int getRandomNumber(int min, int max)
 {
 	static std::random_device rd;

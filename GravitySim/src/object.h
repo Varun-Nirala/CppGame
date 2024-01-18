@@ -23,7 +23,7 @@ public:
 	void update(const sf::Time& elapsedTime);
 	void draw(sf::RenderWindow& window);
 
-	void setMass(float mass) { m_mass = mass; }
+	void setMass(float mass) { m_mass = mass * MASS_SCALER; }
 	float getMass() const { return m_mass; }
 
 	void addForce(const sf::Vector2f& force) { m_force += force; }
@@ -49,7 +49,7 @@ private:
 	sf::CircleShape							m_circle;
 	sf::Vector2f							m_force{};			// In Newton
 	sf::Vector2f							m_velocity{};		// In meter per second
-	float									m_mass{ 1.0f };		// In kg
+	float									m_mass{ 1.0f * MASS_SCALER };		// In kg
 };
 
 #endif //!__TETROMINO_H__
