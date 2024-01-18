@@ -41,8 +41,8 @@ private:
 	std::vector<Object*>				m_objects;
 
 
-	std::pair<int, int>					m_objectSizeRange{ 1, 5 };
-	std::pair<float, float>				m_objectMassRange{ 100.0f, 5000.0f };
+	std::pair<int, int>					m_objectSizeRange{ 500000, 10000000 };
+	std::pair<float, float>				m_objectMassRange{ 1.0e7f, 1.0e11f };
 	std::array<sf::Color, 5>			m_objectColorRange{ sf::Color::White, sf::Color::Red, sf::Color::Green, sf::Color::Blue, sf::Color::Yellow };
 };
 

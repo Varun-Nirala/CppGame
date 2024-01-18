@@ -16,7 +16,8 @@ Object::Object(float radius, sf::Color color, sf::Vector2f position, float mass)
 void Object::update(const sf::Time& elapsedTime)
 {
 	// Update the position of the objects
-	(void)elapsedTime;
+	// Velocity gain by the gravitational force of other objects.
+	m_velocity += (m_force / m_mass * elapsedTime.asSeconds());
 	setPosition(getPosition() + m_velocity);
 }
 
@@ -30,8 +31,8 @@ void Object::draw(sf::RenderWindow& window)
 
 void Object::print() const
 {
-	std::printf("Radius(meter)              : %f\n", getRadiusInMeter());
-	std::printf("Mass(kilogram)             : %f\n", getMassInKg());
-	std::printf("Position                   : %f, %f\n", getPositionX(), getPositionY());
-	std::printf("Velocity(meter per second) : %f, %f\n", getVelocityInMPSX(), getVelocityInMPSY());
+	std::printf("Radius(meter)              : %f\n", getRadius());
+	std::printf("Mass(kilogram)             : %f\n", getMass());
+	std::printf("Position                   : %f, %f\n", getPosition().x, getPosition().y);
+	std::printf("Velocity(meter per second) : %f, %f\n", getVelocity().x, getVelocity().y);
 }

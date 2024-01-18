@@ -1,100 +1,80 @@
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
+
 #include "gravity.h"
 #include "object.h"
 
-float getLength(const sf::Vector2f& v)
+float getMagnitude(const sf::Vector2f& v)
 {
-	return std::sqrtf(v.x * v.x + v.y * v.y);
+	return std::sqrtf(std::powf(v.x, 2) + std::powf(v.y, 2));
 }
 
-float getLength(const sf::Vector2f &src, const sf::Vector2f &dst)
+float getMagnitude(const sf::Vector2f &src, const sf::Vector2f &dst)
 {
-	return getLength(dst - src);
+	return getMagnitude(src - dst);
 }
 
 sf::Vector2f getDistance(const sf::Vector2f& src, const sf::Vector2f& dst)
 {
-	return (dst - src);
+	return (src - dst);
 }
 
-sf::Vector2f normalize(const sf::Vector2f& v, float length)
+sf::Vector2f normalize(const sf::Vector2f& v, float magnitude)
 {
-	return v / length;
+	return v / magnitude;
 }
 
 sf::Vector2f normalize(const sf::Vector2f& v)
 {
-	return v / (getLength(v));
+	return normalize(v, getMagnitude(v));
 }
 
 void printSfVector(const sf::Vector2f& vec)
 {
-	printf("%f, %f\n", vec.x, vec.y);
+	std::cout << vec.x << ", " << vec.y << '\n';
 }
 
 // Apply gravity to all the objects in the vector w.r.t the object at srcObjectIndex.
-void Gravity::applyGravity(std::vector<Object*> vecObjects, size_t srcObjectIndex, const sf::Time& elapsedTime)
+void Gravity::applyGravity(std::vector<Object*> vecObjects, size_t srcObjectIndex)
 {
 	if (srcObjectIndex >= vecObjects.size())
 	{
 		return;
 	}
-
+		
 	// Get the srcObject.
-	Object* srcObject = vecObjects[srcObjectIndex];
-
-	// Time step in seconds
-	float timeStep = elapsedTime.asSeconds();
+	const Object* srcObject = vecObjects[srcObjectIndex];
 
 	for (size_t i = 0; i < vecObjects.size(); ++i)
 	{
 		if (i != srcObjectIndex)
 		{
-			sf::Vector2f distanceVector = getDistance(srcObject->getPosition(), vecObjects[i]->getPosition());
-			printf("distanceVector : ");
-			printSfVector(distanceVector);
+			const sf::Vector2f distanceVector = getDistance(srcObject->getPosition(), vecObjects[i]->getPosition());
+			
+			const float magnitude = getMagnitude(distanceVector);
 
-			// Get the distance between them.
-			float magnitude = getLength(distanceVector);
-			printf("magnitude : %f\n", magnitude);
+			std::cout << "Mag: " << magnitude << ", distanceVector: ";
+			printSfVector(distanceVector);
 
 			// Get the direction of the distance.
 			sf::Vector2f direction = normalize(distanceVector, magnitude);
-			printf("direction : ");
+			std::cout << "DirectionVector: ";
 			printSfVector(direction);
 
 			// Get the force of gravity.
-			double force = (srcObject->getMassInKg() * vecObjects[i]->getMassInKg()) / std::powf(magnitude, 2);
-			printf("Before force : %f\n", force);
+			const float force = static_cast<float>(Gravity::getGravitationalConstant() * srcObject->getMass() * vecObjects[i]->getMass()) / std::powf(magnitude, 2);
+			
+			const float theta = std::atan2f(distanceVector.y, distanceVector.x);
 
-			force = force * Gravity::getGravitationalConstant();
-			printf("After force  : %f\n", force);
+			sf::Vector2f forceVector;
+			forceVector.x = std::cosf(theta) * force;
+			forceVector.y = std::sinf(theta) * force;
 
-			// Get the acceleration.
-			float acceleration = static_cast<float>(force) / vecObjects[i]->getMassInKg();
-			printf("acceleration : %f\n", acceleration);
+			std::cout << "Force: " << force << ", Force Vector:";
+			printSfVector(forceVector);
 
-			if (!std::isnan(acceleration))
-			{
-				sf::Vector2f accelerationVector = direction * acceleration;
-				printf("accelerationVector : ");
-				printSfVector(accelerationVector);
-
-				printf("Curr Velocity : ");
-				printSfVector(vecObjects[i]->getVelocityInMPS());
-
-				// Get the velocity.
-				sf::Vector2f velocity = accelerationVector * timeStep;
-
-				printf("Add Velocity  : ");
-				printSfVector(velocity);
-
-				// Update the velocity of the object.
-				vecObjects[i]->setVelocityInMPS(velocity);
-
-				srcObject->setVelocityInMPS(-velocity);
-			}
+			vecObjects[i]->addForce(forceVector);
 		}
 	}
 }

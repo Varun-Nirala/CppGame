@@ -22,7 +22,7 @@ void Game::setUpObjects(size_t count, const std::bitset<FLAG_SIZE>& flags)
 	for (int i = 1; i < count; ++i)
 	{
 		m_objects.push_back(createObject(flags));
-		m_objects.back()->setRadiusInMeter(m_objects.front()->getRadiusInMeter());
+		m_objects.back()->setRadius(m_objects.front()->getRadius());
 	}
 }
 
@@ -94,7 +94,7 @@ void Game::update(const sf::Time &elapsedTime)
 	// Apply gravity to all the objects, from all other objects.
 	for (size_t i = 0; i < m_objects.size(); ++i)
 	{
-		Gravity::applyGravity(m_objects, i, elapsedTime);
+		Gravity::applyGravity(m_objects, i);
 	}
 
 	// Update the position of the objects
