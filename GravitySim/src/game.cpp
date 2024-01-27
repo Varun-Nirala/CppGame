@@ -24,6 +24,12 @@ void Game::setUpObjects(size_t count, const std::bitset<FLAG_SIZE>& flags)
 		m_objects.push_back(createObject(flags));
 		m_objects.back()->setRadius(m_objects.front()->getRadius());
 	}
+
+	m_objects[0]->setMass(5.97219e24);
+	m_objects[1]->setMass(1.9891e30);
+
+	m_objects[0]->setPosition(glm::dvec2(10 + m_objects[0]->getRadius(), m_window.getSize().y / 2.0));
+	m_objects[1]->setPosition(glm::dvec2(m_window.getSize().x - m_objects[1]->getRadius() - 10.0, m_window.getSize().y / 2.0));
 }
 
 void Game::run()
@@ -115,23 +121,23 @@ void Game::render()
 Object* Game::createRandomObject()
 {
 	int radius = Helper::getRandomNumber(m_objectSizeRange.first, m_objectSizeRange.second);
-	float mass = Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
+	double mass = Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
 
 	sf::Color color = m_objectColorRange[Helper::getRandomNumber(0, (int)m_objectColorRange.size() - 1)];
-	float posX = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().x - radius));
-	float posY = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().y - radius));
+	double posX = Helper::getRandomNumber(0, m_window.getSize().x - radius);
+	double posY = Helper::getRandomNumber(0, m_window.getSize().y - radius);
 	// Code to create random objects
-	return new Object(static_cast<float>(radius), color, sf::Vector2f(posX, posY), mass);
+	return new Object(static_cast<float>(radius), color, glm::dvec2(posX, posY), mass);
 }
 
 Object* Game::createObject(const std::bitset<FLAG_SIZE>& flags)
 {
 	int radius = flags.test(SAME_RADIUS) ? 0 : Helper::getRandomNumber(m_objectSizeRange.first, m_objectSizeRange.second);
-	float mass = flags.test(SAME_MASS) ? 0 : Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
+	double mass = flags.test(SAME_MASS) ? 0 : Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
 
 	sf::Color color = m_objectColorRange[Helper::getRandomNumber(0, (int)m_objectColorRange.size() - 1)];
-	float posX = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().x - radius));
-	float posY = static_cast<float>(Helper::getRandomNumber(0, m_window.getSize().y - radius));
+	double posX = Helper::getRandomNumber(0, m_window.getSize().x - radius);
+	double posY = Helper::getRandomNumber(0, m_window.getSize().y - radius);
 	// Code to create random objects
-	return new Object(static_cast<float>(radius), color, sf::Vector2f(posX, posY), mass);
+	return new Object(static_cast<float>(radius), color, glm::dvec2(posX, posY), mass);
 }

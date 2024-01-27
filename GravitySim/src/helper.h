@@ -4,11 +4,19 @@
 #include <random>
 #include <chrono>
 #include <vector>
+
+#include <glm/vec2.hpp>
+
 #include "logger.h"
 
 namespace Helper
 {
-static inline void printSfVector(std::string msg, const sf::Vector2f& vec)
+static inline void printVector(std::string msg, const glm::dvec2& vec)
+{
+	ns_Util::Logger::LOG_MSG(msg, vec.x, ", ", vec.y);
+}
+
+static inline void printVector(std::string msg, const sf::Vector2f& vec)
 {
 	ns_Util::Logger::LOG_MSG(msg, vec.x, ", ", vec.y);
 }
@@ -23,14 +31,14 @@ static inline int getRandomNumber(int min, int max)
 	return distrib(gen);
 }
 
-static inline float getRandomNumber(float min, float max)
+static inline double getRandomNumber(double min, double max)
 {
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
 
 	std::uniform_real_distribution<> distrib(min, max);
 
-	return static_cast<float>(distrib(gen));
+	return distrib(gen);
 }
 
 static inline std::chrono::time_point<std::chrono::steady_clock> getCurrentTime()

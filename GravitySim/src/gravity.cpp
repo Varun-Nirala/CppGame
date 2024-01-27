@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <glm/glm.hpp>
 
 #include "gravity.h"
 #include "object.h"
@@ -45,27 +46,25 @@ void Gravity::applyGravity(std::vector<Object*> vecObjects, size_t srcObjectInde
 	{
 		if (i != srcObjectIndex)
 		{
-			const sf::Vector2f distanceVector = getDistance(srcObject->getPosition(), vecObjects[i]->getPosition());
+			const glm::dvec2 distanceVector = srcObject->getPosition() - vecObjects[i]->getPosition();
 			
-			const float magnitude = getMagnitude(distanceVector);
+			const double magnitude = glm::length(distanceVector);
 
-			// Get the direction of the distance.
-			sf::Vector2f direction = normalize(distanceVector, magnitude);
-			Helper::printSfVector("DistanceVector: ", distanceVector);
-			Helper::printSfVector(", DirectionVector: ", direction);
+			const glm::dvec2 direction = glm::normalize(distanceVector);
+
+			Helper::printVector("DistanceVector: ", distanceVector);
+			Helper::printVector(", DirectionVector: ", direction);
 			ns_Util::Logger::LOG_MSG(", Mag: ", magnitude, '\n');
 
 			// Get the force of gravity.
-			const float force = static_cast<float>(Gravity::getGravitationalConstant() * srcObject->getMass() * vecObjects[i]->getMass()) / std::powf(magnitude, 2);
+			const double force = Gravity::getGravitationalConstant() * srcObject->getMass() * vecObjects[i]->getMass() / std::pow(magnitude, 2);
 			
-			const float theta = std::atan2f(distanceVector.y, distanceVector.x);
+			const double theta = std::atan2(distanceVector.y, distanceVector.x);
 
-			sf::Vector2f forceVector;
-			forceVector.x = std::cosf(theta) * force;
-			forceVector.y = std::sinf(theta) * force;
+			glm::dvec2 forceVector(std::cos(theta) * force, std::sin(theta) * force);
 
-			Helper::printSfVector("ForceVector: ", forceVector);
-			ns_Util::Logger::LOG_MSG(", Force: ", force, '\n');
+			Helper::printVector("ForceVector: ", forceVector);
+			ns_Util::Logger::LOG_MSG(", Force: ", force, "\n\n");
 			vecObjects[i]->addForce(forceVector);
 		}
 	}

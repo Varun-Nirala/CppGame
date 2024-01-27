@@ -17,11 +17,14 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
+set(COMMON_LIBS_DIR "CommonLibs")
+set(SFML_STATIC_LIBRARIES TRUE)
+set(SFML_DIR "${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/SFML")
+set(GLM_DIR ${CMAKE_SOURCE_DIR}/../${COMMON_LIBS_DIR}/GLM/glm)
+
+include_directories(${GLM_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)
 file(GLOB SOURCES "src/*.cpp" "src/*.h")
-
-set(SFML_STATIC_LIBRARIES TRUE)
-set(SFML_DIR "${CMAKE_SOURCE_DIR}/../CommonLibs/SFML")
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)

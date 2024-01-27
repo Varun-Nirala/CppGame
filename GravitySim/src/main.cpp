@@ -13,7 +13,7 @@ int main()
 
 	Game game(gameTitle, width, height);
 
-	int objectCount = 20;
+	int objectCount = 2;
 	game.setUpObjects(objectCount, flags);
 
 	game.run();
