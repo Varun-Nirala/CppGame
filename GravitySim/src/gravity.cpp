@@ -6,31 +6,6 @@
 #include "logger.h"
 #include "helper.h"
 
-float getMagnitude(const sf::Vector2f& v)
-{
-	return std::sqrtf(std::powf(v.x, 2) + std::powf(v.y, 2));
-}
-
-float getMagnitude(const sf::Vector2f &src, const sf::Vector2f &dst)
-{
-	return getMagnitude(src - dst);
-}
-
-sf::Vector2f getDistance(const sf::Vector2f& src, const sf::Vector2f& dst)
-{
-	return (src - dst);
-}
-
-sf::Vector2f normalize(const sf::Vector2f& v, float magnitude)
-{
-	return v / magnitude;
-}
-
-sf::Vector2f normalize(const sf::Vector2f& v)
-{
-	return normalize(v, getMagnitude(v));
-}
-
 // Apply gravity to all the objects in the vector w.r.t the object at srcObjectIndex.
 void Gravity::applyGravity(std::vector<Object*> vecObjects, size_t srcObjectIndex)
 {
@@ -52,9 +27,11 @@ void Gravity::applyGravity(std::vector<Object*> vecObjects, size_t srcObjectInde
 
 			const glm::dvec2 direction = glm::normalize(distanceVector);
 
-			Helper::printVector("DistanceVector: ", distanceVector);
+			Helper::printVector("\n\nDistanceVector: ", distanceVector);
 			Helper::printVector(", DirectionVector: ", direction);
-			ns_Util::Logger::LOG_MSG(", Mag: ", magnitude, '\n');
+			
+
+			ns_Util::Logger::LOG_MSG(", Mag: ", magnitude, "Val: ", Gravity::getGravitationalConstant() * srcObject->getMass() * vecObjects[i]->getMass(), '\n');
 
 			// Get the force of gravity.
 			const double force = Gravity::getGravitationalConstant() * srcObject->getMass() * vecObjects[i]->getMass() / std::pow(magnitude, 2);

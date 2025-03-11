@@ -5,7 +5,7 @@
 
 constexpr float FPS = 1.0f;
 
-constexpr float MASS_SCALER = 1.0e8f;
+constexpr double MASS_SCALER = 1.0e8;
 
 constexpr int FLAG_SIZE = 2;
 constexpr int SAME_RADIUS = 0;

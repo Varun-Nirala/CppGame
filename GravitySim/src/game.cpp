@@ -22,11 +22,7 @@ void Game::setUpObjects(size_t count, const std::bitset<FLAG_SIZE>& flags)
 	for (int i = 1; i < count; ++i)
 	{
 		m_objects.push_back(createObject(flags));
-		m_objects.back()->setRadius(m_objects.front()->getRadius());
 	}
-
-	m_objects[0]->setMass(5.97219e24);
-	m_objects[1]->setMass(1.9891e30);
 
 	m_objects[0]->setPosition(glm::dvec2(10 + m_objects[0]->getRadius(), m_window.getSize().y / 2.0));
 	m_objects[1]->setPosition(glm::dvec2(m_window.getSize().x - m_objects[1]->getRadius() - 10.0, m_window.getSize().y / 2.0));
@@ -132,8 +128,8 @@ Object* Game::createRandomObject()
 
 Object* Game::createObject(const std::bitset<FLAG_SIZE>& flags)
 {
-	int radius = flags.test(SAME_RADIUS) ? 0 : Helper::getRandomNumber(m_objectSizeRange.first, m_objectSizeRange.second);
-	double mass = flags.test(SAME_MASS) ? 0 : Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
+	int radius = flags.test(SAME_RADIUS) ? (int)m_objects[0]->getRadius() : Helper::getRandomNumber(m_objectSizeRange.first, m_objectSizeRange.second);
+	double mass = flags.test(SAME_MASS) ? m_objects[0]->getMass() : Helper::getRandomNumber(m_objectMassRange.first, m_objectMassRange.second);
 
 	sf::Color color = m_objectColorRange[Helper::getRandomNumber(0, (int)m_objectColorRange.size() - 1)];
 	double posX = Helper::getRandomNumber(0, m_window.getSize().x - radius);
